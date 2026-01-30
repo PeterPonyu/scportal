@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SCPortal</title>
+  <script>
+    // GitHub Pages SPA redirect
+    // This script redirects 404 errors to the main index.html
+    // while preserving the path for client-side routing
+    const segment = 1; // Number of path segments to keep (for /scportal/ base)
+    const path = window.location.pathname;
+    const search = window.location.search;
+    const hash = window.location.hash;
+    
+    // Redirect to root with path encoded in query string
+    const redirectPath = path.split('/').slice(segment + 1).join('/');
+    if (redirectPath) {
+      window.location.replace(
+        window.location.origin + '/scportal/' +
+        '?__spa_redirect=' + encodeURIComponent('/' + redirectPath + search + hash)
+      );
+    } else {
+      window.location.replace(window.location.origin + '/scportal/');
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>

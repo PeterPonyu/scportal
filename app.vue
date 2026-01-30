@@ -6,6 +6,21 @@
   </div>
 </template>
 
+<script setup lang="ts">
+// Handle GitHub Pages SPA redirect
+if (import.meta.client) {
+  const url = new URL(window.location.href)
+  const redirectPath = url.searchParams.get('__spa_redirect')
+  if (redirectPath) {
+    url.searchParams.delete('__spa_redirect')
+    const newPath = decodeURIComponent(redirectPath)
+    // Use replaceState to clean up URL, then navigate
+    window.history.replaceState(null, '', url.pathname + url.search + url.hash)
+    navigateTo(newPath, { replace: true })
+  }
+}
+</script>
+
 <style>
 /* Global styles */
 html {

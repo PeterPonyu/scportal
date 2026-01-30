@@ -30,3 +30,5 @@ coverage/
 
 # Misc
 *.local
+.output
+dist
