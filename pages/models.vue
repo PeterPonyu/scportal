@@ -12,7 +12,7 @@
           Model Catalog
         </h1>
         <p class="text-purple-100 max-w-2xl text-lg">
-          Explore 23+ state-of-the-art single-cell analysis models with detailed documentation.
+          Documentation of 23 single-cell analysis models from the LAIOR benchmark.
         </p>
       </div>
     </div>
@@ -110,8 +110,8 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Model Catalog - SCPortal Hub',
-  description: 'Explore 23+ state-of-the-art single-cell analysis models with detailed documentation'
+  title: 'Model Catalog - SCPortal',
+  description: 'Documentation of 23 single-cell analysis models from the LAIOR benchmark'
 })
 
 const activeCategory = ref('all')

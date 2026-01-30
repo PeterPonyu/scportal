@@ -8,21 +8,19 @@
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
           </span>
-          Unified Single-Cell Analysis Platform
+          Single-Cell Analysis Resources
         </div>
         
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-          <span class="text-dark-900 dark:text-white">Explore </span>
-          <span class="bg-gradient-to-r from-primary-600 via-accent-500 to-primary-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-            Single-Cell Data
-          </span>
+          <span class="text-dark-900 dark:text-white">SCPortal</span>
           <br />
-          <span class="text-dark-900 dark:text-white">Like Never Before</span>
+          <span class="bg-gradient-to-r from-primary-600 via-accent-500 to-primary-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+            Single-Cell Data Portal
+          </span>
         </h1>
         
         <p class="text-lg md:text-xl text-dark-600 dark:text-dark-400 mb-8 max-w-2xl mx-auto">
-          A comprehensive platform combining iAODE Dataset Browser and LAIOR Benchmarking Dashboard 
-          for exploring single-cell ATAC-seq and RNA-seq datasets with state-of-the-art models.
+          Access single-cell ATAC-seq and RNA-seq datasets from iAODE, and model benchmarking results from LAIOR.
         </p>
 
         <div class="flex flex-wrap justify-center gap-4">
@@ -71,10 +69,10 @@
 
 <script setup lang="ts">
 const stats = [
-  { value: '100+', label: 'Datasets' },
-  { value: '600+', label: 'Samples' },
-  { value: '23+', label: 'Models' },
-  { value: '50+', label: 'Metrics' }
+  { value: '113', label: 'Studies' },
+  { value: '617', label: 'Datasets' },
+  { value: '23', label: 'Models' },
+  { value: '24', label: 'Metrics' }
 ]
 </script>
 

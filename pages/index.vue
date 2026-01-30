@@ -20,13 +20,13 @@
           <!-- iAODE Dataset Browser -->
           <FeatureCard
             title="Dataset Browser"
-            description="Browse and explore 100+ standardized single-cell ATAC-seq and RNA-seq datasets from NCBI GEO in 10X h5 format."
+            description="Browse single-cell ATAC-seq and RNA-seq datasets from NCBI GEO. All datasets are standardized in 10X h5 format."
             to="/datasets"
             link-text="Browse Datasets"
             variant="primary"
             :stats="[
-              { label: 'Studies', value: '93+' },
-              { label: 'Datasets', value: '600+' }
+              { label: 'Studies', value: '113' },
+              { label: 'Datasets', value: '617' }
             ]"
           >
             <template #icon>
@@ -61,13 +61,13 @@
           <!-- LAIOR Benchmarking -->
           <FeatureCard
             title="Benchmarking Dashboard"
-            description="Comprehensive benchmarking results comparing 23+ state-of-the-art single-cell analysis models."
+            description="Benchmarking results comparing 23 single-cell analysis models across multiple evaluation criteria."
             to="/benchmarks"
             link-text="View Results"
             variant="emerald"
             :stats="[
-              { label: 'Models', value: '23+' },
-              { label: 'Metrics', value: '50+' }
+              { label: 'Models', value: '23' },
+              { label: 'Metrics', value: '24' }
             ]"
           >
             <template #icon>
@@ -102,7 +102,7 @@
           <!-- Metrics Reference -->
           <FeatureCard
             title="Metrics Reference"
-            description="Interactive reference library explaining all 50+ evaluation metrics with clear definitions and use cases."
+            description="Reference library explaining 24 evaluation metrics with definitions and use cases."
             to="/benchmarks#metrics"
             link-text="View Metrics"
             variant="primary"
@@ -230,24 +230,24 @@
     <section class="py-20 bg-gradient-to-br from-primary-600 to-accent-600">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
-          Ready to Explore?
+          Start Exploring
         </h2>
         <p class="text-primary-100 max-w-2xl mx-auto mb-8">
-          Start exploring the comprehensive collection of single-cell datasets and benchmark results today.
+          Access single-cell datasets and benchmark results.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <NuxtLink
             to="/datasets"
             class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-primary-700 font-medium hover:bg-primary-50 transition-colors"
           >
-            Get Started
+            Browse Datasets
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />
             </svg>
           </NuxtLink>
           <a
-            href="https://github.com/PeterPonyu/scportal-hub"
+            href="https://github.com/PeterPonyu/scportal"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/30 text-white font-medium hover:bg-white/10 transition-colors"
@@ -266,7 +266,7 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'SCPortal Hub - Single-Cell Analysis Portal',
-  description: 'Unified platform for single-cell analysis combining iAODE Dataset Browser and LAIOR Benchmarking Dashboard'
+  title: 'SCPortal - Single-Cell Data Portal',
+  description: 'Single-cell data portal aggregating iAODE dataset browser and LAIOR benchmarking resources'
 })
 </script>

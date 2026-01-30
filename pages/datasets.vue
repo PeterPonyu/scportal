@@ -161,8 +161,8 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Browse Datasets - SCPortal Hub',
-  description: 'Explore standardized single-cell ATAC-seq and RNA-seq datasets in 10X h5 format'
+  title: 'Browse Datasets - SCPortal',
+  description: 'Single-cell ATAC-seq and RNA-seq datasets in 10X h5 format'
 })
 
 const activeTab = ref<'atac' | 'rna'>('atac')

@@ -12,7 +12,7 @@
           Benchmarking Dashboard
         </h1>
         <p class="text-emerald-100 max-w-2xl text-lg">
-          Comprehensive benchmarking results comparing state-of-the-art single-cell analysis models.
+          Benchmarking results comparing 23 single-cell analysis models across multiple metrics.
         </p>
       </div>
     </div>
@@ -168,14 +168,14 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Benchmarking Dashboard - SCPortal Hub',
-  description: 'Comprehensive benchmarking results comparing state-of-the-art single-cell analysis models'
+  title: 'Benchmarking Dashboard - SCPortal',
+  description: 'Benchmarking results comparing single-cell analysis models'
 })
 
 const stats = [
-  { value: '23+', label: 'Models' },
+  { value: '23', label: 'Models' },
   { value: '66', label: 'Datasets' },
-  { value: '50+', label: 'Metrics' },
+  { value: '24', label: 'Metrics' },
   { value: '6', label: 'Categories' }
 ]
 

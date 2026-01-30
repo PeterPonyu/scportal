@@ -15,13 +15,13 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/scportal/',
     head: {
-      title: 'SCPortal - Single-Cell Analysis Portal',
+      title: 'SCPortal - Single-Cell Data Portal',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { 
           name: 'description', 
-          content: 'Web portal for single-cell analysis resources from iAODE and LAIOR projects' 
+          content: 'Single-cell data portal aggregating resources from iAODE and LAIOR' 
         },
         { name: 'theme-color', content: '#059669' }
       ],

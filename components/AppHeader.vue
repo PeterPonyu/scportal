@@ -13,10 +13,10 @@
           </div>
           <div class="flex flex-col">
             <span class="text-lg font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-              SCPortal Hub
+              SCPortal
             </span>
             <span class="text-xs text-dark-500 dark:text-dark-400 hidden sm:block">
-              Single-Cell Analysis Portal
+              Single-Cell Data Portal
             </span>
           </div>
         </NuxtLink>
@@ -53,7 +53,7 @@
 
           <!-- GitHub Link -->
           <a
-            href="https://github.com/PeterPonyu/scportal-hub"
+            href="https://github.com/PeterPonyu/scportal"
             target="_blank"
             rel="noopener noreferrer"
             class="p-2 rounded-lg text-dark-600 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
