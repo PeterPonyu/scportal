@@ -12,7 +12,7 @@
           Model Catalog
         </h1>
         <p class="text-purple-100 max-w-2xl text-lg">
-          Documentation of 23 single-cell analysis models from the LAIOR benchmark.
+          SCPortal indexes 23 single-cell analysis models across 6 categories with documentation and benchmark results.
         </p>
       </div>
     </div>
@@ -88,14 +88,27 @@
       </div>
 
       <!-- CTA -->
-      <div class="text-center">
+      <div class="flex flex-wrap justify-center gap-4">
         <a
           href="https://peterponyu.github.io/liora-ui/models/"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-purple-500/25"
         >
-          Explore Full Model Catalog
+          LAIOR Model Documentation
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" x2="21" y1="14" y2="3" />
+          </svg>
+        </a>
+        <a
+          href="https://peterponyu.github.io/iAODE/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg shadow-primary-500/25"
+        >
+          iAODE Dataset Browser
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />

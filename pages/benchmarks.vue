@@ -9,10 +9,10 @@
           <span class="text-white">Benchmarks</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-          Benchmarking Dashboard
+          Benchmarking Results
         </h1>
         <p class="text-emerald-100 max-w-2xl text-lg">
-          Benchmarking results comparing 23 single-cell analysis models across multiple metrics.
+          SCPortal aggregates benchmarking data for 23 single-cell analysis models evaluated across 24 metrics and 66 datasets.
         </p>
       </div>
     </div>
@@ -113,47 +113,73 @@
         </div>
       </div>
 
-      <!-- Sample Results Table -->
+      <!-- Data Sources -->
       <div class="mb-12">
-        <h2 class="text-2xl font-bold text-dark-900 dark:text-white mb-6">Sample Benchmark Results</h2>
-        <div class="overflow-x-auto rounded-xl border border-dark-200 dark:border-dark-800">
-          <table class="w-full">
-            <thead class="bg-dark-50 dark:bg-dark-900">
-              <tr>
-                <th class="px-4 py-3 text-left text-sm font-medium text-dark-600 dark:text-dark-400">Model</th>
-                <th class="px-4 py-3 text-left text-sm font-medium text-dark-600 dark:text-dark-400">Category</th>
-                <th class="px-4 py-3 text-center text-sm font-medium text-dark-600 dark:text-dark-400">NMI ↑</th>
-                <th class="px-4 py-3 text-center text-sm font-medium text-dark-600 dark:text-dark-400">ARI ↑</th>
-                <th class="px-4 py-3 text-center text-sm font-medium text-dark-600 dark:text-dark-400">ASW ↑</th>
-                <th class="px-4 py-3 text-center text-sm font-medium text-dark-600 dark:text-dark-400">Q_local ↑</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-dark-200 dark:divide-dark-800 bg-white dark:bg-dark-950">
-              <tr v-for="result in sampleResults" :key="result.model" class="hover:bg-dark-50 dark:hover:bg-dark-900">
-                <td class="px-4 py-3 text-sm font-medium text-dark-900 dark:text-white">{{ result.model }}</td>
-                <td class="px-4 py-3 text-sm text-dark-600 dark:text-dark-400">{{ result.category }}</td>
-                <td class="px-4 py-3 text-center text-sm" :class="getScoreClass(result.nmi)">{{ result.nmi }}</td>
-                <td class="px-4 py-3 text-center text-sm" :class="getScoreClass(result.ari)">{{ result.ari }}</td>
-                <td class="px-4 py-3 text-center text-sm" :class="getScoreClass(result.asw)">{{ result.asw }}</td>
-                <td class="px-4 py-3 text-center text-sm" :class="getScoreClass(result.q_local)">{{ result.q_local }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <h2 class="text-2xl font-bold text-dark-900 dark:text-white mb-6">Data Sources</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900">
+            <h3 class="font-semibold text-dark-900 dark:text-white mb-2">LAIOR Benchmark</h3>
+            <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">
+              Model evaluation results with 24 metrics across 66 datasets (48 RNA, 18 ATAC).
+            </p>
+            <a
+              href="https://peterponyu.github.io/liora-ui/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
+            >
+              View LAIOR Dashboard
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" x2="21" y1="14" y2="3" />
+              </svg>
+            </a>
+          </div>
+          <div class="p-6 rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900">
+            <h3 class="font-semibold text-dark-900 dark:text-white mb-2">iAODE Dataset Collection</h3>
+            <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">
+              Source datasets used in benchmarking from 113 studies (617 datasets total).
+            </p>
+            <a
+              href="https://peterponyu.github.io/iAODE/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700"
+            >
+              View iAODE Browser
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" x2="21" y1="14" y2="3" />
+              </svg>
+            </a>
+          </div>
         </div>
-        <p class="text-sm text-dark-500 mt-4 text-center">
-          * Sample results for demonstration. Visit the full dashboard for complete benchmarking data.
-        </p>
       </div>
 
       <!-- CTA -->
-      <div class="text-center">
+      <div class="flex flex-wrap justify-center gap-4">
         <a
           href="https://peterponyu.github.io/liora-ui/"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25"
         >
-          Explore Full Benchmarking Dashboard
+          LAIOR Dashboard
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" x2="21" y1="14" y2="3" />
+          </svg>
+        </a>
+        <a
+          href="https://peterponyu.github.io/iAODE/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg shadow-primary-500/25"
+        >
+          iAODE Browser
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
@@ -289,19 +315,4 @@ const modelCategories = [
     models: ['β-VAE', 'InfoVAE', 'TCVAE', 'DIPVAE']
   }
 ]
-
-const sampleResults = [
-  { model: 'scVI', category: 'Generative', nmi: '0.72', ari: '0.65', asw: '0.58', q_local: '0.89' },
-  { model: 'PeakVI', category: 'scATAC', nmi: '0.68', ari: '0.61', asw: '0.55', q_local: '0.87' },
-  { model: 'SCALEX', category: 'Generative', nmi: '0.70', ari: '0.63', asw: '0.56', q_local: '0.88' },
-  { model: 'scTour', category: 'Trajectory', nmi: '0.65', ari: '0.58', asw: '0.52', q_local: '0.91' },
-  { model: 'β-VAE', category: 'Disentangle', nmi: '0.67', ari: '0.60', asw: '0.54', q_local: '0.86' }
-]
-
-function getScoreClass(score: string) {
-  const value = parseFloat(score)
-  if (value >= 0.7) return 'text-emerald-600 dark:text-emerald-400 font-medium'
-  if (value >= 0.6) return 'text-amber-600 dark:text-amber-400'
-  return 'text-dark-600 dark:text-dark-400'
-}
 </script>

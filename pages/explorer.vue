@@ -12,7 +12,7 @@
           Continuity Explorer
         </h1>
         <p class="text-accent-100 max-w-2xl text-lg">
-          Interactive exploration of trajectory structures and continuity metrics across different embedding methods.
+          SCPortal provides access to trajectory analysis tools for exploring embedding methods and continuity metrics.
         </p>
       </div>
     </div>
@@ -80,21 +80,36 @@
             </div>
             <h3 class="text-lg font-medium text-dark-900 dark:text-white mb-2">Launch Full Explorer</h3>
             <p class="text-sm text-dark-600 dark:text-dark-400 max-w-md mx-auto mb-4">
-              Open the interactive explorer with all simulation data and visualization options.
+              Open the interactive explorer or view related benchmark results.
             </p>
-            <a
-              href="https://peterponyu.github.io/iAODE/explorer/explorer/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-accent-600 to-primary-600 text-white font-medium hover:from-accent-700 hover:to-primary-700 transition-all"
-            >
-              Open Explorer
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" x2="21" y1="14" y2="3" />
-              </svg>
-            </a>
+            <div class="flex flex-wrap justify-center gap-4">
+              <a
+                href="https://peterponyu.github.io/iAODE/explorer/explorer/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-accent-600 to-primary-600 text-white font-medium hover:from-accent-700 hover:to-primary-700 transition-all"
+              >
+                iAODE Explorer
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" x2="21" y1="14" y2="3" />
+                </svg>
+              </a>
+              <a
+                href="https://peterponyu.github.io/liora-ui/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-700 hover:to-teal-700 transition-all"
+              >
+                LAIOR Dashboard
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" x2="21" y1="14" y2="3" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>

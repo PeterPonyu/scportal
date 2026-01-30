@@ -20,7 +20,7 @@
         </h1>
         
         <p class="text-lg md:text-xl text-dark-600 dark:text-dark-400 mb-8 max-w-2xl mx-auto">
-          Access single-cell ATAC-seq and RNA-seq datasets from iAODE, and model benchmarking results from LAIOR.
+          Unified access to 617 single-cell datasets and benchmark results for 23 analysis models.
         </p>
 
         <div class="flex flex-wrap justify-center gap-4">

@@ -8,19 +8,19 @@
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-dark-900 dark:text-white mb-4">
-            Integrated Resources
+            Available Resources
           </h2>
           <p class="text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-            Combining the best of iAODE's dataset exploration and LAIOR's benchmarking capabilities
-            into one unified platform.
+            SCPortal provides access to single-cell datasets and model benchmarking results 
+            through unified navigation.
           </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- iAODE Dataset Browser -->
           <FeatureCard
-            title="Dataset Browser"
-            description="Browse single-cell ATAC-seq and RNA-seq datasets from NCBI GEO. All datasets are standardized in 10X h5 format."
+            title="Dataset Collection"
+            description="Access 617 single-cell ATAC-seq and RNA-seq datasets from 113 studies. Standardized in 10X h5 format."
             to="/datasets"
             link-text="Browse Datasets"
             variant="primary"
@@ -40,8 +40,8 @@
 
           <!-- iAODE Continuity Explorer -->
           <FeatureCard
-            title="Continuity Explorer"
-            description="Interactive exploration of trajectory structures and continuity metrics across different embedding methods."
+            title="Trajectory Explorer"
+            description="Explore trajectory structures and continuity metrics across PCA, UMAP, and t-SNE embedding methods."
             to="/explorer"
             link-text="Launch Explorer"
             variant="accent"
@@ -60,8 +60,8 @@
 
           <!-- LAIOR Benchmarking -->
           <FeatureCard
-            title="Benchmarking Dashboard"
-            description="Benchmarking results comparing 23 single-cell analysis models across multiple evaluation criteria."
+            title="Benchmark Results"
+            description="View evaluation results for 23 single-cell analysis models across 24 metrics and 66 datasets."
             to="/benchmarks"
             link-text="View Results"
             variant="emerald"
@@ -82,13 +82,13 @@
           <!-- Model Catalog -->
           <FeatureCard
             title="Model Catalog"
-            description="Detailed documentation of 23 models including architecture, mathematical formulation, and data flow."
+            description="Documentation for 23 models across 6 categories with architecture details and benchmark performance."
             to="/models"
-            link-text="Explore Models"
+            link-text="View Models"
             variant="purple"
             :stats="[
               { label: 'Categories', value: '6' },
-              { label: 'Papers', value: '20+' }
+              { label: 'Models', value: '23' }
             ]"
           >
             <template #icon>
@@ -117,8 +117,8 @@
 
           <!-- Statistics -->
           <FeatureCard
-            title="Statistics Overview"
-            description="Comprehensive statistics and visualizations of dataset distributions, cell counts, and peak numbers."
+            title="Dataset Statistics"
+            description="Statistics and visualizations of dataset distributions, cell counts, and peak numbers."
             href="https://peterponyu.github.io/iAODE/statistics/"
             link-text="View Statistics"
             variant="accent"

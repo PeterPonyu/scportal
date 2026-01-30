@@ -9,10 +9,10 @@
           <span class="text-white">Datasets</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-          Browse Datasets
+          Dataset Collection
         </h1>
         <p class="text-primary-100 max-w-2xl text-lg">
-          Explore standardized single-cell datasets in 10X h5 format for benchmarking and analysis.
+          SCPortal provides access to 617 standardized single-cell datasets in 10X h5 format from 113 studies.
         </p>
       </div>
     </div>
@@ -47,24 +47,39 @@
             <path d="M12 8h.01" />
           </svg>
           <div>
-            <h3 class="font-medium text-accent-900 dark:text-accent-100">Interactive Dataset Browser</h3>
+            <h3 class="font-medium text-accent-900 dark:text-accent-100">Full Dataset Access</h3>
             <p class="text-sm text-accent-700 dark:text-accent-300 mt-1">
-              For the full interactive experience with filtering, search, and detailed dataset views,
-              visit the original iAODE Dataset Browser.
+              For filtering, search, and detailed views, access the full browsers. 
+              Datasets are also used in the LAIOR benchmark evaluation.
             </p>
-            <a
-              :href="externalUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 mt-3 text-sm font-medium text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300"
-            >
-              Open Full Browser
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" x2="21" y1="14" y2="3" />
-              </svg>
-            </a>
+            <div class="flex flex-wrap gap-4 mt-3">
+              <a
+                :href="externalUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+              >
+                iAODE Browser
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" x2="21" y1="14" y2="3" />
+                </svg>
+              </a>
+              <a
+                href="https://peterponyu.github.io/liora-ui/datasets/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
+              >
+                LAIOR Datasets
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" x2="21" y1="14" y2="3" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -139,14 +154,27 @@
       </div>
 
       <!-- Load More / View All -->
-      <div class="text-center mt-12">
+      <div class="flex flex-wrap justify-center gap-4 mt-12">
         <a
           :href="externalUrl"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg shadow-primary-500/25"
         >
-          Browse All {{ activeTab === 'atac' ? 'scATAC-seq' : 'scRNA-seq' }} Datasets
+          iAODE {{ activeTab === 'atac' ? 'scATAC-seq' : 'scRNA-seq' }} Browser
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" x2="21" y1="14" y2="3" />
+          </svg>
+        </a>
+        <a
+          href="https://peterponyu.github.io/liora-ui/datasets/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25"
+        >
+          LAIOR Benchmark Datasets
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
