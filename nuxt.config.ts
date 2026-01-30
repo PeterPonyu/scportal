@@ -13,19 +13,20 @@ export default defineNuxtConfig({
 
   // App Configuration
   app: {
+    baseURL: '/scportal/',
     head: {
-      title: 'SCPortal Hub - Single-Cell Analysis Portal',
+      title: 'SCPortal - Single-Cell Analysis Portal',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { 
           name: 'description', 
-          content: 'Unified platform for single-cell analysis combining iAODE Dataset Browser and LAIOR Benchmarking Dashboard' 
+          content: 'Web portal for single-cell analysis resources from iAODE and LAIOR projects' 
         },
         { name: 'theme-color', content: '#059669' }
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+        { rel: 'icon', type: 'image/svg+xml', href: '/scportal/favicon.svg' }
       ]
     },
     pageTransition: { name: 'page', mode: 'out-in' }

@@ -95,7 +95,7 @@ const GitHubIcon = defineComponent({
 })
 
 const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com/PeterPonyu/scportal-hub', icon: GitHubIcon }
+  { label: 'GitHub', href: 'https://github.com/PeterPonyu/scportal', icon: GitHubIcon }
 ]
 
 const quickLinks = [

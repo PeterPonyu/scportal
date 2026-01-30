@@ -1,133 +1,132 @@
-# SCPortal Hub
+# SCPortal
 
-> Single-Cell Portal Hub - A unified platform combining iAODE Dataset Browser and LAIOR Benchmarking Dashboard
+A web portal aggregating single-cell analysis resources from iAODE and LAIOR projects.
 
-[![Nuxt](https://img.shields.io/badge/Nuxt-3.15+-00DC82?logo=nuxt.js&logoColor=white)](https://nuxt.com)
-[![Vue](https://img.shields.io/badge/Vue-3.5+-4FC08D?logo=vue.js&logoColor=white)](https://vuejs.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+## Overview
 
-## 🌟 Overview
+SCPortal provides a unified interface to access:
 
-SCPortal Hub is a comprehensive web platform that unifies two powerful single-cell analysis resources:
+- **iAODE Dataset Browser** ([https://peterponyu.github.io/iAODE/](https://peterponyu.github.io/iAODE/)) - Curated single-cell ATAC-seq and RNA-seq datasets in standardized 10X h5 format
+- **LAIOR Benchmarking Dashboard** ([https://peterponyu.github.io/liora-ui/](https://peterponyu.github.io/liora-ui/)) - Benchmarking results for single-cell VAE models
 
-- **[iAODE Dataset Browser](https://peterponyu.github.io/iAODE/)** - Browse 100+ standardized scATAC-seq and scRNA-seq datasets
-- **[LAIOR Benchmarking Dashboard](https://peterponyu.github.io/liora-ui/)** - Compare 23+ state-of-the-art single-cell analysis models
+## External Resources
 
-## ✨ Features
+### iAODE
 
-### Dataset Browser
-- 📊 93+ scATAC-seq studies with 434 datasets
-- 🧬 20+ scRNA-seq studies with 183 datasets
-- 🔍 Filter by organism, dataset size, and modality
-- 📥 Standardized 10X h5 format
+The iAODE project hosts:
+- 93 scATAC-seq studies (434 datasets)
+- 20 scRNA-seq studies (183 datasets)
+- Continuity Explorer for trajectory visualization
 
-### Continuity Explorer
-- 📈 Interactive trajectory visualization
-- 🗺️ Multiple embedding methods (PCA, UMAP, t-SNE)
-- 🔄 Linear, branching, cyclic, and discrete trajectories
-- ⚡ Pre-computed data for fast exploration
+Source: [https://github.com/PeterPonyu/iAODE](https://github.com/PeterPonyu/iAODE)
 
-### Benchmarking Dashboard
-- 🏆 23+ state-of-the-art models compared
-- 📏 50+ evaluation metrics
-- 📊 Interactive charts and heatmaps
-- 📖 Detailed model documentation
+### LAIOR
 
-## 🚀 Quick Start
+The LAIOR benchmarking platform provides:
+- Evaluation of 23 single-cell VAE models across 6 categories
+- 66 benchmark datasets (48 scRNA-seq, 18 scATAC-seq)
+- 24 standardized evaluation metrics
+
+Model categories include:
+- Predictive models (encoder-only)
+- Generative VAE models
+- Trajectory inference models
+- scATAC-specific models
+- Gaussian geometric models
+- Disentanglement models
+
+Source: [https://github.com/PeterPonyu/liora-ui](https://github.com/PeterPonyu/liora-ui)
+
+## Pages
+
+| Page | Description | External Link |
+|------|-------------|---------------|
+| Datasets | Browse scATAC-seq and scRNA-seq datasets | [iAODE Datasets](https://peterponyu.github.io/iAODE/datasets/) |
+| Explorer | Trajectory continuity visualization | [iAODE Explorer](https://peterponyu.github.io/iAODE/explorer/explorer/) |
+| Benchmarks | Model evaluation results | [LAIOR Dashboard](https://peterponyu.github.io/liora-ui/) |
+| Models | Model catalog with documentation | [LAIOR Models](https://peterponyu.github.io/liora-ui/models/) |
+
+## Development
+
+### Requirements
+
+- Node.js 20+
+- npm
+
+### Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/PeterPonyu/scportal-hub.git
-cd scportal-hub
-
-# Install dependencies
+git clone https://github.com/PeterPonyu/scportal.git
+cd scportal
 npm install
-
-# Start development server
 npm run dev
 ```
 
-Visit `http://localhost:3000` to view the application.
+The development server runs at `http://localhost:3000`.
 
-## 📦 Build
+### Build
 
 ```bash
-# Build for production
+# Production build
 npm run build
 
-# Generate static site
+# Static site generation
 npm run generate
 
-# Preview production build
+# Preview build
 npm run preview
 ```
 
-## 🛠️ Technology Stack
+## Deployment
 
-- **Framework**: [Nuxt 3](https://nuxt.com) - The Intuitive Vue Framework
-- **UI**: [Tailwind CSS](https://tailwindcss.com) - Utility-first CSS framework
-- **Icons**: Custom SVG icons
-- **Type Safety**: TypeScript
-- **Deployment**: Static site generation for GitHub Pages
+This project uses GitHub Actions for automatic deployment to GitHub Pages. The workflow is triggered on push to the `main` branch.
 
-## 📂 Project Structure
+Configuration: [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
+
+## Project Structure
 
 ```
-scportal-hub/
-├── app.vue              # Root component
-├── nuxt.config.ts       # Nuxt configuration
-├── tailwind.config.ts   # Tailwind CSS configuration
+scportal/
 ├── components/          # Vue components
-│   ├── AppHeader.vue    # Navigation header
-│   ├── AppFooter.vue    # Site footer
-│   ├── HeroSection.vue  # Landing page hero
-│   └── FeatureCard.vue  # Feature cards
-├── layouts/             # Page layouts
-│   └── default.vue      # Default layout
-├── pages/               # Route pages
-│   ├── index.vue        # Home page
+│   ├── AppHeader.vue
+│   ├── AppFooter.vue
+│   ├── HeroSection.vue
+│   └── FeatureCard.vue
+├── layouts/
+│   └── default.vue
+├── pages/
+│   ├── index.vue        # Home
 │   ├── datasets.vue     # Dataset browser
 │   ├── explorer.vue     # Continuity explorer
-│   ├── benchmarks.vue   # Benchmarking dashboard
+│   ├── benchmarks.vue   # Benchmarking results
 │   ├── models.vue       # Model catalog
-│   └── about.vue        # About page
-└── public/              # Static assets
-    └── favicon.svg      # Site favicon
+│   └── about.vue        # Project information
+├── public/
+│   └── favicon.svg
+├── nuxt.config.ts
+├── tailwind.config.ts
+└── package.json
 ```
 
-## 🔗 Related Projects
+## Technology
 
-- [iAODE](https://github.com/PeterPonyu/iAODE) - Interpretable Accessibility ODE VAE for scATAC-seq
-- [LAIOR](https://github.com/PeterPonyu/Liora) - Lorentz Attentive Interpretable ODE Regularized VAE
-- [liora-ui](https://github.com/PeterPonyu/liora-ui) - LAIOR Benchmarking Dashboard
+- Nuxt 3
+- Vue 3
+- Tailwind CSS
+- TypeScript
 
-## 📚 Data Resources
+## Related Repositories
 
-- [NCBI GEO Database](https://www.ncbi.nlm.nih.gov/geo/) - Gene Expression Omnibus
-- [10X Genomics](https://www.10xgenomics.com/) - Single-cell technology
+- [iAODE](https://github.com/PeterPonyu/iAODE) - Interpretable Accessibility ODE for single-cell analysis
+- [Liora](https://github.com/PeterPonyu/Liora) - LAIOR VAE implementation
+- [liora-ui](https://github.com/PeterPonyu/liora-ui) - LAIOR benchmarking dashboard
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License. See [LICENSE](LICENSE) for details.
 
-## 👨‍💻 Author
+## Author
 
-**Zeyu Fu**
-- Email: [fuzeyu99@126.com](mailto:fuzeyu99@126.com)
-- GitHub: [@PeterPonyu](https://github.com/PeterPonyu)
-
-## 🙏 Acknowledgments
-
-Built with ❤️ for the single-cell analysis community.
-
-- [scVI-tools](https://scvi-tools.org/) - Probabilistic analysis of single-cell omics data
-- [Scanpy](https://scanpy.readthedocs.io/) - Single-Cell Analysis in Python
-- [AnnData](https://anndata.readthedocs.io/) - Annotated Data
-
----
-
-<p align="center">
-  <a href="https://nuxt.com">
-    <img src="https://nuxt.com/assets/design-kit/logo-green-black.svg" alt="Powered by Nuxt" width="150">
-  </a>
-</p>
+Zeyu Fu  
+Email: fuzeyu99@126.com  
+GitHub: [PeterPonyu](https://github.com/PeterPonyu)
