@@ -101,7 +101,7 @@ const socialLinks = [
 const quickLinks = [
   { to: '/datasets', label: 'Browse Datasets' },
   { to: '/explorer', label: 'Continuity Explorer' },
-  { to: '/benchmarks', label: 'Benchmarking Results' },
+  { to: '/benchmarks', label: 'Evaluation Metrics' },
   { to: '/models', label: 'Model Catalog' },
   { to: '/about', label: 'About' }
 ]

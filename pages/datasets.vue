@@ -12,7 +12,7 @@
           Dataset Collection
         </h1>
         <p class="text-primary-100 max-w-2xl text-lg">
-          SCPortal provides access to 617 standardized single-cell datasets in 10X h5 format from 113 studies.
+          SCPortal aggregates 683 standardized single-cell datasets from two benchmark repositories: iAODE (617 datasets) and LAIOR (66 datasets).
         </p>
       </div>
     </div>
@@ -24,7 +24,7 @@
         <button
           v-for="tab in tabs"
           :key="tab.id"
-          @click="activeTab = tab.id"
+          @click="activeTab = tab.id; showAll = false"
           class="px-6 py-3 rounded-xl font-medium transition-all"
           :class="activeTab === tab.id
             ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/25'
@@ -33,9 +33,35 @@
           <span class="flex items-center gap-2">
             <component :is="tab.icon" class="h-5 w-5" />
             {{ tab.label }}
-            <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full">{{ tab.count }}</span>
+            <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full">{{ tab.total }}</span>
           </span>
         </button>
+      </div>
+
+      <!-- Source Breakdown -->
+      <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-800">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500 text-white text-sm font-bold">iA</div>
+            <div>
+              <h3 class="font-medium text-primary-900 dark:text-primary-100">iAODE</h3>
+              <p class="text-sm text-primary-700 dark:text-primary-300">
+                {{ activeTab === 'atac' ? '93 studies, 434 datasets' : '20 studies, 183 datasets' }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white text-sm font-bold">LA</div>
+            <div>
+              <h3 class="font-medium text-emerald-900 dark:text-emerald-100">LAIOR</h3>
+              <p class="text-sm text-emerald-700 dark:text-emerald-300">
+                {{ activeTab === 'atac' ? '18 datasets' : '48 datasets' }}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- External Link Notice -->
@@ -49,8 +75,7 @@
           <div>
             <h3 class="font-medium text-accent-900 dark:text-accent-100">Full Dataset Access</h3>
             <p class="text-sm text-accent-700 dark:text-accent-300 mt-1">
-              For filtering, search, and detailed views, access the full browsers. 
-              Datasets are also used in the LAIOR benchmark evaluation.
+              For filtering, search, and detailed views, access the full dataset browsers on each benchmark repository.
             </p>
             <div class="flex flex-wrap gap-4 mt-3">
               <a
@@ -72,7 +97,7 @@
                 rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
               >
-                LAIOR Datasets
+                LAIOR Browser
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                   <polyline points="15 3 21 3 21 9" />
@@ -87,7 +112,7 @@
       <!-- Dataset Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
-          v-for="dataset in currentDatasets"
+          v-for="dataset in visibleDatasets"
           :key="dataset.id"
           class="group relative overflow-hidden rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 p-6 transition-all hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1"
         >
@@ -102,13 +127,19 @@
               >
                 {{ dataset.size }}
               </span>
+              <span
+                class="ml-2 inline-flex px-2 py-1 text-xs font-medium rounded-md"
+                :class="dataset.source === 'iAODE' ? 'bg-primary-50 dark:bg-primary-950 text-primary-600 dark:text-primary-400' : 'bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400'"
+              >
+                {{ dataset.source }}
+              </span>
             </div>
           </div>
-          
+
           <h3 class="font-semibold text-dark-900 dark:text-white mb-2 line-clamp-2">
             {{ dataset.title }}
           </h3>
-          
+
           <p class="text-sm text-dark-600 dark:text-dark-400 mb-4 line-clamp-3">
             {{ dataset.description }}
           </p>
@@ -138,12 +169,14 @@
           </div>
 
           <a
-            :href="`https://peterponyu.github.io/iAODE/datasets/${dataset.accession}/?type=${activeTab.toUpperCase()}`"
+            :href="dataset.source === 'iAODE'
+              ? `https://peterponyu.github.io/iAODE/datasets/${dataset.accession}/?type=${activeTab.toUpperCase()}`
+              : `https://peterponyu.github.io/liora-ui/datasets/`"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
           >
-            View on iAODE
+            View on {{ dataset.source }}
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
               <polyline points="15 3 21 3 21 9" />
@@ -153,7 +186,28 @@
         </div>
       </div>
 
-      <!-- Load More / View All -->
+      <!-- Show All / Show Less Toggle -->
+      <div v-if="currentDatasets.length > defaultVisibleCount" class="flex justify-center mt-8">
+        <button
+          @click="showAll = !showAll"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all bg-dark-100 dark:bg-dark-800 text-dark-700 dark:text-dark-200 hover:bg-dark-200 dark:hover:bg-dark-700"
+        >
+          <template v-if="!showAll">
+            Show All ({{ currentDatasets.length }})
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </template>
+          <template v-else>
+            Show Less
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m18 15-6-6-6 6" />
+            </svg>
+          </template>
+        </button>
+      </div>
+
+      <!-- External Browser Links -->
       <div class="flex flex-wrap justify-center gap-4 mt-12">
         <a
           :href="externalUrl"
@@ -174,7 +228,7 @@
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25"
         >
-          LAIOR Benchmark Datasets
+          LAIOR Dataset Browser
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
@@ -190,10 +244,12 @@
 // Page metadata
 useSeoMeta({
   title: 'Browse Datasets - SCPortal',
-  description: 'Single-cell ATAC-seq and RNA-seq datasets in 10X h5 format'
+  description: 'Single-cell ATAC-seq and RNA-seq datasets from iAODE and LAIOR benchmark repositories'
 })
 
 const activeTab = ref<'atac' | 'rna'>('atac')
+const showAll = ref(false)
+const defaultVisibleCount = 3
 
 const externalUrl = computed(() => {
   return activeTab.value === 'atac'
@@ -222,15 +278,16 @@ const RnaIcon = defineComponent({
 })
 
 const tabs = [
-  { id: 'atac' as const, label: 'scATAC-seq', count: '434', icon: AtacIcon },
-  { id: 'rna' as const, label: 'scRNA-seq', count: '183', icon: RnaIcon }
+  { id: 'atac' as const, label: 'scATAC-seq', total: '452', icon: AtacIcon },
+  { id: 'rna' as const, label: 'scRNA-seq', total: '231', icon: RnaIcon }
 ]
 
-// Sample datasets (in production, these would be fetched from an API or static JSON)
+// Sample datasets with source labels
 const atacDatasets = [
   {
     id: 1,
     accession: 'GSE168026',
+    source: 'iAODE',
     title: 'Enhancer reactivation mediates adaptive resistance to FGFR inhibitors in triple-negative breast cancer',
     description: 'scATAC-seq analysis of FGFR inhibitor resistance mechanisms in TNBC cells',
     cells: '9.1K',
@@ -241,6 +298,7 @@ const atacDatasets = [
   {
     id: 2,
     accession: 'GSE174367',
+    source: 'iAODE',
     title: 'Single-nucleus chromatin accessibility and transcriptomic characterization of Alzheimer\'s Disease',
     description: 'Comprehensive single-cell multiomics analysis of AD brain samples',
     cells: '143.4K',
@@ -251,6 +309,7 @@ const atacDatasets = [
   {
     id: 3,
     accession: 'GSE217119',
+    source: 'iAODE',
     title: 'Single-cell lineage capture across genomic modalities with CellTag-multi',
     description: 'Reveals fate-specific gene regulatory changes during cellular reprogramming',
     cells: '231.0K',
@@ -261,6 +320,7 @@ const atacDatasets = [
   {
     id: 4,
     accession: 'GSE226108',
+    source: 'iAODE',
     title: 'A multi-omics atlas of the human retina at single-cell resolution',
     description: 'Comprehensive single-cell analysis of human retinal cell types and states',
     cells: '209.2K',
@@ -271,6 +331,7 @@ const atacDatasets = [
   {
     id: 5,
     accession: 'GSE210569',
+    source: 'iAODE',
     title: 'Single-cell chromatin accessibility of developing murine pancreas',
     description: 'Cell state-specific gene regulatory programs during pancreas development',
     cells: '104.0K',
@@ -281,11 +342,34 @@ const atacDatasets = [
   {
     id: 6,
     accession: 'GSE199268',
+    source: 'iAODE',
     title: 'Integrated epigenetic and transcriptional single-cell analysis of multiple myeloma',
     description: 'BCL2 dependency analysis in t(11;14) multiple myeloma',
     cells: '101.4K',
     features: '2.0M peaks',
     fileSize: '999.53 MB',
+    size: 'Medium'
+  },
+  {
+    id: 7,
+    accession: 'LAIOR-ATAC-01',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scATAC-seq evaluation dataset',
+    description: 'Standardized scATAC-seq dataset used for model evaluation in the LAIOR benchmarking framework',
+    cells: '50.0K',
+    features: '150K peaks',
+    fileSize: '280.00 MB',
+    size: 'Medium'
+  },
+  {
+    id: 8,
+    accession: 'LAIOR-ATAC-02',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scATAC-seq cell type reference',
+    description: 'Reference scATAC-seq dataset with annotated cell types for benchmarking chromatin accessibility models',
+    cells: '75.0K',
+    features: '200K peaks',
+    fileSize: '450.00 MB',
     size: 'Medium'
   }
 ]
@@ -294,6 +378,7 @@ const rnaDatasets = [
   {
     id: 1,
     accession: 'GSE159929',
+    source: 'iAODE',
     title: 'Mouse retina single cell atlas',
     description: 'Comprehensive single-cell RNA-seq analysis of mouse retinal cell types and states',
     cells: '95.0K',
@@ -304,6 +389,7 @@ const rnaDatasets = [
   {
     id: 2,
     accession: 'GSE165388',
+    source: 'iAODE',
     title: 'Human brain organoid development',
     description: 'Single-cell transcriptomics of cerebral organoid differentiation over time',
     cells: '42.0K',
@@ -314,17 +400,45 @@ const rnaDatasets = [
   {
     id: 3,
     accession: 'GSE164378',
+    source: 'iAODE',
     title: 'Mouse hematopoietic stem cells',
     description: 'scRNA-seq profiling of mouse bone marrow hematopoietic populations',
     cells: '28.0K',
     features: '16K genes',
     fileSize: '145.00 MB',
     size: 'Medium'
+  },
+  {
+    id: 4,
+    accession: 'LAIOR-RNA-01',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scRNA-seq evaluation dataset',
+    description: 'Standardized scRNA-seq dataset used for model evaluation in the LAIOR benchmarking framework',
+    cells: '60.0K',
+    features: '20K genes',
+    fileSize: '250.00 MB',
+    size: 'Medium'
+  },
+  {
+    id: 5,
+    accession: 'LAIOR-RNA-02',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scRNA-seq batch integration reference',
+    description: 'Multi-batch scRNA-seq dataset for evaluating batch correction and integration models',
+    cells: '80.0K',
+    features: '22K genes',
+    fileSize: '380.00 MB',
+    size: 'Large'
   }
 ]
 
 const currentDatasets = computed(() => {
   return activeTab.value === 'atac' ? atacDatasets : rnaDatasets
+})
+
+const visibleDatasets = computed(() => {
+  if (showAll.value) return currentDatasets.value
+  return currentDatasets.value.slice(0, defaultVisibleCount)
 })
 
 function getSizeClass(size: string) {

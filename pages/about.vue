@@ -26,10 +26,10 @@
           <div class="prose dark:prose-invert max-w-none">
             <p class="text-dark-600 dark:text-dark-400 mb-4">
               <strong>SCPortal</strong> serves as a unified entry point for accessing single-cell analysis resources.
-              It aggregates 617 datasets from 113 studies and benchmark results for 23 models across 24 metrics.
+              It aggregates 683 datasets from two benchmark repositories — iAODE (617 datasets) and LAIOR (66 datasets) — along with 24 evaluation metrics for 23 models.
             </p>
             <p class="text-dark-600 dark:text-dark-400 mb-4">
-              The portal links to two source projects: iAODE for dataset browsing and LAIOR for model benchmarking.
+              The portal links to two homogeneous benchmark dataset repositories: iAODE and LAIOR, both serving as standardized sources for single-cell model evaluation under different frameworks.
               All data remains hosted on the original project sites.
             </p>
           </div>
@@ -37,7 +37,7 @@
 
         <!-- Data Sources -->
         <section class="mb-16">
-          <h2 class="text-2xl font-bold text-dark-900 dark:text-white mb-6">Data Sources</h2>
+          <h2 class="text-2xl font-bold text-dark-900 dark:text-white mb-6">Benchmark Repositories</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="p-6 rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900">
               <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 mb-4">
@@ -48,7 +48,7 @@
               </div>
               <h3 class="text-lg font-semibold text-dark-900 dark:text-white mb-2">iAODE</h3>
               <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">
-                Dataset browser and continuity explorer:
+                Benchmark dataset repository with dataset browser and continuity explorer:
               </p>
               <ul class="text-sm text-dark-600 dark:text-dark-400 space-y-2">
                 <li class="flex items-center gap-2">
@@ -108,14 +108,14 @@
               </div>
               <h3 class="text-lg font-semibold text-dark-900 dark:text-white mb-2">LAIOR</h3>
               <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">
-                Benchmarking dashboard and model documentation:
+                Benchmark dataset repository with model evaluation dashboard:
               </p>
               <ul class="text-sm text-dark-600 dark:text-dark-400 space-y-2">
                 <li class="flex items-center gap-2">
                   <svg class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  23 models
+                  23 models across 6 categories
                 </li>
                 <li class="flex items-center gap-2">
                   <svg class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -127,7 +127,7 @@
                   <svg class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  66 benchmark datasets
+                  66 datasets (48 scRNA-seq, 18 scATAC-seq)
                 </li>
               </ul>
               <div class="flex flex-wrap gap-4 mt-4">

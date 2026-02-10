@@ -80,7 +80,7 @@
             </div>
             <h3 class="text-lg font-medium text-dark-900 dark:text-white mb-2">Launch Full Explorer</h3>
             <p class="text-sm text-dark-600 dark:text-dark-400 max-w-md mx-auto mb-4">
-              Open the interactive explorer or view related benchmark results.
+              Open the interactive explorer or view evaluation metrics.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
               <a

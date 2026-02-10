@@ -20,7 +20,8 @@
         </h1>
         
         <p class="text-lg md:text-xl text-dark-600 dark:text-dark-400 mb-8 max-w-2xl mx-auto">
-          Unified access to 617 single-cell datasets and benchmark results for 23 analysis models.
+          Unified access to single-cell datasets from iAODE and LAIOR benchmark repositories,
+          with 24 evaluation metrics across 23 analysis models.
         </p>
 
         <div class="flex flex-wrap justify-center gap-4">
@@ -69,10 +70,10 @@
 
 <script setup lang="ts">
 const stats = [
-  { value: '113', label: 'Studies' },
-  { value: '617', label: 'Datasets' },
+  { value: '683', label: 'Datasets' },
   { value: '23', label: 'Models' },
-  { value: '24', label: 'Metrics' }
+  { value: '24', label: 'Metrics' },
+  { value: '6', label: 'Categories' }
 ]
 </script>
 

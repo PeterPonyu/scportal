@@ -12,7 +12,7 @@
           Model Catalog
         </h1>
         <p class="text-purple-100 max-w-2xl text-lg">
-          SCPortal indexes 23 single-cell analysis models across 6 categories with documentation and benchmark results.
+          SCPortal indexes 23 single-cell analysis models across 6 categories with documentation and evaluation metrics.
         </p>
       </div>
     </div>
@@ -124,7 +124,7 @@
 // Page metadata
 useSeoMeta({
   title: 'Model Catalog - SCPortal',
-  description: 'Documentation of 23 single-cell analysis models from the LAIOR benchmark'
+  description: 'Documentation of 23 single-cell analysis models from the LAIOR benchmark with evaluation metrics'
 })
 
 const activeCategory = ref('all')

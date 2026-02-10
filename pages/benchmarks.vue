@@ -9,10 +9,10 @@
           <span class="text-white">Benchmarks</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-          Benchmarking Results
+          Evaluation Metrics
         </h1>
         <p class="text-emerald-100 max-w-2xl text-lg">
-          SCPortal aggregates benchmarking data for 23 single-cell analysis models evaluated across 24 metrics and 66 datasets.
+          SCPortal documents 24 evaluation metrics across 4 categories, used for benchmarking 23 single-cell analysis models on 66 datasets.
         </p>
       </div>
     </div>
@@ -41,7 +41,8 @@
             <h3 class="font-medium text-emerald-900 dark:text-emerald-100">Full LAIOR Dashboard</h3>
             <p class="text-sm text-emerald-700 dark:text-emerald-300 mt-1">
               For interactive charts, detailed comparisons, and full filtering capabilities,
-              visit the LAIOR Benchmarking Dashboard.
+              visit the LAIOR Dashboard. Note: this portal documents the evaluation metrics used;
+              full benchmark results are available on the LAIOR Dashboard.
             </p>
             <a
               href="https://peterponyu.github.io/liora-ui"
@@ -115,12 +116,12 @@
 
       <!-- Data Sources -->
       <div class="mb-12">
-        <h2 class="text-2xl font-bold text-dark-900 dark:text-white mb-6">Data Sources</h2>
+        <h2 class="text-2xl font-bold text-dark-900 dark:text-white mb-6">Benchmark Repositories</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="p-6 rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900">
-            <h3 class="font-semibold text-dark-900 dark:text-white mb-2">LAIOR Benchmark</h3>
+            <h3 class="font-semibold text-dark-900 dark:text-white mb-2">LAIOR</h3>
             <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">
-              Model evaluation results with 24 metrics across 66 datasets (48 RNA, 18 ATAC).
+              Benchmark dataset repository with 24 evaluation metrics across 66 datasets (48 scRNA-seq, 18 scATAC-seq) and 23 models.
             </p>
             <a
               href="https://peterponyu.github.io/liora-ui/"
@@ -137,9 +138,9 @@
             </a>
           </div>
           <div class="p-6 rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900">
-            <h3 class="font-semibold text-dark-900 dark:text-white mb-2">iAODE Dataset Collection</h3>
+            <h3 class="font-semibold text-dark-900 dark:text-white mb-2">iAODE</h3>
             <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">
-              Source datasets used in benchmarking from 113 studies (617 datasets total).
+              Benchmark dataset repository with 617 datasets from 113 studies (434 scATAC-seq, 183 scRNA-seq).
             </p>
             <a
               href="https://peterponyu.github.io/iAODE/"
@@ -194,8 +195,8 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Benchmarking Dashboard - SCPortal',
-  description: 'Benchmarking results comparing single-cell analysis models'
+  title: 'Evaluation Metrics - SCPortal',
+  description: 'Evaluation metrics for benchmarking single-cell analysis models'
 })
 
 const stats = [

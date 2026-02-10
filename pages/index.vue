@@ -11,7 +11,7 @@
             Available Resources
           </h2>
           <p class="text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-            SCPortal provides access to single-cell datasets and model benchmarking results 
+            SCPortal provides access to single-cell datasets and evaluation metrics
             through unified navigation.
           </p>
         </div>
@@ -20,13 +20,13 @@
           <!-- iAODE Dataset Browser -->
           <FeatureCard
             title="Dataset Collection"
-            description="Access 617 single-cell ATAC-seq and RNA-seq datasets from 113 studies. Standardized in 10X h5 format."
+            description="Access 683 single-cell ATAC-seq and RNA-seq datasets from iAODE (617) and LAIOR (66) benchmark repositories. Standardized in 10X h5 format."
             to="/datasets"
             link-text="Browse Datasets"
             variant="primary"
             :stats="[
-              { label: 'Studies', value: '113' },
-              { label: 'Datasets', value: '617' }
+              { label: 'iAODE', value: '617' },
+              { label: 'LAIOR', value: '66' }
             ]"
           >
             <template #icon>
@@ -60,10 +60,10 @@
 
           <!-- LAIOR Benchmarking -->
           <FeatureCard
-            title="Benchmark Results"
-            description="View evaluation results for 23 single-cell analysis models across 24 metrics and 66 datasets."
+            title="Evaluation Metrics"
+            description="24 evaluation metrics across 4 categories for benchmarking 23 single-cell analysis models on 66 datasets."
             to="/benchmarks"
-            link-text="View Results"
+            link-text="View Metrics"
             variant="emerald"
             :stats="[
               { label: 'Models', value: '23' },
@@ -82,7 +82,7 @@
           <!-- Model Catalog -->
           <FeatureCard
             title="Model Catalog"
-            description="Documentation for 23 models across 6 categories with architecture details and benchmark performance."
+            description="Documentation for 23 models across 6 categories with architecture details and evaluation metrics."
             to="/models"
             link-text="View Models"
             variant="purple"
@@ -170,19 +170,25 @@
                 <svg class="h-4 w-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
-                93 studies with 434 datasets
+                iAODE: 93 studies, 434 datasets
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-4 w-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                LAIOR: 18 datasets
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-4 w-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Total: 452 datasets
               </li>
               <li class="flex items-center gap-2">
                 <svg class="h-4 w-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 Peak accessibility analysis
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-4 w-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                TF-IDF normalization ready
               </li>
             </ul>
           </div>
@@ -206,19 +212,25 @@
                 <svg class="h-4 w-4 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
-                20 studies with 183 datasets
+                iAODE: 20 studies, 183 datasets
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-4 w-4 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                LAIOR: 48 datasets
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="h-4 w-4 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Total: 231 datasets
               </li>
               <li class="flex items-center gap-2">
                 <svg class="h-4 w-4 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 Gene expression profiling
-              </li>
-              <li class="flex items-center gap-2">
-                <svg class="h-4 w-4 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                Standardized 10X h5 format
               </li>
             </ul>
           </div>
@@ -233,7 +245,7 @@
           Start Exploring
         </h2>
         <p class="text-primary-100 max-w-2xl mx-auto mb-8">
-          Access single-cell datasets and benchmark results.
+          Access single-cell datasets and evaluation metrics.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <NuxtLink
@@ -267,6 +279,6 @@
 // Page metadata
 useSeoMeta({
   title: 'SCPortal - Single-Cell Data Portal',
-  description: 'Single-cell data portal aggregating iAODE dataset browser and LAIOR benchmarking resources'
+  description: 'Single-cell data portal aggregating iAODE dataset browser and LAIOR benchmarking evaluation metrics'
 })
 </script>
