@@ -1,5 +1,8 @@
 <template>
-  <div class="group relative overflow-hidden rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1">
+  <div
+    class="group relative overflow-hidden rounded-2xl border border-dark-200/80 dark:border-dark-800 bg-white/90 dark:bg-dark-900/90 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 cursor-pointer"
+    @click="handleClick"
+  >
     <!-- Icon -->
     <div
       class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
@@ -26,39 +29,30 @@
     <!-- Stats -->
     <div v-if="stats.length" class="flex flex-wrap gap-4 mb-4">
       <div v-for="stat in stats" :key="stat.label" class="text-center">
-        <div class="text-xl font-bold text-primary-600 dark:text-primary-400">{{ stat.value }}</div>
-        <div class="text-xs text-dark-500">{{ stat.label }}</div>
+        <div class="text-2xl font-semibold text-primary-600 dark:text-primary-400 tracking-tight">
+          {{ stat.value }}
+        </div>
+        <div class="text-[0.7rem] uppercase tracking-widest text-dark-500">
+          {{ stat.label }}
+        </div>
       </div>
     </div>
 
-    <!-- Link -->
-    <NuxtLink
-      v-if="to"
-      :to="to"
-      class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+    <!-- Link indicator -->
+    <span
+      class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 transition-colors"
     >
       {{ linkText }}
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg v-if="to" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M5 12h14" />
         <path d="m12 5 7 7-7 7" />
       </svg>
-    </NuxtLink>
-
-    <!-- External Link -->
-    <a
-      v-else-if="href"
-      :href="href"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-    >
-      {{ linkText }}
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg v-else-if="href" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
         <polyline points="15 3 21 3 21 9" />
         <line x1="10" x2="21" y1="14" y2="3" />
       </svg>
-    </a>
+    </span>
 
     <!-- Decorative gradient -->
     <div
@@ -89,6 +83,16 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'primary',
   stats: () => []
 })
+
+const router = useRouter()
+
+function handleClick() {
+  if (props.to) {
+    router.push(props.to)
+  } else if (props.href) {
+    window.open(props.href, '_blank', 'noopener,noreferrer')
+  }
+}
 
 const iconBgClass = computed(() => {
   const variants = {

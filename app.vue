@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-dark-950 text-dark-900 dark:text-dark-100 transition-colors duration-300">
+  <div class="min-h-screen bg-white dark:bg-dark-950 text-dark-900 dark:text-dark-100 transition-colors duration-300 font-sans">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

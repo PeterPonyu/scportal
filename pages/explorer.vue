@@ -62,56 +62,69 @@
         </div>
       </div>
 
-      <!-- Interactive Preview -->
-      <div class="rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 overflow-hidden mb-12">
-        <div class="p-6 border-b border-dark-200 dark:border-dark-800">
-          <h2 class="text-xl font-semibold text-dark-900 dark:text-white">Interactive Explorer Preview</h2>
-          <p class="text-sm text-dark-600 dark:text-dark-400 mt-1">
-            Pre-computed single-cell simulation data for fast exploration
-          </p>
-        </div>
-        
-        <div class="aspect-video bg-dark-50 dark:bg-dark-950 flex items-center justify-center">
-          <div class="text-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-500 to-primary-500 mx-auto mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="5 3 19 12 5 21 5 3" />
+      <!-- Launch Explorer -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <a
+          href="https://peterponyu.github.io/iAODE/explorer/explorer/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group p-6 rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10 hover:-translate-y-1 hover:border-accent-300 dark:hover:border-accent-700 block cursor-pointer"
+        >
+          <div class="flex items-center gap-4 mb-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-accent-500 to-primary-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3v18h18" />
+                <path d="m19 9-5 5-4-4-3 3" />
               </svg>
             </div>
-            <h3 class="text-lg font-medium text-dark-900 dark:text-white mb-2">Launch Full Explorer</h3>
-            <p class="text-sm text-dark-600 dark:text-dark-400 max-w-md mx-auto mb-4">
-              Open the interactive explorer or view evaluation metrics.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-              <a
-                href="https://peterponyu.github.io/iAODE/explorer/explorer/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-accent-600 to-primary-600 text-white font-medium hover:from-accent-700 hover:to-primary-700 transition-all"
-              >
-                iAODE Explorer
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" x2="21" y1="14" y2="3" />
-                </svg>
-              </a>
-              <a
-                href="https://peterponyu.github.io/liora-ui/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-700 hover:to-teal-700 transition-all"
-              >
-                LAIOR Dashboard
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" x2="21" y1="14" y2="3" />
-                </svg>
-              </a>
+            <div>
+              <h3 class="font-semibold text-dark-900 dark:text-white">iAODE Explorer</h3>
+              <p class="text-sm text-dark-500">Interactive trajectory visualization</p>
             </div>
           </div>
-        </div>
+          <p class="text-sm text-dark-600 dark:text-dark-400 mb-3">
+            Pre-computed single-cell simulation data for exploring embeddings and continuity metrics.
+          </p>
+          <span class="inline-flex items-center gap-2 text-sm font-medium text-accent-600 dark:text-accent-400">
+            Launch Explorer
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" x2="21" y1="14" y2="3" />
+            </svg>
+          </span>
+        </a>
+        <a
+          href="https://peterponyu.github.io/liora-ui/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group p-6 rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-700 block cursor-pointer"
+        >
+          <div class="flex items-center gap-4 mb-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" x2="18" y1="20" y2="10" />
+                <line x1="12" x2="12" y1="20" y2="4" />
+                <line x1="6" x2="6" y1="20" y2="14" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-dark-900 dark:text-white">LAIOR Dashboard</h3>
+              <p class="text-sm text-dark-500">Model evaluation metrics</p>
+            </div>
+          </div>
+          <p class="text-sm text-dark-600 dark:text-dark-400 mb-3">
+            Interactive dashboard with evaluation metrics for 23 models across 66 datasets.
+          </p>
+          <span class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            Open Dashboard
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" x2="21" y1="14" y2="3" />
+            </svg>
+          </span>
+        </a>
       </div>
 
       <!-- Trajectory Types -->

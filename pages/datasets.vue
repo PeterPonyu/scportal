@@ -111,10 +111,15 @@
 
       <!-- Dataset Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
+        <a
           v-for="dataset in visibleDatasets"
           :key="dataset.id"
-          class="group relative overflow-hidden rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 p-6 transition-all hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1"
+          :href="dataset.source === 'iAODE'
+            ? `https://peterponyu.github.io/iAODE/datasets/${dataset.accession}/?type=${activeTab.toUpperCase()}`
+            : `https://peterponyu.github.io/liora-ui/datasets/`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative overflow-hidden rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 p-6 transition-all hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 cursor-pointer block"
         >
           <div class="flex items-start justify-between mb-4">
             <div>
@@ -168,22 +173,17 @@
             </span>
           </div>
 
-          <a
-            :href="dataset.source === 'iAODE'
-              ? `https://peterponyu.github.io/iAODE/datasets/${dataset.accession}/?type=${activeTab.toUpperCase()}`
-              : `https://peterponyu.github.io/liora-ui/datasets/`"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+          <span
+            class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400"
           >
             View on {{ dataset.source }}
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
               <polyline points="15 3 21 3 21 9" />
               <line x1="10" x2="21" y1="14" y2="3" />
             </svg>
-          </a>
-        </div>
+          </span>
+        </a>
       </div>
 
       <!-- Show All / Show Less Toggle -->
@@ -371,6 +371,28 @@ const atacDatasets = [
     features: '200K peaks',
     fileSize: '450.00 MB',
     size: 'Medium'
+  },
+  {
+    id: 9,
+    accession: 'LAIOR-ATAC-03',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scATAC-seq multi-tissue atlas',
+    description: 'Multi-tissue scATAC-seq atlas for cross-tissue chromatin accessibility benchmarking',
+    cells: '120.0K',
+    features: '300K peaks',
+    fileSize: '680.00 MB',
+    size: 'Large'
+  },
+  {
+    id: 10,
+    accession: 'LAIOR-ATAC-04',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scATAC-seq developmental trajectory',
+    description: 'Developmental trajectory scATAC-seq dataset for trajectory inference model evaluation',
+    cells: '40.0K',
+    features: '180K peaks',
+    fileSize: '220.00 MB',
+    size: 'Medium'
   }
 ]
 
@@ -428,6 +450,28 @@ const rnaDatasets = [
     cells: '80.0K',
     features: '22K genes',
     fileSize: '380.00 MB',
+    size: 'Large'
+  },
+  {
+    id: 6,
+    accession: 'LAIOR-RNA-03',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scRNA-seq cell type annotation',
+    description: 'Reference scRNA-seq dataset with expert-annotated cell types for cell type classification benchmarking',
+    cells: '55.0K',
+    features: '19K genes',
+    fileSize: '230.00 MB',
+    size: 'Medium'
+  },
+  {
+    id: 7,
+    accession: 'LAIOR-RNA-04',
+    source: 'LAIOR',
+    title: 'LAIOR benchmark scRNA-seq multi-tissue atlas',
+    description: 'Multi-tissue scRNA-seq atlas for cross-tissue gene expression benchmarking',
+    cells: '110.0K',
+    features: '21K genes',
+    fileSize: '520.00 MB',
     size: 'Large'
   }
 ]

@@ -30,7 +30,12 @@
       </div>
 
       <!-- External Link Notice -->
-      <div class="mb-8 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
+      <a
+        href="https://peterponyu.github.io/liora-ui"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group mb-8 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 block cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 hover:border-emerald-300 dark:hover:border-emerald-600"
+      >
         <div class="flex items-start gap-3">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10" />
@@ -44,22 +49,17 @@
               visit the LAIOR Dashboard. Note: this portal documents the evaluation metrics used;
               full benchmark results are available on the LAIOR Dashboard.
             </p>
-            <a
-              href="https://peterponyu.github.io/liora-ui"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 mt-3 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
-            >
+            <span class="inline-flex items-center gap-2 mt-3 text-sm font-medium text-emerald-600 dark:text-emerald-400">
               Open Full Dashboard
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" x2="21" y1="14" y2="3" />
               </svg>
-            </a>
+            </span>
           </div>
         </div>
-      </div>
+      </a>
 
       <!-- Metric Categories -->
       <div class="mb-12" id="metrics">

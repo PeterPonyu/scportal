@@ -4,15 +4,14 @@
     <HeroSection />
 
     <!-- Features Section -->
-    <section class="py-20 bg-dark-50 dark:bg-dark-900/50">
+    <section class="py-20 bg-dark-50/70 dark:bg-dark-900/50">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-bold text-dark-900 dark:text-white mb-4">
-            Available Resources
+          <h2 class="text-3xl md:text-4xl font-semibold text-dark-900 dark:text-white mb-4">
+            Launch Points
           </h2>
           <p class="text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-            SCPortal provides access to single-cell datasets and evaluation metrics
-            through unified navigation.
+            Jump directly into datasets, continuity exploration, and LAIOR benchmarking from one dashboard.
           </p>
         </div>
 
@@ -149,7 +148,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <!-- scATAC-seq -->
-          <div class="relative p-8 rounded-2xl border border-dark-200 dark:border-dark-800 bg-gradient-to-br from-primary-50 to-white dark:from-primary-950/30 dark:to-dark-900">
+          <NuxtLink to="/datasets" class="relative p-8 rounded-2xl border border-dark-200 dark:border-dark-800 bg-gradient-to-br from-primary-50 to-white dark:from-primary-950/30 dark:to-dark-900 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 hover:border-primary-300 dark:hover:border-primary-700 block">
             <div class="flex items-center gap-4 mb-4">
               <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-primary-500 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -191,10 +190,10 @@
                 Peak accessibility analysis
               </li>
             </ul>
-          </div>
+          </NuxtLink>
 
           <!-- scRNA-seq -->
-          <div class="relative p-8 rounded-2xl border border-dark-200 dark:border-dark-800 bg-gradient-to-br from-accent-50 to-white dark:from-accent-950/30 dark:to-dark-900">
+          <NuxtLink to="/datasets" class="relative p-8 rounded-2xl border border-dark-200 dark:border-dark-800 bg-gradient-to-br from-accent-50 to-white dark:from-accent-950/30 dark:to-dark-900 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10 hover:-translate-y-1 hover:border-accent-300 dark:hover:border-accent-700 block">
             <div class="flex items-center gap-4 mb-4">
               <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-accent-500 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -233,7 +232,7 @@
                 Gene expression profiling
               </li>
             </ul>
-          </div>
+          </NuxtLink>
         </div>
       </div>
     </section>

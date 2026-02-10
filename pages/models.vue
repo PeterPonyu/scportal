@@ -36,10 +36,13 @@
 
       <!-- Model Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div
+        <a
           v-for="model in filteredModels"
           :key="model.name"
-          class="group relative overflow-hidden rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 transition-all hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1"
+          :href="`https://peterponyu.github.io/liora-ui/models/${model.slug}/`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative overflow-hidden rounded-2xl border border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900 transition-all hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1 block cursor-pointer"
         >
           <div class="p-6">
             <div class="flex items-start justify-between mb-4">
@@ -70,21 +73,16 @@
               </span>
             </div>
 
-            <a
-              :href="`https://peterponyu.github.io/liora-ui/models/${model.slug}/`"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
-            >
+            <span class="inline-flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400">
               View Details
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" x2="21" y1="14" y2="3" />
               </svg>
-            </a>
+            </span>
           </div>
-        </div>
+        </a>
       </div>
 
       <!-- CTA -->
