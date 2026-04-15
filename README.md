@@ -1,3 +1,9 @@
+<div align="center">
+  <a href="https://peterponyu.github.io/">
+    <img src="https://peterponyu.github.io/assets/badges/scportal.svg" width="64" alt="ZF Lab · scportal">
+  </a>
+</div>
+
 # SCPortal
 
 A web portal aggregating single-cell analysis resources from iAODE and LAIOR projects.
