@@ -5,13 +5,15 @@
         <!-- Brand -->
         <div class="md:col-span-2">
           <div class="flex items-center gap-3 mb-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-accent-500">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3" />
-                <circle cx="12" cy="12" r="8" opacity="0.5" />
-                <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-              </svg>
-            </div>
+            <svg class="h-10 w-10 flex-shrink-0" viewBox="0 0 128 128">
+              <circle cx="64" cy="64" r="62" fill="#1e3a8a"/>
+              <circle cx="64" cy="64" r="60" fill="none" stroke="#3451b2" stroke-width="2.5"/>
+              <path d="M18 46 C38 46,50 22,64 22 C78 22,92 46,110 46" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M18 22 C38 22,50 46,64 46 C78 46,92 22,110 22" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3.5" stroke-linecap="round"/>
+              <circle cx="18" cy="46" r="3" fill="#818cf8"/><circle cx="110" cy="46" r="3" fill="#818cf8"/>
+              <circle cx="18" cy="22" r="3" fill="#818cf8"/><circle cx="110" cy="22" r="3" fill="#818cf8"/>
+              <text x="64" y="82" font-family="JetBrains Mono,monospace" font-size="44" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">SP</text>
+            </svg>
             <span class="text-lg font-bold text-dark-900 dark:text-white">SCPortal Hub</span>
           </div>
           <p class="text-sm text-dark-600 dark:text-dark-400 max-w-md mb-4">
