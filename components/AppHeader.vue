@@ -34,6 +34,16 @@
           >
             {{ item.label }}
           </NuxtLink>
+          <a
+            v-for="item in externalNavItems"
+            :key="item.href"
+            :href="item.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
+          >
+            {{ item.label }}
+          </a>
         </nav>
 
         <!-- Actions -->
@@ -106,6 +116,16 @@
             >
               {{ item.label }}
             </NuxtLink>
+            <a
+              v-for="item in externalNavItems"
+              :key="item.href"
+              :href="item.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-4 py-3 rounded-lg text-sm font-medium text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
+            >
+              {{ item.label }}
+            </a>
           </nav>
         </div>
       </Transition>
@@ -124,6 +144,12 @@ const navItems = [
   { to: '/benchmarks', label: 'Benchmarks' },
   { to: '/models', label: 'Models' },
   { to: '/about', label: 'About' }
+]
+
+const externalNavItems = [
+  { href: 'https://peterponyu.github.io/', label: 'Homepage' },
+  { href: 'https://peterponyu.github.io/liora-ui/', label: 'LAIOR Benchmarks' },
+  { href: 'https://peterponyu.github.io/mrnapp-intersection/', label: 'Utilities' }
 ]
 
 function toggleColorMode() {
