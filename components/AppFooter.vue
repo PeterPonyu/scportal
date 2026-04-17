@@ -17,8 +17,7 @@
             <span class="text-lg font-bold text-dark-900 dark:text-white">SCPortal Hub</span>
           </div>
           <p class="text-sm text-dark-600 dark:text-dark-400 max-w-md mb-4">
-            A unified platform combining iAODE Dataset Browser and LAIOR Benchmarking Dashboard
-            for comprehensive single-cell analysis exploration.
+            The public discovery hub for PeterPonyu's single-cell data, benchmark, and analysis surfaces.
           </p>
           <div class="flex gap-4">
             <a
@@ -101,6 +100,7 @@ const socialLinks = [
 ]
 
 const quickLinks = [
+  { to: '/', label: 'Portal Home' },
   { to: '/datasets', label: 'Browse Datasets' },
   { to: '/explorer', label: 'Continuity Explorer' },
   { to: '/benchmarks', label: 'Evaluation Metrics' },
@@ -109,9 +109,11 @@ const quickLinks = [
 ]
 
 const resources = [
+  { label: 'Homepage', href: 'https://peterponyu.github.io/' },
+  { label: 'LAIOR Benchmarks', href: 'https://peterponyu.github.io/liora-ui/' },
+  { label: 'mRNA Intersection', href: 'https://peterponyu.github.io/mrnapp-intersection/' },
   { label: 'iAODE GitHub', href: 'https://github.com/PeterPonyu/iAODE' },
   { label: 'LAIOR GitHub', href: 'https://github.com/PeterPonyu/Liora' },
-  { label: 'NCBI GEO', href: 'https://www.ncbi.nlm.nih.gov/geo/' },
-  { label: '10X Genomics', href: 'https://www.10xgenomics.com/' }
+  { label: 'Profile', href: 'https://github.com/PeterPonyu' }
 ]
 </script>
