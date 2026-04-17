@@ -167,7 +167,7 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Continuity Explorer - SCPortal',
+  title: 'Continuity Explorer',
   description: 'Exploration of trajectory structures and continuity metrics across embedding methods'
 })
 
