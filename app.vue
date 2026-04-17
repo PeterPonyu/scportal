@@ -7,6 +7,46 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl.replace(/\/+$/, '')
+const basePath = runtimeConfig.app.baseURL === '/'
+  ? ''
+  : runtimeConfig.app.baseURL.replace(/\/+$/, '')
+
+const buildCanonicalUrl = (routePath: string) => {
+  const normalizedPath = routePath === '/' ? '/' : `${routePath.replace(/\/+$/, '')}/`
+  return `${siteUrl}${basePath}${normalizedPath}`
+}
+
+useHead(() => {
+  const canonical = buildCanonicalUrl(route.path)
+  return {
+    titleTemplate: (title?: string) => {
+      if (!title) {
+        return 'SCPortal | Single-Cell Discovery Hub'
+      }
+
+      const normalizedTitle = title
+        .trim()
+        .replace(/\s*[-|]\s*SCPortal\s*$/i, '')
+
+      return normalizedTitle
+        ? `${normalizedTitle} | SCPortal`
+        : 'SCPortal | Single-Cell Discovery Hub'
+    },
+    link: [
+      { rel: 'canonical', href: canonical }
+    ],
+    meta: [
+      { property: 'og:site_name', content: 'SCPortal' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: canonical },
+      { name: 'twitter:card', content: 'summary_large_image' }
+    ]
+  }
+})
+
 // Handle GitHub Pages SPA redirect
 if (import.meta.client) {
   const url = new URL(window.location.href)

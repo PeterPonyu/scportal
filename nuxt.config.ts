@@ -1,3 +1,5 @@
+import { defineNuxtConfig } from 'nuxt/config'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-30',
@@ -15,15 +17,20 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/scportal/',
     head: {
-      title: 'SCPortal - Single-Cell Data Portal',
+      title: 'SCPortal | Single-Cell Discovery Hub',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { 
           name: 'description', 
-          content: 'Single-cell data portal aggregating resources from iAODE and LAIOR' 
+          content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.'
         },
-        { name: 'theme-color', content: '#059669' }
+        { name: 'theme-color', content: '#059669' },
+        { name: 'robots', content: 'index,follow' },
+        { property: 'og:title', content: 'SCPortal | Single-Cell Discovery Hub' },
+        { property: 'og:description', content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.' },
+        { name: 'twitter:title', content: 'SCPortal | Single-Cell Discovery Hub' },
+        { name: 'twitter:description', content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.' }
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -49,7 +56,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       iaodeBaseUrl: 'https://peterponyu.github.io/iAODE',
-      lioraBaseUrl: 'https://peterponyu.github.io/liora-ui'
+      lioraBaseUrl: 'https://peterponyu.github.io/liora-ui',
+      siteUrl: 'https://peterponyu.github.io/scportal/'
     }
   },
 

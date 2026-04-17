@@ -213,7 +213,7 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'About - SCPortal',
+  title: 'About',
   description: 'About SCPortal - a portal for single-cell analysis resources'
 })
 

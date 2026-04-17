@@ -121,7 +121,7 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Model Catalog - SCPortal',
+  title: 'Model Catalog',
   description: 'Documentation of 23 single-cell analysis models from the LAIOR benchmark with evaluation metrics'
 })
 

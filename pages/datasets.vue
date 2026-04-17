@@ -243,7 +243,7 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Browse Datasets - SCPortal',
+  title: 'Browse Datasets',
   description: 'Single-cell ATAC-seq and RNA-seq datasets from iAODE and LAIOR benchmark repositories'
 })
 

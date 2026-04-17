@@ -195,7 +195,7 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Evaluation Metrics - SCPortal',
+  title: 'Evaluation Metrics',
   description: 'Evaluation metrics for benchmarking single-cell analysis models'
 })
 

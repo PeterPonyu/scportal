@@ -277,7 +277,7 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'SCPortal - Single-Cell Data Portal',
+  title: 'Single-Cell Discovery Hub',
   description: 'Single-cell data portal aggregating iAODE dataset browser and LAIOR benchmarking evaluation metrics'
 })
 </script>
