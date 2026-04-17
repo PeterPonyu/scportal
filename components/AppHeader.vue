@@ -149,7 +149,7 @@ const navItems = [
 const externalNavItems = [
   { href: 'https://peterponyu.github.io/', label: 'Homepage' },
   { href: 'https://peterponyu.github.io/liora-ui/', label: 'LAIOR Benchmarks' },
-  { href: 'https://peterponyu.github.io/mrnapp-intersection/', label: 'Utilities' }
+  { href: 'https://peterponyu.github.io/mrnapp-intersection/', label: 'mRNA Intersection' }
 ]
 
 function toggleColorMode() {

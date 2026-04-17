@@ -29,15 +29,12 @@ export default defineNuxtConfig({
         { name: 'robots', content: 'index,follow' },
         { property: 'og:title', content: 'SCPortal | Single-Cell Discovery Hub' },
         { property: 'og:description', content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.' },
-        { property: 'og:image', content: 'https://peterponyu.github.io/assets/badges/scportal.svg' },
         { name: 'twitter:title', content: 'SCPortal | Single-Cell Discovery Hub' },
-        { name: 'twitter:description', content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.' },
-        { name: 'twitter:image', content: 'https://peterponyu.github.io/assets/badges/scportal.svg' }
+        { name: 'twitter:description', content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.' }
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'canonical', href: 'https://peterponyu.github.io/scportal/' },
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap'
@@ -60,7 +57,7 @@ export default defineNuxtConfig({
     public: {
       iaodeBaseUrl: 'https://peterponyu.github.io/iAODE',
       lioraBaseUrl: 'https://peterponyu.github.io/liora-ui',
-      siteUrl: 'https://peterponyu.github.io/scportal'
+      siteUrl: 'https://peterponyu.github.io/scportal/'
     }
   },
 
@@ -85,4 +82,4 @@ export default defineNuxtConfig({
   experimental: {
     payloadExtraction: false
   }
-} as any)
+})

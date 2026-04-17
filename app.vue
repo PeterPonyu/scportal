@@ -8,15 +8,33 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const siteUrl = 'https://peterponyu.github.io'
-const basePath = '/scportal'
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl.replace(/\/+$/, '')
+const basePath = runtimeConfig.app.baseURL === '/'
+  ? ''
+  : runtimeConfig.app.baseURL.replace(/\/+$/, '')
+
+const buildCanonicalUrl = (routePath: string) => {
+  const normalizedPath = routePath === '/' ? '/' : `${routePath.replace(/\/+$/, '')}/`
+  return `${siteUrl}${basePath}${normalizedPath}`
+}
 
 useHead(() => {
-  const routePath = route.path === '/' ? '' : route.path
-  const canonical = `${siteUrl}${basePath}${routePath}`
+  const canonical = buildCanonicalUrl(route.path)
   return {
-    titleTemplate: (title?: string) =>
-      title ? `${title} | SCPortal` : 'SCPortal | Single-Cell Discovery Hub',
+    titleTemplate: (title?: string) => {
+      if (!title) {
+        return 'SCPortal | Single-Cell Discovery Hub'
+      }
+
+      const normalizedTitle = title
+        .trim()
+        .replace(/\s*[-|]\s*SCPortal\s*$/i, '')
+
+      return normalizedTitle
+        ? `${normalizedTitle} | SCPortal`
+        : 'SCPortal | Single-Cell Discovery Hub'
+    },
     link: [
       { rel: 'canonical', href: canonical }
     ],
