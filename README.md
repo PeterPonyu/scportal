@@ -6,7 +6,7 @@
 
 # SCPortal
 
-A web portal aggregating single-cell analysis resources from iAODE and LAIOR projects.
+A web portal that links public single-cell analysis resources from the iAODE and LAIOR projects.
 
 ## Overview
 
@@ -20,18 +20,17 @@ SCPortal provides a unified interface to access:
 ### iAODE
 
 The iAODE project hosts:
-- 93 scATAC-seq studies (434 datasets)
-- 20 scRNA-seq studies (183 datasets)
-- Continuity Explorer for trajectory visualization
+- public scATAC-seq and scRNA-seq dataset resources
+- a continuity explorer for trajectory visualization
 
 Source: [https://github.com/PeterPonyu/iAODE](https://github.com/PeterPonyu/iAODE)
 
 ### LAIOR
 
 The LAIOR benchmarking platform provides:
-- Evaluation of 23 single-cell VAE models across 6 categories
-- 66 benchmark datasets (48 scRNA-seq, 18 scATAC-seq)
-- 24 standardized evaluation metrics
+- comparative evaluation views for multiple single-cell VAE model families
+- benchmark datasets covering scRNA-seq and scATAC-seq studies
+- standardized evaluation summaries
 
 Model categories include:
 - Predictive models (encoder-only)
