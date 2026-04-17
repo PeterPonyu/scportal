@@ -7,6 +7,28 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
+const siteUrl = 'https://peterponyu.github.io'
+const basePath = '/scportal'
+
+useHead(() => {
+  const routePath = route.path === '/' ? '' : route.path
+  const canonical = `${siteUrl}${basePath}${routePath}`
+  return {
+    titleTemplate: (title?: string) =>
+      title ? `${title} | SCPortal` : 'SCPortal | Single-Cell Discovery Hub',
+    link: [
+      { rel: 'canonical', href: canonical }
+    ],
+    meta: [
+      { property: 'og:site_name', content: 'SCPortal' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: canonical },
+      { name: 'twitter:card', content: 'summary_large_image' }
+    ]
+  }
+})
+
 // Handle GitHub Pages SPA redirect
 if (import.meta.client) {
   const url = new URL(window.location.href)
