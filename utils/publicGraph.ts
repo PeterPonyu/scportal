@@ -77,12 +77,16 @@ const resolveSite = (id: string): PublicGraphSite => {
 }
 
 export const homepageLink = resolveSite(HOMEPAGE_ID)
+export const scportalLink = resolveSite('scportal')
 
 const resolvePublicDestinationSite = (id: string): PublicGraphSite => {
   const site = resolveSite(id)
   ensure(site.boundary === 'public', `Route destination ${id} must remain a public-boundary site.`)
   return site
 }
+
+export const lioraBenchmarkLink = resolvePublicDestinationSite('liora_benchmarks')
+export const lioraBenchmarksLink = lioraBenchmarkLink
 
 const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
   datasets: [
