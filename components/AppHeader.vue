@@ -134,6 +134,8 @@
 </template>
 
 <script setup lang="ts">
+import { homepageLink, shellScportalSites } from '~/utils/publicGraph'
+
 const colorMode = useColorMode()
 const mobileMenuOpen = ref(false)
 
@@ -147,9 +149,11 @@ const navItems = [
 ]
 
 const externalNavItems = [
-  { href: 'https://peterponyu.github.io/', label: 'Homepage' },
-  { href: 'https://peterponyu.github.io/liora-ui/', label: 'LAIOR Benchmarks' },
-  { href: 'https://peterponyu.github.io/mrnapp-intersection/', label: 'mRNA Intersection' }
+  { href: homepageLink.canonical_url, label: homepageLink.name },
+  ...shellScportalSites.map((site) => ({
+    href: site.canonical_url,
+    label: site.name,
+  })),
 ]
 
 function toggleColorMode() {

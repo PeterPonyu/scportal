@@ -86,6 +86,8 @@
 </template>
 
 <script setup lang="ts">
+import { homepageLink, shellScportalSites } from '~/utils/publicGraph'
+
 // GitHub Icon Component
 const GitHubIcon = defineComponent({
   render() {
@@ -109,9 +111,11 @@ const quickLinks = [
 ]
 
 const resources = [
-  { label: 'Homepage', href: 'https://peterponyu.github.io/' },
-  { label: 'LAIOR Benchmarks', href: 'https://peterponyu.github.io/liora-ui/' },
-  { label: 'mRNA Intersection', href: 'https://peterponyu.github.io/mrnapp-intersection/' },
+  { label: homepageLink.name, href: homepageLink.canonical_url },
+  ...shellScportalSites.map((site) => ({
+    label: site.name,
+    href: site.canonical_url,
+  })),
   { label: 'iAODE GitHub', href: 'https://github.com/PeterPonyu/iAODE' },
   { label: 'LAIOR GitHub', href: 'https://github.com/PeterPonyu/Liora' },
   { label: 'Profile', href: 'https://github.com/PeterPonyu' }

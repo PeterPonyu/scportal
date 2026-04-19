@@ -159,6 +159,12 @@
         </div>
       </div>
 
+      <RelatedDestinations
+        title="Related Destinations"
+        intro="Move from metric documentation into the public benchmark and dataset destinations that supply the surrounding context."
+        :destinations="routeDestinations"
+      />
+
       <!-- CTA -->
       <div class="flex flex-wrap justify-center gap-4">
         <a
@@ -193,11 +199,15 @@
 </template>
 
 <script setup lang="ts">
+import { getRouteDestinations } from '~/utils/publicGraph'
+
 // Page metadata
 useSeoMeta({
   title: 'Evaluation Metrics',
   description: 'Evaluation metrics for benchmarking single-cell analysis models'
 })
+
+const routeDestinations = getRouteDestinations('benchmarks')
 
 const stats = [
   { value: '23', label: 'Models' },

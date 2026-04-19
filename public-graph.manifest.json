@@ -1,0 +1,132 @@
+{
+  "version": "1.0",
+  "graph": {
+    "identity_root": "homepage",
+    "discovery_hub": "scportal",
+    "homepage_mode": "curated",
+    "default_sitemap_policy": "indexable_only",
+    "naming_contract": {
+      "homepage": "Homepage",
+      "scportal": "SCPortal",
+      "liora_benchmarks": "LAIOR Benchmarks",
+      "mrna_intersection": "mRNA Intersection",
+      "iaode_pages": "iAODE Pages",
+      "iaode_workspace": "iAODE Workspace",
+      "mccvae": "MCCVAE"
+    }
+  },
+  "sites": [
+    {
+      "id": "homepage",
+      "name": "Homepage",
+      "canonical_url": "https://peterponyu.github.io/",
+      "role": "identity_root",
+      "boundary": "public",
+      "indexing": { "mode": "index_follow" },
+      "visibility": {
+        "homepage": "hidden",
+        "homepage_order": null,
+        "scportal": "listed",
+        "sitemap": true
+      },
+      "related_sites": ["scportal", "mrna_intersection", "liora_benchmarks", "iaode_pages"],
+      "repo": "PeterPonyu/PeterPonyu.github.io"
+    },
+    {
+      "id": "scportal",
+      "name": "SCPortal",
+      "canonical_url": "https://peterponyu.github.io/scportal/",
+      "role": "discovery_hub",
+      "boundary": "public",
+      "indexing": { "mode": "index_follow" },
+      "visibility": {
+        "homepage": "primary",
+        "homepage_order": 1,
+        "scportal": "hidden",
+        "sitemap": true
+      },
+      "related_sites": ["homepage", "liora_benchmarks", "mrna_intersection", "iaode_pages"],
+      "repo": "PeterPonyu/scportal"
+    },
+    {
+      "id": "liora_benchmarks",
+      "name": "LAIOR Benchmarks",
+      "canonical_url": "https://peterponyu.github.io/liora-ui/",
+      "role": "microsite",
+      "boundary": "public",
+      "indexing": { "mode": "index_follow" },
+      "visibility": {
+        "homepage": "secondary",
+        "homepage_order": 1,
+        "scportal": "featured",
+        "sitemap": true
+      },
+      "related_sites": ["homepage", "scportal"],
+      "repo": "PeterPonyu/liora-ui"
+    },
+    {
+      "id": "mrna_intersection",
+      "name": "mRNA Intersection",
+      "canonical_url": "https://peterponyu.github.io/mrnapp-intersection/",
+      "role": "utility",
+      "boundary": "public",
+      "indexing": { "mode": "index_follow" },
+      "visibility": {
+        "homepage": "primary",
+        "homepage_order": 2,
+        "scportal": "featured",
+        "sitemap": true
+      },
+      "related_sites": ["homepage", "scportal"],
+      "repo": "PeterPonyu/mrnapp-intersection"
+    },
+    {
+      "id": "iaode_pages",
+      "name": "iAODE Pages",
+      "canonical_url": "https://peterponyu.github.io/iAODE/",
+      "role": "public_surface",
+      "boundary": "public",
+      "indexing": { "mode": "index_follow" },
+      "visibility": {
+        "homepage": "secondary",
+        "homepage_order": 2,
+        "scportal": "listed",
+        "sitemap": true
+      },
+      "related_sites": ["homepage", "scportal", "iaode_workspace"],
+      "repo": "PeterPonyu/iAODE"
+    },
+    {
+      "id": "iaode_workspace",
+      "name": "iAODE Workspace",
+      "canonical_url": "https://peterponyu.github.io/iAODE/frontend/",
+      "role": "local_first_workspace",
+      "boundary": "local_first",
+      "indexing": { "mode": "noindex_nofollow" },
+      "visibility": {
+        "homepage": "hidden",
+        "homepage_order": null,
+        "scportal": "hidden",
+        "sitemap": false
+      },
+      "related_sites": ["homepage", "scportal", "iaode_pages"],
+      "repo": "PeterPonyu/iAODE"
+    },
+    {
+      "id": "mccvae",
+      "name": "MCCVAE",
+      "canonical_url": "https://peterponyu.github.io/MCCVAE/",
+      "role": "landing_only",
+      "boundary": "landing_only",
+      "indexing": { "mode": "noindex_follow" },
+      "visibility": {
+        "homepage": "hidden",
+        "homepage_order": null,
+        "scportal": "hidden",
+        "sitemap": false
+      },
+      "related_sites": ["homepage", "scportal"],
+      "repo": "PeterPonyu/MCCVAE"
+    }
+  ]
+}

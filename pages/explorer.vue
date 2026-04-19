@@ -160,16 +160,26 @@
           without requiring server-side computation.
         </p>
       </div>
+
+      <RelatedDestinations
+        title="Related Destinations"
+        intro="After continuity exploration, use the canonical public destinations for datasets, benchmark context, and broader project entrypoints."
+        :destinations="routeDestinations"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { getRouteDestinations } from '~/utils/publicGraph'
+
 // Page metadata
 useSeoMeta({
   title: 'Continuity Explorer',
   description: 'Exploration of trajectory structures and continuity metrics across embedding methods'
 })
+
+const routeDestinations = getRouteDestinations('explorer')
 
 // Trajectory icon components
 const LinearIcon = defineComponent({

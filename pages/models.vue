@@ -85,6 +85,12 @@
         </a>
       </div>
 
+      <RelatedDestinations
+        title="Related Destinations"
+        intro="Jump from the SCPortal catalog into the canonical public destinations for benchmark detail and dataset context."
+        :destinations="routeDestinations"
+      />
+
       <!-- CTA -->
       <div class="flex flex-wrap justify-center gap-4">
         <a
@@ -119,11 +125,15 @@
 </template>
 
 <script setup lang="ts">
+import { getRouteDestinations } from '~/utils/publicGraph'
+
 // Page metadata
 useSeoMeta({
   title: 'Model Catalog',
   description: 'Documentation of 23 single-cell analysis models from the LAIOR benchmark with evaluation metrics'
 })
+
+const routeDestinations = getRouteDestinations('models')
 
 const activeCategory = ref('all')
 
