@@ -3,6 +3,12 @@
     <!-- Hero Section -->
     <HeroSection />
 
+    <!-- Connected Journey Section -->
+    <FlagshipJourney />
+
+    <!-- Task Route Navigation -->
+    <TaskRouteNavigator />
+
     <!-- Features Section -->
     <section class="py-20 bg-dark-50/70 dark:bg-dark-900/50">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,7 +17,7 @@
             Launch Points
           </h2>
           <p class="text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-            Jump directly into datasets, continuity exploration, and LAIOR benchmarking from one dashboard.
+            Use SCPortal for route selection and context; jump into focused public surfaces when a task needs full interaction depth.
           </p>
         </div>
 
@@ -278,6 +284,6 @@
 // Page metadata
 useSeoMeta({
   title: 'Single-Cell Discovery Hub',
-  description: 'Single-cell data portal aggregating iAODE dataset browser and LAIOR benchmarking evaluation metrics'
+  description: 'SCPortal is the task-oriented single-cell discovery hub linking the PeterPonyu homepage, iAODE public pages, and LAIOR benchmark microsite.'
 })
 </script>
