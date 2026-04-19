@@ -10,13 +10,10 @@
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl.replace(/\/+$/, '')
-const basePath = runtimeConfig.app.baseURL === '/'
-  ? ''
-  : runtimeConfig.app.baseURL.replace(/\/+$/, '')
 
 const buildCanonicalUrl = (routePath: string) => {
-  const normalizedPath = routePath === '/' ? '/' : `${routePath.replace(/\/+$/, '')}/`
-  return `${siteUrl}${basePath}${normalizedPath}`
+  const normalizedPath = routePath === '/' ? '' : `${routePath.replace(/^\/+/, '').replace(/\/+$/, '')}/`
+  return new URL(normalizedPath, `${siteUrl}/`).toString()
 }
 
 useHead(() => {

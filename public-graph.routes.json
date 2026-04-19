@@ -1,0 +1,14 @@
+{
+  "datasets": {
+    "related_site_ids": ["iaode_pages", "liora_benchmarks"]
+  },
+  "benchmarks": {
+    "related_site_ids": ["liora_benchmarks", "iaode_pages"]
+  },
+  "models": {
+    "related_site_ids": ["liora_benchmarks", "iaode_pages"]
+  },
+  "explorer": {
+    "related_site_ids": ["iaode_pages", "liora_benchmarks"]
+  }
+}

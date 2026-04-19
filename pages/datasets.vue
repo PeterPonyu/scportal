@@ -207,6 +207,12 @@
         </button>
       </div>
 
+      <RelatedDestinations
+        title="Related Destinations"
+        intro="Use the canonical public destinations for broader context around datasets and benchmark browsing."
+        :destinations="routeDestinations"
+      />
+
       <!-- External Browser Links -->
       <div class="flex flex-wrap justify-center gap-4 mt-12">
         <a
@@ -241,6 +247,8 @@
 </template>
 
 <script setup lang="ts">
+import { getRouteDestinations } from '~/utils/publicGraph'
+
 // Page metadata
 useSeoMeta({
   title: 'Browse Datasets',
@@ -250,6 +258,7 @@ useSeoMeta({
 const activeTab = ref<'atac' | 'rna'>('atac')
 const showAll = ref(false)
 const defaultVisibleCount = 3
+const routeDestinations = getRouteDestinations('datasets')
 
 const externalUrl = computed(() => {
   return activeTab.value === 'atac'
