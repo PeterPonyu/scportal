@@ -1,9 +1,9 @@
 <template>
-  <header class="sticky top-0 z-50 w-full border-b border-dark-200 dark:border-dark-800 bg-white/80 dark:bg-dark-950/80 backdrop-blur-lg">
+  <header class="sticky top-0 z-50 w-full border-b border-dark-200 bg-white/80 backdrop-blur-lg dark:border-dark-800 dark:bg-dark-950/80">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex h-16 items-center justify-between">
+      <div class="flex min-h-16 flex-wrap items-center justify-between gap-3 py-2 lg:flex-nowrap">
         <!-- Logo & Brand -->
-        <NuxtLink to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <NuxtLink to="/" class="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80">
           <svg class="h-10 w-10 flex-shrink-0" viewBox="0 0 128 128">
             <circle cx="64" cy="64" r="62" fill="#1e3a8a"/>
             <circle cx="64" cy="64" r="60" fill="none" stroke="#3451b2" stroke-width="2.5"/>
@@ -13,46 +13,70 @@
             <circle cx="18" cy="22" r="3" fill="#818cf8"/><circle cx="110" cy="22" r="3" fill="#818cf8"/>
             <text x="64" y="82" font-family="JetBrains Mono,monospace" font-size="44" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">SP</text>
           </svg>
-          <div class="flex flex-col">
-            <span class="text-lg font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+          <div class="flex min-w-0 flex-col">
+            <span class="truncate bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-lg font-bold text-transparent">
               SCPortal
             </span>
-            <span class="text-xs text-dark-500 dark:text-dark-400 hidden sm:block">
+            <span class="hidden text-xs text-dark-500 dark:text-dark-400 sm:block">
               Single-Cell Data Portal
             </span>
           </div>
         </NuxtLink>
 
         <!-- Navigation -->
-        <nav class="hidden md:flex items-center gap-1">
+        <nav class="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex" aria-label="Primary navigation">
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
             :to="item.to"
-            class="px-4 py-2 rounded-lg text-sm font-medium text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-4"
             active-class="text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50"
           >
             {{ item.label }}
           </NuxtLink>
-          <a
-            v-for="item in externalNavItems"
-            :key="item.href"
-            :href="item.href"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="px-4 py-2 rounded-lg text-sm font-medium text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
-          >
-            {{ item.label }}
-          </a>
         </nav>
 
         <!-- Actions -->
-        <div class="flex items-center gap-2">
+        <div class="flex shrink-0 items-center gap-2">
+          <div class="relative hidden lg:block">
+            <button
+              id="scportal-resources-button"
+              type="button"
+              class="rounded-lg px-3 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-4"
+              :aria-expanded="resourcesOpen"
+              aria-controls="scportal-resources-menu"
+              @click="resourcesOpen = !resourcesOpen"
+            >
+              Resources
+              <span aria-hidden="true" class="ml-1">▾</span>
+            </button>
+            <div
+              v-if="resourcesOpen"
+              id="scportal-resources-menu"
+              class="absolute right-0 mt-2 w-72 overflow-hidden rounded-2xl border border-dark-200 bg-white p-2 shadow-xl shadow-dark-900/10 dark:border-dark-800 dark:bg-dark-950"
+              role="menu"
+              aria-labelledby="scportal-resources-button"
+            >
+              <a
+                v-for="item in externalNavItems"
+                :key="item.href"
+                :href="item.href"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block rounded-xl px-3 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
+                role="menuitem"
+                @click="resourcesOpen = false"
+              >
+                {{ item.label }}
+              </a>
+            </div>
+          </div>
+
           <!-- Theme Toggle -->
           <button
-            @click="toggleColorMode"
-            class="p-2 rounded-lg text-dark-600 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+            class="rounded-lg p-2 text-dark-600 transition-colors hover:bg-dark-100 dark:text-dark-300 dark:hover:bg-dark-800"
             :aria-label="colorMode.value === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+            @click="toggleColorMode"
           >
             <svg v-if="colorMode.value === 'dark'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="4" />
@@ -68,7 +92,7 @@
             href="https://github.com/PeterPonyu/scportal"
             target="_blank"
             rel="noopener noreferrer"
-            class="p-2 rounded-lg text-dark-600 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+            class="rounded-lg p-2 text-dark-600 transition-colors hover:bg-dark-100 dark:text-dark-300 dark:hover:bg-dark-800"
             aria-label="View on GitHub"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -78,9 +102,11 @@
 
           <!-- Mobile Menu Button -->
           <button
-            @click="mobileMenuOpen = !mobileMenuOpen"
-            class="md:hidden p-2 rounded-lg text-dark-600 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+            class="rounded-lg p-2 text-dark-600 transition-colors hover:bg-dark-100 dark:text-dark-300 dark:hover:bg-dark-800 lg:hidden"
+            :aria-expanded="mobileMenuOpen"
+            aria-controls="scportal-mobile-menu"
             aria-label="Toggle menu"
+            @click="mobileMenuOpen = !mobileMenuOpen"
           >
             <svg v-if="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="4" x2="20" y1="12" y2="12" />
@@ -98,31 +124,33 @@
       <!-- Mobile Menu -->
       <Transition
         enter-active-class="transition duration-200 ease-out"
-        enter-from-class="transform -translate-y-2 opacity-0"
-        enter-to-class="transform translate-y-0 opacity-100"
+        enter-from-class="-translate-y-2 opacity-0"
+        enter-to-class="translate-y-0 opacity-100"
         leave-active-class="transition duration-150 ease-in"
-        leave-from-class="transform translate-y-0 opacity-100"
-        leave-to-class="transform -translate-y-2 opacity-0"
+        leave-from-class="translate-y-0 opacity-100"
+        leave-to-class="-translate-y-2 opacity-0"
       >
-        <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-dark-200 dark:border-dark-800">
-          <nav class="flex flex-col gap-1">
+        <div v-if="mobileMenuOpen" id="scportal-mobile-menu" class="border-t border-dark-200 py-4 dark:border-dark-800 lg:hidden">
+          <nav class="flex flex-col gap-1" aria-label="Mobile navigation">
             <NuxtLink
               v-for="item in navItems"
               :key="item.to"
               :to="item.to"
-              @click="mobileMenuOpen = false"
-              class="px-4 py-3 rounded-lg text-sm font-medium text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
+              class="rounded-lg px-4 py-3 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
               active-class="text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50"
+              @click="mobileMenuOpen = false"
             >
               {{ item.label }}
             </NuxtLink>
+            <div class="my-2 border-t border-dark-100 dark:border-dark-800" />
             <a
               v-for="item in externalNavItems"
               :key="item.href"
               :href="item.href"
               target="_blank"
               rel="noopener noreferrer"
-              class="px-4 py-3 rounded-lg text-sm font-medium text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/50 transition-colors"
+              class="rounded-lg px-4 py-3 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
+              @click="mobileMenuOpen = false"
             >
               {{ item.label }}
             </a>
@@ -138,6 +166,7 @@ import { homepageLink, shellScportalSites } from '~/utils/publicGraph'
 
 const colorMode = useColorMode()
 const mobileMenuOpen = ref(false)
+const resourcesOpen = ref(false)
 
 const navItems = [
   { to: '/', label: 'Home' },
@@ -160,9 +189,10 @@ function toggleColorMode() {
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 }
 
-// Close mobile menu on route change
+// Close menus on route change so the header never leaves a stale overlay after navigation.
 const route = useRoute()
 watch(() => route.path, () => {
   mobileMenuOpen.value = false
+  resourcesOpen.value = false
 })
 </script>
