@@ -21,7 +21,7 @@
           </div>
         </div>
 
-        <div class="grid gap-4 md:grid-cols-3">
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <a
             :href="homepageLink.canonical_url"
             target="_blank"
@@ -67,6 +67,23 @@
             </p>
             <span class="mt-4 inline-flex text-sm font-medium text-emerald-600 dark:text-emerald-300">Open benchmarks →</span>
           </a>
+
+          <a
+            :href="scccvgbenLink.canonical_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group rounded-2xl border border-dark-200 bg-white p-5 transition-all hover:-translate-y-1 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/10 dark:border-dark-800 dark:bg-dark-900 dark:hover:border-sky-700"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <span class="flex h-9 w-9 items-center justify-center rounded-full bg-sky-100 text-sm font-bold text-sky-700 dark:bg-sky-950 dark:text-sky-300">04</span>
+              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-dark-500 dark:text-dark-400">Paper benchmark resource</span>
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-dark-900 dark:text-white">{{ scccvgbenLink.name }}</h3>
+            <p class="mt-2 text-sm leading-6 text-dark-600 dark:text-dark-400">
+              Open the scCCVGBen companion site for the paper benchmark cohort, method comparisons, metrics, and online resource figures.
+            </p>
+            <span class="mt-4 inline-flex text-sm font-medium text-sky-600 dark:text-sky-300">Open scCCVGBen →</span>
+          </a>
         </div>
       </div>
     </div>
@@ -74,5 +91,5 @@
 </template>
 
 <script setup lang="ts">
-import { homepageLink, lioraBenchmarkLink, scportalLink } from '~/utils/publicGraph'
+import { homepageLink, lioraBenchmarkLink, scccvgbenLink, scportalLink } from '~/utils/publicGraph'
 </script>

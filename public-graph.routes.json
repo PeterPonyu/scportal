@@ -1,12 +1,12 @@
 {
   "datasets": {
-    "related_site_ids": ["iaode_pages", "liora_benchmarks"]
+    "related_site_ids": ["iaode_pages", "liora_benchmarks", "scccvgben"]
   },
   "benchmarks": {
-    "related_site_ids": ["liora_benchmarks", "iaode_pages"]
+    "related_site_ids": ["liora_benchmarks", "scccvgben", "iaode_pages"]
   },
   "models": {
-    "related_site_ids": ["liora_benchmarks", "iaode_pages"]
+    "related_site_ids": ["liora_benchmarks", "scccvgben", "iaode_pages"]
   },
   "explorer": {
     "related_site_ids": ["iaode_pages", "liora_benchmarks"]

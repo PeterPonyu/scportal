@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { lioraBenchmarkLink } from '~/utils/publicGraph'
+import { lioraBenchmarkLink, scccvgbenLink } from '~/utils/publicGraph'
 
 const taskRoutes = [
   {
@@ -62,15 +62,15 @@ const taskRoutes = [
   {
     intent: 'Evaluate methods',
     title: 'Understand metrics and rankings',
-    summary: 'Start with metric definitions and model categories, then continue into the benchmark product for deeper LAIOR views.',
-    destination: lioraBenchmarkLink.name,
+    summary: 'Start with metric definitions and model categories, then continue into benchmark products for deeper LAIOR and scCCVGBen views.',
+    destination: `${lioraBenchmarkLink.name} + ${scccvgbenLink.name}`,
     to: '/benchmarks',
   },
   {
     intent: 'Choose models',
     title: 'Scan model families',
-    summary: 'Review the model catalog by task family before jumping to focused LAIOR model documentation.',
-    destination: lioraBenchmarkLink.name,
+    summary: 'Review the model catalog by task family before jumping to focused LAIOR and scCCVGBen model evidence.',
+    destination: `${lioraBenchmarkLink.name} + ${scccvgbenLink.name}`,
     to: '/models',
   },
 ]

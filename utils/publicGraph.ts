@@ -87,6 +87,7 @@ const resolvePublicDestinationSite = (id: string): PublicGraphSite => {
 
 export const lioraBenchmarkLink = resolvePublicDestinationSite('liora_benchmarks')
 export const lioraBenchmarksLink = lioraBenchmarkLink
+export const scccvgbenLink = resolvePublicDestinationSite('scccvgben')
 
 const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
   datasets: [
@@ -99,6 +100,11 @@ const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
       id: 'liora_benchmarks',
       summary: 'Focused LAIOR destination for benchmark datasets and related evaluation context.',
       ctaLabel: 'Open LAIOR Benchmarks'
+    },
+    {
+      id: 'scccvgben',
+      summary: 'scCCVGBen companion resource for the 200-dataset scRNA-seq/scATAC-seq benchmark cohort and per-dataset metadata context.',
+      ctaLabel: 'Open scCCVGBen'
     }
   ],
   benchmarks: [
@@ -106,6 +112,11 @@ const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
       id: 'liora_benchmarks',
       summary: 'Interactive benchmark destination with model metrics, ranking views, and LAIOR detail pages.',
       ctaLabel: 'Open LAIOR Benchmarks'
+    },
+    {
+      id: 'scccvgben',
+      summary: 'Centroid-coupled VAE benchmark resource with 32 methods, 20 metrics, and publication-linked benchmark figures.',
+      ctaLabel: 'Open scCCVGBen'
     },
     {
       id: 'iaode_pages',
@@ -118,6 +129,11 @@ const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
       id: 'liora_benchmarks',
       summary: 'Canonical benchmark microsite for model detail pages and evaluation context.',
       ctaLabel: 'Open LAIOR Benchmarks'
+    },
+    {
+      id: 'scccvgben',
+      summary: 'Publication companion for scCCVGBen model comparisons, metric definitions, and supplementary online figures.',
+      ctaLabel: 'Open scCCVGBen'
     },
     {
       id: 'iaode_pages',

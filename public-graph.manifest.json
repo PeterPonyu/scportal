@@ -12,7 +12,8 @@
       "mrna_intersection": "mRNA Intersection",
       "iaode_pages": "iAODE Pages",
       "iaode_workspace": "iAODE Workspace",
-      "mccvae": "MCCVAE"
+      "mccvae": "MCCVAE",
+      "scccvgben": "scCCVGBen"
     }
   },
   "sites": [
@@ -22,14 +23,22 @@
       "canonical_url": "https://peterponyu.github.io/",
       "role": "identity_root",
       "boundary": "public",
-      "indexing": { "mode": "index_follow" },
+      "indexing": {
+        "mode": "index_follow"
+      },
       "visibility": {
         "homepage": "hidden",
         "homepage_order": null,
         "scportal": "listed",
         "sitemap": true
       },
-      "related_sites": ["scportal", "mrna_intersection", "liora_benchmarks", "iaode_pages"],
+      "related_sites": [
+        "scportal",
+        "mrna_intersection",
+        "liora_benchmarks",
+        "iaode_pages",
+        "scccvgben"
+      ],
       "repo": "PeterPonyu/PeterPonyu.github.io"
     },
     {
@@ -38,14 +47,30 @@
       "canonical_url": "https://peterponyu.github.io/scportal/",
       "role": "discovery_hub",
       "boundary": "public",
-      "indexing": { "mode": "index_follow" },
+      "indexing": {
+        "mode": "index_follow"
+      },
       "visibility": {
         "homepage": "primary",
         "homepage_order": 1,
         "scportal": "hidden",
         "sitemap": true
       },
-      "related_sites": ["homepage", "liora_benchmarks", "mrna_intersection", "iaode_pages"],
+      "presentation": {
+        "homepage": {
+          "kind": "Hub",
+          "badge": "Primary Entry",
+          "summary": "Canonical public discovery hub for datasets, benchmarks, models, and related tools.",
+          "cta_label": "Open SCPortal"
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "liora_benchmarks",
+        "mrna_intersection",
+        "iaode_pages",
+        "scccvgben"
+      ],
       "repo": "PeterPonyu/scportal"
     },
     {
@@ -54,14 +79,27 @@
       "canonical_url": "https://peterponyu.github.io/liora-ui/",
       "role": "microsite",
       "boundary": "public",
-      "indexing": { "mode": "index_follow" },
+      "indexing": {
+        "mode": "index_follow"
+      },
       "visibility": {
         "homepage": "secondary",
         "homepage_order": 1,
         "scportal": "featured",
         "sitemap": true
       },
-      "related_sites": ["homepage", "scportal"],
+      "presentation": {
+        "homepage": {
+          "kind": "Microsite",
+          "summary": "Focused benchmark destination for model summaries, datasets, and metric detail pages.",
+          "cta_label": "Open LAIOR Benchmarks"
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal",
+        "scccvgben"
+      ],
       "repo": "PeterPonyu/liora-ui"
     },
     {
@@ -70,14 +108,26 @@
       "canonical_url": "https://peterponyu.github.io/mrnapp-intersection/",
       "role": "utility",
       "boundary": "public",
-      "indexing": { "mode": "index_follow" },
+      "indexing": {
+        "mode": "index_follow"
+      },
       "visibility": {
         "homepage": "primary",
         "homepage_order": 2,
         "scportal": "featured",
         "sitemap": true
       },
-      "related_sites": ["homepage", "scportal"],
+      "presentation": {
+        "homepage": {
+          "kind": "Utility",
+          "summary": "Interactive mRNA intersection analysis and visualization tool.",
+          "cta_label": "Launch"
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal"
+      ],
       "repo": "PeterPonyu/mrnapp-intersection"
     },
     {
@@ -86,14 +136,27 @@
       "canonical_url": "https://peterponyu.github.io/iAODE/",
       "role": "public_surface",
       "boundary": "public",
-      "indexing": { "mode": "index_follow" },
+      "indexing": {
+        "mode": "index_follow"
+      },
       "visibility": {
         "homepage": "secondary",
         "homepage_order": 2,
         "scportal": "listed",
         "sitemap": true
       },
-      "related_sites": ["homepage", "scportal", "iaode_workspace"],
+      "presentation": {
+        "homepage": {
+          "kind": "Public Surface",
+          "summary": "Public-facing iAODE destination for datasets, explorer pages, and project overview content.",
+          "cta_label": "Open iAODE Pages"
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal",
+        "iaode_workspace"
+      ],
       "repo": "PeterPonyu/iAODE"
     },
     {
@@ -102,14 +165,25 @@
       "canonical_url": "https://peterponyu.github.io/iAODE/frontend/",
       "role": "local_first_workspace",
       "boundary": "local_first",
-      "indexing": { "mode": "noindex_nofollow" },
+      "indexing": {
+        "mode": "noindex_nofollow"
+      },
       "visibility": {
         "homepage": "hidden",
         "homepage_order": null,
         "scportal": "hidden",
         "sitemap": false
       },
-      "related_sites": ["homepage", "scportal", "iaode_pages"],
+      "presentation": {
+        "homepage": {
+          "boundary_note": "Kept off the homepage because it is a local-first workspace rather than a public hosted app surface."
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal",
+        "iaode_pages"
+      ],
       "repo": "PeterPonyu/iAODE"
     },
     {
@@ -118,15 +192,54 @@
       "canonical_url": "https://peterponyu.github.io/MCCVAE/",
       "role": "landing_only",
       "boundary": "landing_only",
-      "indexing": { "mode": "noindex_follow" },
+      "indexing": {
+        "mode": "noindex_follow"
+      },
       "visibility": {
         "homepage": "hidden",
         "homepage_order": null,
         "scportal": "hidden",
         "sitemap": false
       },
-      "related_sites": ["homepage", "scportal"],
+      "presentation": {
+        "homepage": {
+          "boundary_note": "Maintained as a landing-only reference surface, so the homepage does not present it as an actively browsable public tool."
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal"
+      ],
       "repo": "PeterPonyu/MCCVAE"
+    },
+    {
+      "id": "scccvgben",
+      "name": "scCCVGBen",
+      "canonical_url": "https://peterponyu.github.io/scccvgben-next/",
+      "role": "benchmark_resource",
+      "boundary": "public",
+      "indexing": {
+        "mode": "index_follow"
+      },
+      "visibility": {
+        "homepage": "secondary",
+        "homepage_order": 3,
+        "scportal": "featured",
+        "sitemap": true
+      },
+      "presentation": {
+        "homepage": {
+          "kind": "Benchmark",
+          "summary": "Centroid-coupled VAE benchmark across 200 single-cell datasets (100 scRNA + 100 scATAC) with per-dataset metadata cards.",
+          "cta_label": "Open scCCVGBen"
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal",
+        "liora_benchmarks"
+      ],
+      "repo": "PeterPonyu/scCCVGBen"
     }
   ]
 }
