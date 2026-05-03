@@ -13,7 +13,8 @@
       "iaode_pages": "iAODE Pages",
       "iaode_workspace": "iAODE Workspace",
       "mccvae": "MCCVAE",
-      "scccvgben": "scCCVGBen"
+      "scccvgben": "scCCVGBen",
+      "gahib_site": "GAHIB Companion Site"
     }
   },
   "sites": [
@@ -37,7 +38,8 @@
         "mrna_intersection",
         "liora_benchmarks",
         "iaode_pages",
-        "scccvgben"
+        "scccvgben",
+        "gahib_site"
       ],
       "repo": "PeterPonyu/PeterPonyu.github.io"
     },
@@ -69,7 +71,8 @@
         "liora_benchmarks",
         "mrna_intersection",
         "iaode_pages",
-        "scccvgben"
+        "scccvgben",
+        "gahib_site"
       ],
       "repo": "PeterPonyu/scportal"
     },
@@ -240,6 +243,34 @@
         "liora_benchmarks"
       ],
       "repo": "PeterPonyu/scCCVGBen"
+    },
+    {
+      "id": "gahib_site",
+      "name": "GAHIB Companion Site",
+      "canonical_url": "https://peterponyu.github.io/gahib-site/",
+      "role": "microsite",
+      "boundary": "public",
+      "indexing": {
+        "mode": "index_follow"
+      },
+      "visibility": {
+        "homepage": "secondary",
+        "homepage_order": 4,
+        "scportal": "featured",
+        "sitemap": true
+      },
+      "presentation": {
+        "homepage": {
+          "kind": "Microsite",
+          "summary": "Companion site for GAHIB, the graph-attention information-bottleneck framework, with method overview and online figures.",
+          "cta_label": "Open GAHIB Companion Site"
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal"
+      ],
+      "repo": "PeterPonyu/gahib-site"
     }
   ]
 }

@@ -105,6 +105,11 @@ const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
       id: 'scccvgben',
       summary: 'scCCVGBen companion resource for the 200-dataset scRNA-seq/scATAC-seq benchmark cohort and per-dataset metadata context.',
       ctaLabel: 'Open scCCVGBen'
+    },
+    {
+      id: 'gahib_site',
+      summary: 'GAHIB companion site for the graph-attention information-bottleneck framework, with method overview and supplementary figures tied to dataset context.',
+      ctaLabel: 'Open GAHIB Companion Site'
     }
   ],
   benchmarks: [
@@ -117,6 +122,11 @@ const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
       id: 'scccvgben',
       summary: 'Centroid-coupled VAE benchmark resource with 32 methods, 20 metrics, and publication-linked benchmark figures.',
       ctaLabel: 'Open scCCVGBen'
+    },
+    {
+      id: 'gahib_site',
+      summary: 'GAHIB companion site for the graph-attention information-bottleneck framework, with paper-aligned method context for benchmark comparison.',
+      ctaLabel: 'Open GAHIB Companion Site'
     },
     {
       id: 'iaode_pages',
@@ -134,6 +144,11 @@ const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
       id: 'scccvgben',
       summary: 'Publication companion for scCCVGBen model comparisons, metric definitions, and supplementary online figures.',
       ctaLabel: 'Open scCCVGBen'
+    },
+    {
+      id: 'gahib_site',
+      summary: 'GAHIB companion site for the graph-attention information-bottleneck framework, with method overview tied to model interpretation context.',
+      ctaLabel: 'Open GAHIB Companion Site'
     },
     {
       id: 'iaode_pages',
