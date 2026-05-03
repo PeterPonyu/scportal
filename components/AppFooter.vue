@@ -75,7 +75,7 @@
       <!-- Bottom Bar -->
       <div class="mt-8 pt-8 border-t border-dark-200 dark:border-dark-800 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p class="text-sm text-dark-500 dark:text-dark-500">
-          © {{ new Date().getFullYear() }} SCPortal. Built with ❤️ for the single-cell community.
+          © {{ year }} SCPortal. Built with ❤️ for the single-cell community.
         </p>
         <p class="text-sm text-dark-500 dark:text-dark-500">
           Powered by <a href="https://nuxt.com" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:underline">Nuxt</a>
@@ -87,6 +87,8 @@
 
 <script setup lang="ts">
 import { homepageLink, shellScportalSites } from '~/utils/publicGraph'
+
+const year = useState('footer-year', () => new Date().getFullYear())
 
 // GitHub Icon Component
 const GitHubIcon = defineComponent({
