@@ -251,13 +251,13 @@
       "role": "microsite",
       "boundary": "public",
       "indexing": {
-        "mode": "index_follow"
+        "mode": "noindex_follow"
       },
       "visibility": {
         "homepage": "secondary",
         "homepage_order": 4,
         "scportal": "featured",
-        "sitemap": true
+        "sitemap": false
       },
       "presentation": {
         "homepage": {
