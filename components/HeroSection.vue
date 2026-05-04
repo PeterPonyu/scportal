@@ -8,19 +8,19 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
             </span>
-            Unified Single-Cell Gateway
+            Single-cell research resources
           </div>
 
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight">
             <span class="text-dark-900 dark:text-white">SCPortal</span>
             <br />
             <span class="bg-gradient-to-r from-primary-600 via-accent-500 to-primary-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-              Dataset + Continuity Hub
+              Datasets, continuity analysis, and benchmarks
             </span>
           </h1>
 
           <p class="text-lg md:text-xl text-dark-600 dark:text-dark-400 mt-6 max-w-2xl">
-            Navigate curated single-cell datasets, continuity simulations, and LAIOR benchmarking metrics from one focused, research-first portal.
+            Browse curated single-cell datasets, open the Continuity Explorer, and review LAIOR benchmark metrics in one place.
           </p>
 
           <div class="flex flex-wrap gap-4 mt-8">
@@ -48,7 +48,7 @@
               to="/benchmarks"
               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-primary-200/70 dark:border-primary-800 text-primary-700 dark:text-primary-200 font-semibold hover:bg-primary-50/60 dark:hover:bg-primary-950/40 transition-all"
             >
-              Metrics Library
+              Benchmark Metrics
             </NuxtLink>
           </div>
 
@@ -76,8 +76,8 @@
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-xs uppercase tracking-widest text-primary-600 dark:text-primary-300">Dataset Browser</p>
-                  <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">iAODE + LAIOR Collections</h3>
-                  <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">683 datasets across ATAC-seq and RNA-seq modalities.</p>
+                  <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">iAODE and LAIOR datasets</h3>
+                  <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">683 datasets across scATAC-seq and scRNA-seq.</p>
                 </div>
                 <span class="text-primary-600 dark:text-primary-300 text-2xl">→</span>
               </div>
@@ -90,8 +90,8 @@
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-xs uppercase tracking-widest text-accent-600 dark:text-accent-300">Continuity Explorer</p>
-                  <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">Trajectory Dynamics Lab</h3>
-                  <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">Compare PCA, UMAP, t-SNE across simulated trajectories.</p>
+                  <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">Open continuity views</h3>
+                  <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">Use the Continuity Explorer to compare PCA, UMAP, and t-SNE across simulated trajectories.</p>
                 </div>
                 <span class="text-accent-600 dark:text-accent-300 text-2xl">→</span>
               </div>
@@ -104,8 +104,8 @@
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-xs uppercase tracking-widest text-dark-500 dark:text-dark-400">LAIOR Benchmarks</p>
-                  <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">24 Metrics, 23 Models</h3>
-                  <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">Evaluation dashboards for model comparisons.</p>
+                  <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">23 models, 24 metrics</h3>
+                  <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">Review benchmark results and metric definitions.</p>
                 </div>
                 <span class="text-dark-500 dark:text-dark-300 text-2xl">→</span>
               </div>

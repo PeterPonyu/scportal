@@ -12,7 +12,7 @@
           About SCPortal
         </h1>
         <p class="text-dark-300 max-w-2xl text-lg">
-          A portal aggregating single-cell analysis resources.
+          Browse curated single-cell datasets, compare continuity views, and review benchmark metrics.
         </p>
       </div>
     </div>
@@ -25,12 +25,12 @@
           <h2 class="text-2xl font-bold text-dark-900 dark:text-white mb-6">Overview</h2>
           <div class="prose dark:prose-invert max-w-none">
             <p class="text-dark-600 dark:text-dark-400 mb-4">
-              <strong>SCPortal</strong> serves as a unified entry point for accessing single-cell analysis resources.
-              It aggregates 683 datasets from two benchmark repositories — iAODE (617 datasets) and LAIOR (66 datasets) — along with 24 evaluation metrics for 23 models.
+              <strong>SCPortal</strong> helps you browse curated single-cell datasets, compare continuity views, and review benchmark metrics across the connected iAODE and LAIOR resources.
+              It brings 683 datasets, continuity exploration, and benchmark references into one clear starting point.
             </p>
             <p class="text-dark-600 dark:text-dark-400 mb-4">
-              The portal links to two homogeneous benchmark dataset repositories: iAODE and LAIOR, both serving as standardized sources for single-cell model evaluation under different frameworks.
-              All data remains hosted on the original project sites.
+              Use SCPortal to choose the next page for the task at hand: open iAODE for dataset browsing and continuity exploration, or open LAIOR for model pages and metric results.
+              The linked sites keep the full interactive experience and continue to host the underlying data on their original project pages.
             </p>
           </div>
         </section>
@@ -214,7 +214,11 @@
 // Page metadata
 useSeoMeta({
   title: 'About',
-  description: 'About SCPortal - a portal for single-cell analysis resources'
+  description: 'Browse curated single-cell datasets, compare continuity views, and review benchmark metrics in SCPortal.',
+  ogTitle: 'About | SCPortal',
+  ogDescription: 'Browse curated single-cell datasets, compare continuity views, and review benchmark metrics in SCPortal.',
+  twitterTitle: 'About | SCPortal',
+  twitterDescription: 'Browse curated single-cell datasets, compare continuity views, and review benchmark metrics in SCPortal.'
 })
 
 const technologies = [

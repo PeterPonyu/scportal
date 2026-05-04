@@ -12,7 +12,7 @@
           Model Catalog
         </h1>
         <p class="text-purple-100 max-w-2xl text-lg">
-          SCPortal indexes 23 single-cell analysis models across 6 categories with documentation and evaluation metrics.
+          Review 23 single-cell analysis models across 6 categories, then open the benchmark details you need.
         </p>
       </div>
     </div>
@@ -87,7 +87,7 @@
 
       <RelatedDestinations
         title="Related Destinations"
-        intro="Jump from the SCPortal catalog into the canonical public destinations for benchmark detail and dataset context."
+        intro="Visit related pages for benchmark details and dataset context."
         :destinations="routeDestinations"
       />
 

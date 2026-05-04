@@ -17,20 +17,20 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/scportal/',
     head: {
-      title: 'SCPortal | Single-Cell Discovery Hub',
+      title: 'SCPortal | Single-Cell Datasets and Benchmarks',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { 
           name: 'description', 
-          content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.'
+          content: 'Browse curated single-cell datasets, compare continuity views, and review benchmark metrics in SCPortal.'
         },
         { name: 'theme-color', content: '#059669' },
         { name: 'robots', content: 'index,follow' },
-        { property: 'og:title', content: 'SCPortal | Single-Cell Discovery Hub' },
-        { property: 'og:description', content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.' },
-        { name: 'twitter:title', content: 'SCPortal | Single-Cell Discovery Hub' },
-        { name: 'twitter:description', content: 'Public discovery hub for single-cell datasets, benchmarks, models, and related tools.' }
+        { property: 'og:title', content: 'SCPortal | Single-Cell Datasets and Benchmarks' },
+        { property: 'og:description', content: 'Browse curated single-cell datasets, compare continuity views, and review benchmark metrics in SCPortal.' },
+        { name: 'twitter:title', content: 'SCPortal | Single-Cell Datasets and Benchmarks' },
+        { name: 'twitter:description', content: 'Browse curated single-cell datasets, compare continuity views, and review benchmark metrics in SCPortal.' }
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

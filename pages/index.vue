@@ -14,10 +14,10 @@
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-semibold text-dark-900 dark:text-white mb-4">
-            Launch Points
+            Where to Start
           </h2>
           <p class="text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-            Use SCPortal for route selection and context; jump into focused public surfaces when a task needs full interaction depth.
+            Choose the dataset, model, continuity view, or benchmark page you need without guessing where to begin.
           </p>
         </div>
 
@@ -25,7 +25,7 @@
           <!-- iAODE Dataset Browser -->
           <FeatureCard
             title="Dataset Collection"
-            description="Access 683 single-cell ATAC-seq and RNA-seq datasets from iAODE (617) and LAIOR (66) benchmark repositories. Standardized in 10X h5 format."
+            description="Browse curated single-cell ATAC-seq and RNA-seq datasets from the iAODE and LAIOR repositories in standardized 10X h5 format."
             to="/datasets"
             link-text="Browse Datasets"
             variant="primary"
@@ -45,10 +45,10 @@
 
           <!-- iAODE Continuity Explorer -->
           <FeatureCard
-            title="Trajectory Explorer"
-            description="Explore trajectory structures and continuity metrics across PCA, UMAP, and t-SNE embedding methods."
+            title="Continuity Explorer"
+            description="Compare trajectory structures and continuity metrics across PCA, UMAP, and t-SNE views."
             to="/explorer"
-            link-text="Launch Explorer"
+            link-text="Open Continuity Explorer"
             variant="accent"
             :stats="[
               { label: 'Methods', value: '3' },
@@ -66,7 +66,7 @@
           <!-- LAIOR Benchmarking -->
           <FeatureCard
             title="Evaluation Metrics"
-            description="24 evaluation metrics across 4 categories for benchmarking 23 single-cell analysis models on 66 datasets."
+            description="Review benchmark metrics for 23 single-cell analysis models across 66 datasets."
             to="/benchmarks"
             link-text="View Metrics"
             variant="emerald"
@@ -87,7 +87,7 @@
           <!-- Model Catalog -->
           <FeatureCard
             title="Model Catalog"
-            description="Documentation for 23 models across 6 categories with architecture details and evaluation metrics."
+            description="Compare supported models, see what each category covers, and open the details you need."
             to="/models"
             link-text="View Models"
             variant="purple"
@@ -107,7 +107,7 @@
           <!-- Metrics Reference -->
           <FeatureCard
             title="Metrics Reference"
-            description="Reference library explaining 24 evaluation metrics with definitions and use cases."
+            description="Look up evaluation metric definitions and see when to use each one."
             to="/benchmarks#metrics"
             link-text="View Metrics"
             variant="primary"
@@ -123,7 +123,7 @@
           <!-- Statistics -->
           <FeatureCard
             title="Dataset Statistics"
-            description="Statistics and visualizations of dataset distributions, cell counts, and peak numbers."
+            description="Open dataset statistics and scan cell counts, peak counts, and distribution views."
             href="https://peterponyu.github.io/iAODE/statistics/"
             link-text="View Statistics"
             variant="accent"
@@ -283,7 +283,11 @@
 <script setup lang="ts">
 // Page metadata
 useSeoMeta({
-  title: 'Single-Cell Discovery Hub',
-  description: 'SCPortal is the task-oriented single-cell discovery hub linking the PeterPonyu homepage, iAODE public pages, and LAIOR benchmark microsite.'
+  title: 'Single-cell datasets, models, and benchmarks',
+  description: 'Browse curated single-cell datasets, compare continuity views, and review LAIOR benchmark metrics in SCPortal.',
+  ogTitle: 'Single-cell datasets, models, and benchmarks | SCPortal',
+  ogDescription: 'Browse curated single-cell datasets, compare continuity views, and review LAIOR benchmark metrics in SCPortal.',
+  twitterTitle: 'Single-cell datasets, models, and benchmarks | SCPortal',
+  twitterDescription: 'Browse curated single-cell datasets, compare continuity views, and review LAIOR benchmark metrics in SCPortal.'
 })
 </script>
