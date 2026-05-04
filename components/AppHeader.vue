@@ -18,7 +18,7 @@
               SCPortal
             </span>
             <span class="hidden text-xs text-dark-500 dark:text-dark-400 sm:block">
-              Single-Cell Data Portal
+              Datasets, benchmarks, and models
             </span>
           </div>
         </NuxtLink>
@@ -176,7 +176,7 @@ const resourcesOpen = ref(false)
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/datasets', label: 'Datasets' },
-  { to: '/explorer', label: 'Explorer' },
+  { to: '/explorer', label: 'Continuity Explorer' },
   { to: '/benchmarks', label: 'Benchmarks' },
   { to: '/models', label: 'Models' },
   { to: '/about', label: 'About' }

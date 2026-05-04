@@ -12,7 +12,7 @@
           Dataset Collection
         </h1>
         <p class="text-primary-100 max-w-2xl text-lg">
-          SCPortal aggregates 683 standardized single-cell datasets from two benchmark repositories: iAODE (617 datasets) and LAIOR (66 datasets).
+          Browse 683 standardized single-cell datasets from the iAODE and LAIOR benchmark repositories.
         </p>
       </div>
     </div>
@@ -209,7 +209,7 @@
 
       <RelatedDestinations
         title="Related Destinations"
-        intro="Use the canonical public destinations for broader context around datasets and benchmark browsing."
+        intro="Visit related pages for more context on datasets and benchmark results."
         :destinations="routeDestinations"
       />
 

@@ -163,7 +163,7 @@
 
       <RelatedDestinations
         title="Related Destinations"
-        intro="After continuity exploration, use the canonical public destinations for datasets, benchmark context, and broader project entrypoints."
+        intro="After exploring continuity, visit related pages for datasets, benchmark results, and project overviews."
         :destinations="routeDestinations"
       />
     </div>

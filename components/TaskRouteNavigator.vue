@@ -3,13 +3,13 @@
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="mx-auto mb-10 max-w-3xl text-center">
         <p class="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-primary-600 dark:text-primary-300">
-          Choose a research route
+          Choose your task
         </p>
         <h2 class="mb-4 text-3xl font-semibold text-dark-900 dark:text-white md:text-4xl">
-          Start from the task, then follow the canonical public destination.
+          Start with what you want to do, then open the right page.
         </h2>
         <p class="text-dark-600 dark:text-dark-400">
-          SCPortal is the discovery layer for the flagship triad: it orients visitors, explains which route fits their task, and sends deep interaction to focused public surfaces.
+          Use SCPortal to choose where to start, then continue to the page with the data, explorer, or benchmark detail you need.
         </p>
       </div>
 
@@ -33,7 +33,7 @@
             {{ route.summary }}
           </p>
           <p class="text-xs font-medium text-dark-500 dark:text-dark-400">
-            Next public surface: {{ route.destination }}
+            Open next: {{ route.destination }}
           </p>
         </NuxtLink>
       </div>
@@ -55,21 +55,21 @@ const taskRoutes = [
   {
     intent: 'Explore structure',
     title: 'Inspect trajectory continuity',
-    summary: 'Frame the continuity task in SCPortal, then launch the iAODE explorer for full interactive analysis.',
+    summary: 'Start with the Continuity Explorer in SCPortal, then open the iAODE explorer for full interactive analysis.',
     destination: 'iAODE Pages',
     to: '/explorer',
   },
   {
     intent: 'Evaluate methods',
     title: 'Understand metrics and rankings',
-    summary: 'Start with metric definitions and model categories, then continue into benchmark products for deeper LAIOR and scCCVGBen views.',
+    summary: 'Start with metric definitions and model categories, then continue into the benchmark pages for deeper LAIOR and scCCVGBen views.',
     destination: `${lioraBenchmarkLink.name} + ${scccvgbenLink.name}`,
     to: '/benchmarks',
   },
   {
     intent: 'Choose models',
     title: 'Scan model families',
-    summary: 'Review the model catalog by task family before jumping to focused LAIOR and scCCVGBen model evidence.',
+    summary: 'Review the model catalog by use case before jumping to focused LAIOR and scCCVGBen model results.',
     destination: `${lioraBenchmarkLink.name} + ${scccvgbenLink.name}`,
     to: '/models',
   },

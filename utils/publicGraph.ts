@@ -93,78 +93,78 @@ const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
   datasets: [
     {
       id: 'iaode_pages',
-      summary: 'Public iAODE destination for dataset browsing, explorer pages, and project overview context.',
+      summary: 'Browse iAODE datasets, explorer pages, and project details.',
       ctaLabel: 'Open iAODE Pages'
     },
     {
       id: 'liora_benchmarks',
-      summary: 'Focused LAIOR destination for benchmark datasets and related evaluation context.',
+      summary: 'Browse LAIOR benchmark datasets and evaluation results.',
       ctaLabel: 'Open LAIOR Benchmarks'
     },
     {
       id: 'scccvgben',
-      summary: 'scCCVGBen companion resource for the 200-dataset scRNA-seq/scATAC-seq benchmark cohort and per-dataset metadata context.',
+      summary: 'See the scCCVGBen benchmark set, dataset coverage, and metadata.',
       ctaLabel: 'Open scCCVGBen'
     },
     {
       id: 'gahib_site',
-      summary: 'GAHIB companion site for the graph-attention information-bottleneck framework, with method overview and supplementary figures tied to dataset context.',
+      summary: 'Read the GAHIB method overview and see supporting figures.',
       ctaLabel: 'Open GAHIB Companion Site'
     }
   ],
   benchmarks: [
     {
       id: 'liora_benchmarks',
-      summary: 'Interactive benchmark destination with model metrics, ranking views, and LAIOR detail pages.',
+      summary: 'Compare models, rankings, and benchmark results in LAIOR.',
       ctaLabel: 'Open LAIOR Benchmarks'
     },
     {
       id: 'scccvgben',
-      summary: 'Centroid-coupled VAE benchmark resource with 32 methods, 20 metrics, and publication-linked benchmark figures.',
+      summary: 'Review scCCVGBen model comparisons, metric coverage, and benchmark figures.',
       ctaLabel: 'Open scCCVGBen'
     },
     {
       id: 'gahib_site',
-      summary: 'GAHIB companion site for the graph-attention information-bottleneck framework, with paper-aligned method context for benchmark comparison.',
+      summary: 'Read how GAHIB works and compare it with other benchmark methods.',
       ctaLabel: 'Open GAHIB Companion Site'
     },
     {
       id: 'iaode_pages',
-      summary: 'Public iAODE destination for the complementary dataset and explorer surfaces behind these metrics.',
+      summary: 'Open the matching iAODE dataset and explorer pages for these metrics.',
       ctaLabel: 'Open iAODE Pages'
     }
   ],
   models: [
     {
       id: 'liora_benchmarks',
-      summary: 'Canonical benchmark microsite for model detail pages and evaluation context.',
+      summary: 'View model pages, benchmark results, and evaluation details.',
       ctaLabel: 'Open LAIOR Benchmarks'
     },
     {
       id: 'scccvgben',
-      summary: 'Publication companion for scCCVGBen model comparisons, metric definitions, and supplementary online figures.',
+      summary: 'Compare scCCVGBen models, metric definitions, and online figures.',
       ctaLabel: 'Open scCCVGBen'
     },
     {
       id: 'gahib_site',
-      summary: 'GAHIB companion site for the graph-attention information-bottleneck framework, with method overview tied to model interpretation context.',
+      summary: 'Read the GAHIB method overview for model interpretation.',
       ctaLabel: 'Open GAHIB Companion Site'
     },
     {
       id: 'iaode_pages',
-      summary: 'Public iAODE destination for datasets and supporting project context tied to model evaluation.',
+      summary: 'Open iAODE datasets and project details related to this evaluation.',
       ctaLabel: 'Open iAODE Pages'
     }
   ],
   explorer: [
     {
       id: 'iaode_pages',
-      summary: 'Public iAODE destination for explorer context, datasets, and project-level entrypoints.',
+      summary: 'Open iAODE explorer pages, datasets, and overview content.',
       ctaLabel: 'Open iAODE Pages'
     },
     {
       id: 'liora_benchmarks',
-      summary: 'Companion benchmark microsite for model and metric follow-up after continuity exploration.',
+      summary: 'Check model and metric results after exploring continuity patterns.',
       ctaLabel: 'Open LAIOR Benchmarks'
     }
   ]

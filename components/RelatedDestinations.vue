@@ -18,7 +18,7 @@
         <div class="flex items-center justify-between gap-3 mb-3">
           <h3 class="font-semibold text-dark-900 dark:text-white">{{ destination.name }}</h3>
           <span class="inline-flex px-2 py-1 text-xs font-medium rounded-md bg-dark-100 dark:bg-dark-800 text-dark-600 dark:text-dark-300">
-            Public Destination
+            Related Site
           </span>
         </div>
         <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">

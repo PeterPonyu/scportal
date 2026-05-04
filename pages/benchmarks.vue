@@ -12,7 +12,7 @@
           Evaluation Metrics
         </h1>
         <p class="text-emerald-100 max-w-2xl text-lg">
-          SCPortal documents 24 evaluation metrics across 4 categories, used for benchmarking 23 single-cell analysis models on 66 datasets.
+          Review 24 benchmark metrics used to compare 23 single-cell analysis models across 66 datasets.
         </p>
       </div>
     </div>
