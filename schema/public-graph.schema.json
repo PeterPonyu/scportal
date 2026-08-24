@@ -19,7 +19,13 @@
           "workspace_path": { "type": "string" },
           "source_repo": { "type": "string", "pattern": ".+/.+" },
           "deploy_repo": { "type": ["string", "null"], "pattern": ".+/.+" },
-          "indexing": { "type": "object" },
+          "indexing": {
+            "type": "object",
+            "required": ["mode"],
+            "properties": {
+              "mode": { "enum": ["index_follow", "noindex_follow", "noindex_nofollow"] }
+            }
+          },
           "visibility": {
             "type": "object",
             "required": ["sitemap"],

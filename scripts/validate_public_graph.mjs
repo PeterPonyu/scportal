@@ -5,6 +5,8 @@ const fail = (condition, message) => {
   if (!condition) throw new Error(message)
 }
 
+const indexingModes = new Set(['index_follow', 'noindex_follow', 'noindex_nofollow'])
+
 export function validateManifest(manifest) {
   fail(manifest.version === '2.0', 'public graph version must be 2.0')
   fail(Array.isArray(manifest.sites), 'sites must be an array')
@@ -14,6 +16,8 @@ export function validateManifest(manifest) {
     ids.add(site.id)
     fail(typeof site.source_repo === 'string' && site.source_repo.includes('/'), `${site.id}: source_repo is required`)
     fail(['public', 'landing_only', 'local_only'].includes(site.availability), `${site.id}: invalid availability`)
+    fail(site.indexing !== null && typeof site.indexing === 'object' && !Array.isArray(site.indexing), `${site.id}: indexing is required`)
+    fail(indexingModes.has(site.indexing.mode), `${site.id}: invalid indexing mode`)
     if (site.availability === 'local_only') {
       fail(site.canonical_url === null, `${site.id}: local_only canonical_url must be null`)
       fail(site.deploy_repo === null, `${site.id}: local_only deploy_repo must be null`)

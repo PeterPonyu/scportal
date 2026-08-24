@@ -260,7 +260,7 @@
       "role": "microsite",
       "availability": "public",
       "indexing": {
-        "mode": "noindex_follow"
+        "mode": "noindex_nofollow"
       },
       "visibility": {
         "homepage": "secondary",

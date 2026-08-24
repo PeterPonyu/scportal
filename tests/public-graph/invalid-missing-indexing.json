@@ -1,0 +1,15 @@
+{
+  "version": "2.0",
+  "graph": { "identity_root": "homepage", "discovery_hub": "scportal" },
+  "sites": [
+    {
+      "id": "scportal",
+      "name": "SCPortal",
+      "availability": "public",
+      "canonical_url": "https://peterponyu.github.io/scportal/",
+      "source_repo": "PeterPonyu/scportal",
+      "deploy_repo": "PeterPonyu/scportal",
+      "visibility": { "homepage": "primary", "homepage_order": 1, "scportal": "hidden", "sitemap": true }
+    }
+  ]
+}
