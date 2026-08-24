@@ -54,6 +54,34 @@ const localWorkspacePaths = manifest.sites
   .filter((site) => site.availability === 'local_only' && typeof site.workspace_path === 'string')
   .map((site) => site.workspace_path)
 
+const rootDocuments = [
+  {
+    file: '.output/public/robots.txt',
+    required: ['User-agent: *', 'Allow: /scportal/', 'Sitemap: https://peterponyu.github.io/scportal/sitemap.xml']
+  },
+  {
+    file: '.output/public/sitemap.xml',
+    required: ['<?xml', '<urlset', 'https://peterponyu.github.io/scportal/']
+  }
+]
+
+for (const document of rootDocuments) {
+  const file = path.join(repoRoot, document.file)
+  if (!fs.existsSync(file)) {
+    failed = true
+    console.error(`FAIL ${document.file}: missing required deployment-root document`)
+    continue
+  }
+
+  const contents = fs.readFileSync(file, 'utf8')
+  for (const required of document.required) {
+    if (!contents.includes(required)) {
+      failed = true
+      console.error(`FAIL ${document.file}: missing required content ${required}`)
+    }
+  }
+}
+
 for (const check of checks) {
   const file = path.join(repoRoot, check.file)
   const html = fs.readFileSync(file, 'utf8')
