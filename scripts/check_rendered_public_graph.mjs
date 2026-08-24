@@ -48,8 +48,11 @@ const checks = [
 
 let failed = false
 const forbiddenUrls = manifest.sites
-  .filter((site) => site.boundary !== 'public')
+  .filter((site) => site.availability !== 'public' && site.canonical_url !== null)
   .map((site) => site.canonical_url)
+const localWorkspacePaths = manifest.sites
+  .filter((site) => site.availability === 'local_only' && typeof site.workspace_path === 'string')
+  .map((site) => site.workspace_path)
 
 for (const check of checks) {
   const file = path.join(repoRoot, check.file)
@@ -77,7 +80,7 @@ for (const check of checks) {
           failed = true
           console.error(`FAIL ${check.file}: missing destination name ${site.name}`)
         }
-        if (!html.includes(site.canonical_url)) {
+        if (site.canonical_url === null || !html.includes(site.canonical_url)) {
           failed = true
           console.error(`FAIL ${check.file}: missing destination URL ${site.canonical_url}`)
         }
@@ -94,6 +97,13 @@ for (const check of checks) {
     if (html.includes(forbiddenUrl)) {
       failed = true
       console.error(`FAIL ${check.file}: leaked forbidden hidden/local URL ${forbiddenUrl}`)
+    }
+  }
+
+  for (const workspacePath of localWorkspacePaths) {
+    if (html.includes(workspacePath)) {
+      failed = true
+      console.error(`FAIL ${check.file}: leaked local-only workspace path ${workspacePath}`)
     }
   }
 }
