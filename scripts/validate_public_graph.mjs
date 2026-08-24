@@ -26,7 +26,7 @@ export function validateManifest(manifest) {
   }
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const path = process.argv[2] ?? 'public-graph.manifest.json'
   const manifest = JSON.parse(fs.readFileSync(path, 'utf8'))
   validateManifest(manifest)
