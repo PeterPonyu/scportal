@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "2.0",
   "graph": {
     "identity_root": "homepage",
     "discovery_hub": "scportal",
@@ -23,7 +23,7 @@
       "name": "Homepage",
       "canonical_url": "https://peterponyu.github.io/",
       "role": "identity_root",
-      "boundary": "public",
+      "availability": "public",
       "indexing": {
         "mode": "index_follow"
       },
@@ -41,14 +41,15 @@
         "scccvgben",
         "gahib_site"
       ],
-      "repo": "PeterPonyu/PeterPonyu.github.io"
+      "source_repo": "PeterPonyu/PeterPonyu.github.io",
+      "deploy_repo": "PeterPonyu/PeterPonyu.github.io"
     },
     {
       "id": "scportal",
       "name": "SCPortal",
       "canonical_url": "https://peterponyu.github.io/scportal/",
       "role": "discovery_hub",
-      "boundary": "public",
+      "availability": "public",
       "indexing": {
         "mode": "index_follow"
       },
@@ -74,14 +75,15 @@
         "scccvgben",
         "gahib_site"
       ],
-      "repo": "PeterPonyu/scportal"
+      "source_repo": "PeterPonyu/scportal",
+      "deploy_repo": "PeterPonyu/scportal"
     },
     {
       "id": "liora_benchmarks",
       "name": "LAIOR Benchmarks",
       "canonical_url": "https://peterponyu.github.io/liora-ui/",
       "role": "microsite",
-      "boundary": "public",
+      "availability": "public",
       "indexing": {
         "mode": "index_follow"
       },
@@ -103,14 +105,15 @@
         "scportal",
         "scccvgben"
       ],
-      "repo": "PeterPonyu/liora-ui"
+      "source_repo": "PeterPonyu/liora-ui",
+      "deploy_repo": "PeterPonyu/liora-ui"
     },
     {
       "id": "mrna_intersection",
       "name": "mRNA Intersection",
       "canonical_url": "https://peterponyu.github.io/mrnapp-intersection/",
       "role": "utility",
-      "boundary": "public",
+      "availability": "public",
       "indexing": {
         "mode": "index_follow"
       },
@@ -131,14 +134,15 @@
         "homepage",
         "scportal"
       ],
-      "repo": "PeterPonyu/mrnapp-intersection"
+      "source_repo": "PeterPonyu/mrnapp-intersection",
+      "deploy_repo": "PeterPonyu/mrnapp-intersection"
     },
     {
       "id": "iaode_pages",
       "name": "iAODE Pages",
       "canonical_url": "https://peterponyu.github.io/iAODE/",
       "role": "public_surface",
-      "boundary": "public",
+      "availability": "public",
       "indexing": {
         "mode": "index_follow"
       },
@@ -160,14 +164,16 @@
         "scportal",
         "iaode_workspace"
       ],
-      "repo": "PeterPonyu/iAODE"
+      "source_repo": "PeterPonyu/iAODE",
+      "deploy_repo": "PeterPonyu/iAODE"
     },
     {
       "id": "iaode_workspace",
       "name": "iAODE Workspace",
-      "canonical_url": "https://peterponyu.github.io/iAODE/frontend/",
+      "canonical_url": null,
+      "workspace_path": "frontend/",
       "role": "local_first_workspace",
-      "boundary": "local_first",
+      "availability": "local_only",
       "indexing": {
         "mode": "noindex_nofollow"
       },
@@ -187,14 +193,15 @@
         "scportal",
         "iaode_pages"
       ],
-      "repo": "PeterPonyu/iAODE"
+      "source_repo": "PeterPonyu/iAODE",
+      "deploy_repo": null
     },
     {
       "id": "mccvae",
       "name": "MCCVAE",
       "canonical_url": "https://peterponyu.github.io/MCCVAE/",
       "role": "landing_only",
-      "boundary": "landing_only",
+      "availability": "landing_only",
       "indexing": {
         "mode": "noindex_follow"
       },
@@ -213,14 +220,15 @@
         "homepage",
         "scportal"
       ],
-      "repo": "PeterPonyu/MCCVAE"
+      "source_repo": "PeterPonyu/MCCVAE",
+      "deploy_repo": "PeterPonyu/MCCVAE"
     },
     {
       "id": "scccvgben",
       "name": "scCCVGBen",
       "canonical_url": "https://peterponyu.github.io/scccvgben-next/",
       "role": "benchmark_resource",
-      "boundary": "public",
+      "availability": "public",
       "indexing": {
         "mode": "index_follow"
       },
@@ -242,16 +250,17 @@
         "scportal",
         "liora_benchmarks"
       ],
-      "repo": "PeterPonyu/scCCVGBen"
+      "source_repo": "PeterPonyu/scCCVGBen",
+      "deploy_repo": "PeterPonyu/scccvgben-next"
     },
     {
       "id": "gahib_site",
       "name": "GAHIB Companion Site",
       "canonical_url": "https://peterponyu.github.io/gahib-site/",
       "role": "microsite",
-      "boundary": "public",
+      "availability": "public",
       "indexing": {
-        "mode": "noindex_follow"
+        "mode": "noindex_nofollow"
       },
       "visibility": {
         "homepage": "secondary",
@@ -270,7 +279,8 @@
         "homepage",
         "scportal"
       ],
-      "repo": "PeterPonyu/gahib-site"
+      "source_repo": "PeterPonyu/gahib-site",
+      "deploy_repo": "PeterPonyu/gahib-site"
     }
   ]
 }

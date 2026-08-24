@@ -1,0 +1,16 @@
+{
+  "version": "2.0",
+  "graph": { "identity_root": "homepage", "discovery_hub": "scportal" },
+  "sites": [
+    {
+      "id": "iaode_workspace",
+      "name": "iAODE Workspace",
+      "availability": "local_only",
+      "canonical_url": "https://peterponyu.github.io/iAODE/frontend/",
+      "source_repo": "PeterPonyu/iAODE",
+      "deploy_repo": null,
+      "indexing": { "mode": "noindex_nofollow" },
+      "visibility": { "homepage": "hidden", "homepage_order": null, "scportal": "hidden", "sitemap": false }
+    }
+  ]
+}

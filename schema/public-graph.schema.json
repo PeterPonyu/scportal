@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SCPortal public graph",
+  "type": "object",
+  "required": ["version", "graph", "sites"],
+  "properties": {
+    "version": { "const": "2.0" },
+    "graph": { "type": "object" },
+    "sites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "availability", "canonical_url", "source_repo", "deploy_repo", "indexing", "visibility"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "availability": { "enum": ["public", "landing_only", "local_only"] },
+          "canonical_url": { "type": ["string", "null"], "format": "uri" },
+          "workspace_path": { "type": "string" },
+          "source_repo": { "type": "string", "pattern": ".+/.+" },
+          "deploy_repo": { "type": ["string", "null"], "pattern": ".+/.+" },
+          "indexing": {
+            "type": "object",
+            "required": ["mode"],
+            "properties": {
+              "mode": { "enum": ["index_follow", "noindex_follow", "noindex_nofollow"] }
+            }
+          },
+          "visibility": {
+            "type": "object",
+            "required": ["sitemap"],
+            "properties": { "sitemap": { "type": "boolean" } }
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "availability": { "const": "local_only" } } },
+            "then": {
+              "properties": {
+                "canonical_url": { "type": "null" },
+                "deploy_repo": { "type": "null" },
+                "visibility": { "properties": { "sitemap": { "const": false } } }
+              }
+            },
+            "else": {
+              "properties": {
+                "canonical_url": { "type": "string", "format": "uri" },
+                "deploy_repo": { "type": "string", "pattern": ".+/.+" }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

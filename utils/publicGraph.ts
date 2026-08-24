@@ -6,8 +6,10 @@ type VisibilityMode = 'featured' | 'listed' | 'hidden'
 type PublicGraphSite = {
   id: string
   name: string
-  canonical_url: string
-  boundary: 'public' | 'local_first' | 'landing_only'
+  canonical_url: string | null
+  availability: 'public' | 'landing_only' | 'local_only'
+  source_repo: string
+  deploy_repo: string | null
   visibility: {
     scportal: VisibilityMode
   }
@@ -43,12 +45,13 @@ const ensure: (condition: unknown, message: string) => asserts condition = (cond
 const isScportalVisible = (site: PublicGraphSite) =>
   site.id !== 'scportal' &&
   site.id !== HOMEPAGE_ID &&
-  site.boundary === 'public' &&
+  site.availability === 'public' &&
+  site.canonical_url !== null &&
   site.visibility.scportal !== 'hidden'
 
 for (const site of graph.sites) {
   ensure(typeof site.name === 'string' && site.name.length > 0, 'Each public graph site needs a name.')
-  ensure(typeof site.canonical_url === 'string' && site.canonical_url.length > 0, `Site ${site.id} needs a canonical_url.`)
+  ensure(site.canonical_url === null || (typeof site.canonical_url === 'string' && site.canonical_url.length > 0), `Site ${site.id} needs a canonical_url or null.`)
   ensure(
     site.visibility?.scportal === 'featured' ||
     site.visibility?.scportal === 'listed' ||
@@ -81,7 +84,7 @@ export const scportalLink = resolveSite('scportal')
 
 const resolvePublicDestinationSite = (id: string): PublicGraphSite => {
   const site = resolveSite(id)
-  ensure(site.boundary === 'public', `Route destination ${id} must remain a public-boundary site.`)
+  ensure(site.availability === 'public' && site.canonical_url !== null, `Route destination ${id} must remain a publicly available site with a canonical URL.`)
   return site
 }
 

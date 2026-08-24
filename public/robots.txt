@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /scportal/
+
+Sitemap: https://peterponyu.github.io/scportal/sitemap.xml
