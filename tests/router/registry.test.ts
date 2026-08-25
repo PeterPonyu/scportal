@@ -7,7 +7,10 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import test from 'node:test'
 
-import { validateRouterDataDirectory } from '../../scripts/validate_router_data.mjs'
+import {
+  validateRouterDataDirectory,
+  validateRouterRegistry,
+} from '../../scripts/validate_router_data.mjs'
 
 const executeFile = promisify(execFile)
 const repositoryRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
@@ -39,6 +42,19 @@ async function mutateJsonFile<T>(directory: string, name: string, mutate: (value
   const path = join(directory, name)
   const value = JSON.parse(await readFile(path, 'utf8')) as T
   await writeFile(path, JSON.stringify(mutate(value)), 'utf8')
+}
+
+async function loadRegistryInput() {
+  const [datasets, methods, metrics, observations, taskProfiles, configTemplates, release] = await Promise.all([
+    loadJson<Array<Record<string, unknown>>>('datasets.json'),
+    loadJson<Array<Record<string, unknown>>>('methods.json'),
+    loadJson<Array<Record<string, unknown>>>('metrics.json'),
+    loadJson<Array<Record<string, unknown>>>('observations.synthetic.json'),
+    loadJson<Array<Record<string, unknown>>>('task-profiles.json'),
+    loadJson<Array<Record<string, unknown>>>('config-templates.json'),
+    loadJson<Record<string, unknown>>('release.json'),
+  ])
+  return { datasets, methods, metrics, observations, taskProfiles, configTemplates, release }
 }
 
 test('uses exact canonical IDs, complete primary metric groups, and auxiliary ARI', async () => {
@@ -244,16 +260,19 @@ test('rejects duplicate and noncanonical config-template outputs', async () => {
 })
 
 test('requires exactly one config template for every synthetic fixture method', async () => {
-  for (const mutate of [
-    (templates: unknown[]) => templates.slice(1),
-    (templates: unknown[]) => [...templates, structuredClone(templates[0])],
+  for (const { mutate, expected } of [
+    {
+      mutate: (templates: unknown[]) => templates.slice(1),
+      expected: /synthetic release requires exactly one template for method/i,
+    },
+    {
+      mutate: (templates: unknown[]) => [...templates, structuredClone(templates[0])],
+      expected: /duplicate config template for method/i,
+    },
   ]) {
     await withRegistryCopy(async (directory) => {
       await mutateJsonFile<unknown[]>(directory, 'config-templates.json', mutate)
-      await assert.rejects(
-        () => validateRouterDataDirectory(directory),
-        /synthetic release requires exactly one template for method/i,
-      )
+      await assert.rejects(() => validateRouterDataDirectory(directory), expected)
     })
   }
 })
@@ -265,4 +284,73 @@ test('rejects nondeterministic code-unit ordering in every synthetic registry ar
       await assert.rejects(() => validateRouterDataDirectory(directory), /synthetic .* must use ascending code-unit order/i)
     })
   }
+})
+
+test('requires explicit schema-valid release and config-template inputs for direct validation', async () => {
+  const registry = await loadRegistryInput()
+  const { release: _release, ...withoutRelease } = registry
+  const { configTemplates: _configTemplates, ...withoutConfigTemplates } = registry
+
+  await assert.rejects(() => validateRouterRegistry(withoutRelease), /release is required/i)
+  await assert.rejects(() => validateRouterRegistry({ ...registry, release: undefined }), /release is required/i)
+  await assert.rejects(() => validateRouterRegistry({ ...registry, release: null }), /release schema validation failed/i)
+  await assert.rejects(() => validateRouterRegistry(withoutConfigTemplates), /configTemplates must be an explicit array/i)
+  await assert.rejects(() => validateRouterRegistry({ ...registry, configTemplates: null }), /configTemplates must be an explicit array/i)
+})
+
+test('canonicalizes alias-form observations before synthetic coverage and ordering checks', async () => {
+  const registry = await loadRegistryInput()
+  registry.observations[0] = {
+    ...registry.observations[0],
+    datasetId: 'synthetic-branch-time-v1',
+    methodId: 'geometry-vae',
+    metricId: 'adjusted-rand-index',
+  }
+
+  const result = await validateRouterRegistry(registry)
+  assert.equal(result.observations.length, 63)
+  assert.deepEqual(
+    {
+      datasetId: result.observations[0].datasetId,
+      methodId: result.observations[0].methodId,
+      metricId: result.observations[0].metricId,
+    },
+    { datasetId: 'synthetic_branch_time', methodId: 'geometry_vae', metricId: 'ari' },
+  )
+})
+
+test('rejects alias and canonical observation forms as one duplicate key', async () => {
+  const registry = await loadRegistryInput()
+  registry.observations.push({
+    ...structuredClone(registry.observations[0]),
+    datasetId: 'synthetic-branch-time-v1',
+    methodId: 'geometry-vae',
+    metricId: 'adjusted-rand-index',
+  })
+
+  await assert.rejects(() => validateRouterRegistry(registry), /duplicate observation: synthetic_branch_time, geometry_vae, ari/i)
+})
+
+test('canonicalizes template method aliases for foreign keys and synthetic ordering', async () => {
+  const registry = await loadRegistryInput()
+  registry.configTemplates[0] = { ...registry.configTemplates[0], methodId: 'geometry-vae' }
+
+  const result = await validateRouterRegistry(registry)
+  assert.equal(result.configTemplates[0].methodId, 'geometry_vae')
+})
+
+test('rejects duplicate canonical template methods for a non-synthetic release', async () => {
+  const registry = await loadRegistryInput()
+  registry.release = {
+    id: 'router-evidence-real-v1',
+    synthetic: false,
+    description: 'Sparse non-synthetic evidence fixture.',
+  }
+  registry.configTemplates.push({
+    ...structuredClone(registry.configTemplates[0]),
+    methodId: 'geometry-vae',
+  })
+  registry.observations = registry.observations.slice(1)
+
+  await assert.rejects(() => validateRouterRegistry(registry), /duplicate config template for method: geometry_vae/i)
 })

@@ -212,7 +212,8 @@ function assertTemplateRegistry(configTemplates, methods, synthetic) {
 
   for (const configTemplate of configTemplates) {
     const method = methodsById.get(configTemplate.methodId)
-    if (!method) throw new Error(`unknown template method id: ${configTemplate.methodId}`)
+    if (!method) throw new Error(`unknown canonical template method id: ${configTemplate.methodId}`)
+    if (templateCounts.has(method.id)) throw new Error(`duplicate config template for method: ${method.id}`)
     if (configTemplate.version !== method.version) {
       throw new Error(`template version mismatch for ${method.id}: ${configTemplate.version}`)
     }
@@ -220,7 +221,7 @@ function assertTemplateRegistry(configTemplates, methods, synthetic) {
       || configTemplate.template.outputs.some((output, index) => output !== method.outputs[index])) {
       throw new Error(`template outputs mismatch for ${method.id}`)
     }
-    templateCounts.set(method.id, (templateCounts.get(method.id) ?? 0) + 1)
+    templateCounts.set(method.id, 1)
   }
 
   if (!synthetic) return
@@ -269,17 +270,19 @@ export async function validateRouterRegistry({
   metrics,
   observations,
   taskProfiles = [],
-  configTemplates = [],
+  configTemplates,
   release,
 }) {
   const validator = await createRouterDataValidator()
+  if (release === undefined) throw new Error('release is required')
+  const parsedRelease = validator.parseRelease(release)
+  if (!Array.isArray(configTemplates)) throw new Error('configTemplates must be an explicit array')
   const parsedDatasets = datasets.map(validator.parseDataset)
   const parsedMethods = methods.map(validator.parseMethod)
   const parsedMetrics = metrics.map(validator.parseMetric)
   const parsedObservations = observations.map(validator.parseObservation)
   const parsedTaskProfiles = taskProfiles.map(validator.parseTaskProfile)
   const parsedConfigTemplates = configTemplates.map(validator.parseConfigTemplate)
-  const parsedRelease = release === undefined ? undefined : validator.parseRelease(release)
 
   validator.assertUniqueEntityIds('dataset', parsedDatasets)
   validator.assertUniqueEntityIds('method', parsedMethods)
@@ -290,17 +293,22 @@ export async function validateRouterRegistry({
   const metricAliases = aliasesByCanonicalId('metric', parsedMetrics)
   const methodVersions = new Map(parsedMethods.map((method) => [method.id, method.version]))
   const observationKeys = new Set()
+  const canonicalObservations = parsedObservations.map((observation) => ({
+    ...observation,
+    datasetId: resolveEntityId('dataset', observation.datasetId, datasetAliases),
+    methodId: resolveEntityId('method', observation.methodId, methodAliases),
+    metricId: resolveEntityId('metric', observation.metricId, metricAliases),
+  }))
 
-  for (const observation of parsedObservations) {
-    const datasetId = resolveEntityId('dataset', observation.datasetId, datasetAliases)
-    const methodId = resolveEntityId('method', observation.methodId, methodAliases)
-    const metricId = resolveEntityId('metric', observation.metricId, metricAliases)
+  for (const observation of canonicalObservations) {
     if (!Number.isFinite(observation.rawValue)) throw new Error('observation rawValue must be finite')
-    const key = [datasetId, methodId, metricId, observation.provenance.runConfigId].join('\u0000')
-    if (observationKeys.has(key)) throw new Error(`duplicate observation: ${datasetId}, ${methodId}, ${metricId}, ${observation.provenance.runConfigId}`)
+    const key = [observation.datasetId, observation.methodId, observation.metricId, observation.provenance.runConfigId].join('\u0000')
+    if (observationKeys.has(key)) {
+      throw new Error(`duplicate observation: ${observation.datasetId}, ${observation.methodId}, ${observation.metricId}, ${observation.provenance.runConfigId}`)
+    }
     observationKeys.add(key)
-    if (observation.provenance.methodVersion !== methodVersions.get(methodId)) {
-      throw new Error(`method version mismatch for ${methodId}: ${observation.provenance.methodVersion}`)
+    if (observation.provenance.methodVersion !== methodVersions.get(observation.methodId)) {
+      throw new Error(`method version mismatch for ${observation.methodId}: ${observation.provenance.methodVersion}`)
     }
   }
 
@@ -308,15 +316,25 @@ export async function validateRouterRegistry({
     for (const methodId of profile.candidateMethodIds ?? []) resolveEntityId('method', methodId, methodAliases)
   }
 
-  assertTemplateRegistry(parsedConfigTemplates, parsedMethods, parsedRelease?.synthetic === true)
-  if (parsedRelease?.synthetic === true) {
+  const canonicalConfigTemplates = parsedConfigTemplates.map((configTemplate) => {
+    let methodId
+    try {
+      methodId = resolveEntityId('method', configTemplate.methodId, methodAliases)
+    } catch {
+      throw new Error(`unknown template method id: ${configTemplate.methodId}`)
+    }
+    return { ...configTemplate, methodId }
+  })
+
+  assertTemplateRegistry(canonicalConfigTemplates, parsedMethods, parsedRelease.synthetic)
+  if (parsedRelease.synthetic) {
     assertSyntheticFixture({
       datasets: parsedDatasets,
       methods: parsedMethods,
       metrics: parsedMetrics,
-      observations: parsedObservations,
+      observations: canonicalObservations,
       taskProfiles: parsedTaskProfiles,
-      configTemplates: parsedConfigTemplates,
+      configTemplates: canonicalConfigTemplates,
     })
   }
 
@@ -324,9 +342,9 @@ export async function validateRouterRegistry({
     datasets: parsedDatasets,
     methods: parsedMethods,
     metrics: parsedMetrics,
-    observations: parsedObservations,
+    observations: canonicalObservations,
     taskProfiles: parsedTaskProfiles,
-    configTemplates: parsedConfigTemplates,
+    configTemplates: canonicalConfigTemplates,
     release: parsedRelease,
   }
 }
