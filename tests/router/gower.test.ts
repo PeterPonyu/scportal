@@ -78,3 +78,22 @@ test('rejects negative, non-finite, and inherited feature weights', () => {
     assert.throws(() => gowerSimilarity(profile, dataset, invalidWeights), /weights/i)
   }
 })
+
+test('does not double-count perturbation inside aggregated priors', () => {
+  const profileWithLegacyPerturbationPrior: TaskProfile = {
+    ...profile,
+    priors: { labels: true, perturbation: true },
+    perturbation: false,
+  }
+  const datasetWithLegacyPerturbationPrior: DatasetContext = {
+    ...dataset,
+    priors: { labels: true, perturbation: false },
+    perturbation: false,
+  }
+
+  assert.equal(gowerSimilarity(
+    profileWithLegacyPerturbationPrior,
+    datasetWithLegacyPerturbationPrior,
+    { modality: 0, scale: 0, topology: 0, priors: 1, perturbation: 1 },
+  ), 1)
+})

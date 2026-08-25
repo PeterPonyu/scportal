@@ -70,3 +70,27 @@ test('assigns tied values the average rank and preserves only observed methods',
   ])
   assert.equal(normalized.some((entry) => entry.methodId === 'method_missing'), false)
 })
+
+test('keeps NUL-containing dataset and metric IDs in distinct direction-aware panels', () => {
+  const collisionMetrics = new Map<string, MetricDefinition>([
+    ['higher\u0000split', { id: 'higher\u0000split', aliases: [], group: 'trajectory', direction: 'higher_is_better', auxiliary: false, description: 'Higher is better.' }],
+    ['split', { id: 'split', aliases: [], group: 'resources', direction: 'lower_is_better', auxiliary: false, description: 'Lower is better.' }],
+  ])
+
+  const normalized = percentileNormalize([
+    observation('dataset', 'method_b', 'higher\u0000split', 20),
+    observation('dataset\u0000higher', 'method_d', 'split', 20),
+    observation('dataset', 'method_a', 'higher\u0000split', 10),
+    observation('dataset\u0000higher', 'method_c', 'split', 10),
+  ], collisionMetrics)
+
+  assert.deepEqual(
+    normalized.map(({ datasetId, metricId, methodId, percentile }) => ({ datasetId, metricId, methodId, percentile })),
+    [
+      { datasetId: 'dataset', metricId: 'higher\u0000split', methodId: 'method_a', percentile: 0 },
+      { datasetId: 'dataset', metricId: 'higher\u0000split', methodId: 'method_b', percentile: 1 },
+      { datasetId: 'dataset\u0000higher', metricId: 'split', methodId: 'method_c', percentile: 1 },
+      { datasetId: 'dataset\u0000higher', metricId: 'split', methodId: 'method_d', percentile: 0 },
+    ],
+  )
+})

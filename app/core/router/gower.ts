@@ -15,7 +15,7 @@ const scalePositions = {
   gt_200k: 1,
 } as const
 
-const priorKeys: readonly PriorKey[] = ['labels', 'perturbation', 'root_state', 'terminal_states', 'time']
+const priorKeys: readonly PriorKey[] = ['labels', 'root_state', 'terminal_states', 'time']
 
 function requireWeight(weights: ContextFeatureWeights, feature: keyof ContextFeatureWeights): number {
   if (!Object.hasOwn(weights, feature)) throw new Error(`weights must have an own ${feature} value`)

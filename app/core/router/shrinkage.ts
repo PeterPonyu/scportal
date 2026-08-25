@@ -15,28 +15,31 @@ export function shrunkenEstimate(
   samples: readonly ConditionalSample[],
   priorMean: number,
   alpha: number,
+  eligibleDatasets: number = samples.length,
 ): ConditionalEstimate {
   if (!Number.isFinite(priorMean)) throw new Error('priorMean must be finite')
   if (!Number.isFinite(alpha) || alpha <= 0) throw new Error('alpha must be finite and positive')
+  if (!Number.isInteger(eligibleDatasets) || eligibleDatasets < 0 || eligibleDatasets < samples.length) {
+    throw new Error('eligibleDatasets must be a nonnegative integer at least as large as the sample count')
+  }
 
   let evidenceWeight = 0
   let weightedValue = 0
   let squaredWeight = 0
-  let contributingSamples = 0
   for (const sample of samples) {
-    if (!Number.isFinite(sample.similarity) || sample.similarity < 0) {
-      throw new Error('similarity must be finite and non-negative')
+    if (!Number.isFinite(sample.similarity) || sample.similarity < 0 || sample.similarity > 1) {
+      throw new Error('similarity must be finite and between 0 and 1')
     }
     if (!Number.isFinite(sample.value)) throw new Error('value must be finite')
     if (sample.similarity === 0) continue
     evidenceWeight += sample.similarity
     weightedValue += sample.similarity * sample.value
     squaredWeight += sample.similarity ** 2
-    contributingSamples += 1
   }
 
+  const coverage = eligibleDatasets === 0 ? 0 : samples.length / eligibleDatasets
   if (evidenceWeight === 0) {
-    return { mean: priorMean, variance: 0, effectiveDatasets: 0, evidenceWeight: 0, coverage: 0 }
+    return { mean: priorMean, variance: 0, effectiveDatasets: 0, evidenceWeight: 0, coverage }
   }
 
   const observedMean = weightedValue / evidenceWeight
@@ -50,6 +53,6 @@ export function shrunkenEstimate(
     variance: weightedSquaredDeviation / evidenceWeight,
     effectiveDatasets: (evidenceWeight ** 2) / squaredWeight,
     evidenceWeight,
-    coverage: contributingSamples / samples.length,
+    coverage,
   }
 }
