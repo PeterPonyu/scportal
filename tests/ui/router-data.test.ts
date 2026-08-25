@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import { describe, it } from 'node:test'
 
 import { buildRouterAssets } from '../../scripts/build_router_assets.mjs'
-import { ROUTER_VERSION } from '../../app/services/routerData.ts'
+import { ROUTER_VERSION, loadRouterRelease } from '../../app/services/routerData.ts'
 import { releaseEvidenceDigest, sha256Hex, canonicalJson } from '../../app/core/router/release-digest.ts'
 
 describe('router browser assets', () => {
@@ -24,6 +24,10 @@ describe('router browser assets', () => {
       assert.equal(release.id, 'router-evidence-synthetic-v1')
       assert.match(release.configDigest, /^[a-f0-9]{64}$/)
       assert.match(release.evidenceDigest, /^[a-f0-9]{64}$/)
+      assert.equal(
+        release.configDigest,
+        sha256Hex(canonicalJson({ methods: catalog.methods, templates: catalog.templates })),
+      )
       assert.equal(release.routerVersion, ROUTER_VERSION)
       const second = await buildRouterAssets(directory)
       assert.deepEqual(second, written)
@@ -50,6 +54,37 @@ describe('router browser assets', () => {
       assert.equal(release.evidenceDigest, expected)
       assert.notEqual(sha256Hex(canonicalJson({ tamper: true })), release.evidenceDigest)
     } finally {
+      await rm(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('projects EvidenceRelease fields from release.json and drops routerVersion', async () => {
+    const directory = await mkdtemp(resolve(tmpdir(), 'scportal-router-assets-'))
+    const previousFetch = globalThis.fetch
+    try {
+      await buildRouterAssets(directory)
+      const onDisk = JSON.parse(await readFile(resolve(directory, 'release.json'), 'utf8'))
+      assert.equal(onDisk.routerVersion, ROUTER_VERSION)
+      globalThis.fetch = async (input) => {
+        const url = String(input)
+        assert.equal(url, `${directory}/release.json`)
+        return new Response(await readFile(resolve(directory, 'release.json'), 'utf8'), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        })
+      }
+      const release = await loadRouterRelease(directory)
+      assert.deepEqual(release, {
+        id: onDisk.id,
+        synthetic: onDisk.synthetic,
+        description: onDisk.description,
+        configDigest: onDisk.configDigest,
+        evidenceDigest: onDisk.evidenceDigest,
+      })
+      assert.deepEqual(Object.keys(release).sort(), ['configDigest', 'description', 'evidenceDigest', 'id', 'synthetic'])
+      assert.equal(Object.hasOwn(release, 'routerVersion'), false)
+    } finally {
+      globalThis.fetch = previousFetch
       await rm(directory, { recursive: true, force: true })
     }
   })

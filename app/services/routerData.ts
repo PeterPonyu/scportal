@@ -22,5 +22,12 @@ export async function loadObservationGroups(groups: string[], base = ROUTER_DATA
 export async function loadRouterRelease(base = ROUTER_DATA_BASE) {
   const response = await fetch(`${base}/release.json`)
   if (!response.ok) throw new Error(`router release HTTP ${response.status}`)
-  return response.json()
+  const release = await response.json()
+  return {
+    id: release.id,
+    synthetic: release.synthetic,
+    description: release.description,
+    configDigest: release.configDigest,
+    evidenceDigest: release.evidenceDigest,
+  }
 }
