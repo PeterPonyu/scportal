@@ -1,0 +1,32 @@
+[
+  {
+    "id": "synthetic_linear_small",
+    "aliases": ["synthetic-linear-small-v1"],
+    "studyGroup": "synthetic-contract-fixture-linear",
+    "modality": "scrna",
+    "scale": "lt_10k",
+    "topology": "linear",
+    "priors": {"time": true, "root_state": true},
+    "perturbation": false
+  },
+  {
+    "id": "synthetic_branch_time",
+    "aliases": ["synthetic-branch-time-v1"],
+    "studyGroup": "synthetic-contract-fixture-branch",
+    "modality": "scrna",
+    "scale": "10k_50k",
+    "topology": "bifurcating",
+    "priors": {"time": true, "terminal_states": true},
+    "perturbation": false
+  },
+  {
+    "id": "synthetic_large_sparse",
+    "aliases": ["synthetic-large-sparse-v1"],
+    "studyGroup": "synthetic-contract-fixture-sparse",
+    "modality": "scrna",
+    "scale": "50k_200k",
+    "topology": "mixed",
+    "priors": {"labels": false, "perturbation": true},
+    "perturbation": true
+  }
+]

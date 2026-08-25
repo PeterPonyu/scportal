@@ -1,0 +1,9 @@
+[
+  {"id":"intrinsic_geometry","aliases":["geometry"],"group":"latent_geometry","direction":"higher_is_better","auxiliary":false,"description":"Synthetic intrinsic-geometry fixture score; not biological evidence."},
+  {"id":"continuity_preservation","aliases":["continuity"],"group":"continuity","direction":"higher_is_better","auxiliary":false,"description":"Synthetic continuity fixture score; not biological evidence."},
+  {"id":"trajectory_directionality","aliases":["directionality"],"group":"trajectory","direction":"higher_is_better","auxiliary":false,"description":"Synthetic trajectory-direction fixture score; not biological evidence."},
+  {"id":"seed_stability","aliases":["stability"],"group":"stability","direction":"higher_is_better","auxiliary":false,"description":"Synthetic seed-stability fixture score; not biological evidence."},
+  {"id":"marker_consistency","aliases":["marker-consistency"],"group":"biology","direction":"higher_is_better","auxiliary":false,"description":"Synthetic marker-consistency fixture score; not biological evidence."},
+  {"id":"runtime_minutes","aliases":["runtime"],"group":"resources","direction":"lower_is_better","auxiliary":false,"description":"Synthetic runtime fixture score in minutes; not biological evidence."},
+  {"id":"ari","aliases":["adjusted-rand-index"],"group":"biology","direction":"higher_is_better","auxiliary":true,"description":"Synthetic auxiliary label-agreement fixture score; not biological evidence."}
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "id": "quick_trajectory",
+    "modality": "scrna",
+    "scale": "10k_50k",
+    "goals": ["trajectory_reconstruction"],
+    "topology": "bifurcating",
+    "priors": {"time": true, "root_state": "unknown", "terminal_states": "unknown", "labels": "unknown", "perturbation": false},
+    "perturbation": false,
+    "weights": {"latent_geometry": 0.2, "continuity": 0.25, "trajectory": 0.3, "stability": 0.1, "biology": 0.1, "resources": 0.05},
+    "maxResourceTier": 2,
+    "minEffectiveDatasets": 2,
+    "minCriticalCoverage": 0.6,
+    "seed": 20260823
+  },
+  {
+    "id": "advanced_trajectory",
+    "modality": "scrna",
+    "scale": "50k_200k",
+    "goals": ["trajectory_reconstruction", "fate_decision"],
+    "topology": "mixed",
+    "priors": {"time": "unknown", "root_state": "unknown", "terminal_states": true, "labels": false, "perturbation": "unknown"},
+    "perturbation": "unknown",
+    "weights": {"latent_geometry": 0.15, "continuity": 0.2, "trajectory": 0.3, "stability": 0.1, "biology": 0.15, "resources": 0.1},
+    "maxResourceTier": 3,
+    "minEffectiveDatasets": 2,
+    "minCriticalCoverage": 0.6,
+    "seed": 20260823,
+    "candidateMethodIds": ["geometry_vae", "graph_contrastive", "neural_ode"]
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "id": "geometry_vae",
+    "aliases": ["geometry-vae"],
+    "version": "1.0.0",
+    "modalities": ["scrna"],
+    "maxScale": "50k_200k",
+    "outputs": ["latent", "metadata"],
+    "requiredPriors": [],
+    "supportedGoals": ["latent_representation", "trajectory_reconstruction"],
+    "resourceTier": 1,
+    "installCommand": "echo 'synthetic-contract-fixture geometry_vae==1.0.0; not executable'",
+    "license": "Synthetic fixture; no software license",
+    "sourceUrl": "https://example.org/scportal-router-fixtures/geometry_vae/source",
+    "docsUrl": "https://example.org/scportal-router-fixtures/geometry_vae/docs",
+    "paperUrl": "https://example.org/scportal-router-fixtures/geometry_vae/paper",
+    "executable": false
+  },
+  {
+    "id": "graph_contrastive",
+    "aliases": ["graph-contrastive"],
+    "version": "1.0.0",
+    "modalities": ["scrna"],
+    "maxScale": "gt_200k",
+    "outputs": ["latent", "graph", "metadata"],
+    "requiredPriors": [],
+    "supportedGoals": ["latent_representation", "trajectory_reconstruction", "lineage_contribution"],
+    "resourceTier": 2,
+    "installCommand": "echo 'synthetic-contract-fixture graph_contrastive==1.0.0; not executable'",
+    "license": "Synthetic fixture; no software license",
+    "sourceUrl": "https://example.org/scportal-router-fixtures/graph_contrastive/source",
+    "docsUrl": "https://example.org/scportal-router-fixtures/graph_contrastive/docs",
+    "paperUrl": "https://example.org/scportal-router-fixtures/graph_contrastive/paper",
+    "executable": false
+  },
+  {
+    "id": "neural_ode",
+    "aliases": ["neural-ode"],
+    "version": "1.0.0",
+    "modalities": ["scrna"],
+    "maxScale": "50k_200k",
+    "outputs": ["latent", "pseudotime", "branch", "metadata"],
+    "requiredPriors": ["time"],
+    "supportedGoals": ["trajectory_reconstruction", "fate_decision", "lineage_contribution"],
+    "resourceTier": 3,
+    "installCommand": "echo 'synthetic-contract-fixture neural_ode==1.0.0; not executable'",
+    "license": "Synthetic fixture; no software license",
+    "sourceUrl": "https://example.org/scportal-router-fixtures/neural_ode/source",
+    "docsUrl": "https://example.org/scportal-router-fixtures/neural_ode/docs",
+    "paperUrl": "https://example.org/scportal-router-fixtures/neural_ode/paper",
+    "executable": false
+  }
+]

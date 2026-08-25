@@ -1,0 +1,5 @@
+[
+  {"methodId":"geometry_vae","version":"1.0.0","synthetic":true,"template":{"outputs":["latent","metadata"]}},
+  {"methodId":"graph_contrastive","version":"1.0.0","synthetic":true,"template":{"outputs":["latent","graph","metadata"]}},
+  {"methodId":"neural_ode","version":"1.0.0","synthetic":true,"template":{"outputs":["latent","pseudotime","branch","metadata"]}}
+]
