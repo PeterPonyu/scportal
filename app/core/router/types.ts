@@ -78,3 +78,63 @@ export interface TaskProfile {
   seed: number
   candidateMethodIds?: string[]
 }
+
+export interface RouterInput {
+  profile: TaskProfile
+  datasets: DatasetContext[]
+  methods: MethodCapability[]
+  metrics: MetricDefinition[]
+  observations: BenchmarkObservation[]
+  evidenceVersion: string
+  routerVersion: string
+}
+
+export interface RouterOptions {
+  contextFeatureWeights?: {
+    modality: number
+    scale: number
+    topology: number
+    priors: number
+    perturbation: number
+  }
+  shrinkageAlpha?: number
+  bootstrapReplicates?: number
+  outrankingDelta?: number
+  minimumTopThreeRetention?: number
+}
+
+export interface EvidenceStatement {
+  text: string
+  metricIds: string[]
+  datasetIds: string[]
+  synthetic: boolean
+}
+
+export interface EvidenceLink {
+  paperId: string
+  locator: string
+  datasetId: string
+  metricId: string
+  synthetic: boolean
+}
+
+export interface Recommendation {
+  methodId: string
+  roles: RecommendationRole[]
+  paretoLayer: number
+  outrankingFlow: number
+  conservativeUtility: number
+  confidence: 'high' | 'medium' | 'low'
+  topThreeRetention: number
+  effectiveDatasets: number
+  criticalCoverage: number
+  positiveEvidence: string[]
+  positiveEvidenceDetails: EvidenceStatement[]
+  evidenceLinks: EvidenceLink[]
+  limitations: string[]
+  excludedAlternatives: import('./constraints.ts').Exclusion[]
+}
+
+export type RouterOutcome =
+  | { status: 'OK'; recommendations: Recommendation[]; seed: number; evidenceVersion: string; routerVersion: string }
+  | { status: 'REFUSED'; code: RefusalCode; candidates: string[]; evidenceGaps: string[]; seed: number; evidenceVersion: string; routerVersion: string }
