@@ -101,6 +101,10 @@ function typedArray<T>(value: unknown, label: string, valid: (item: unknown) => 
   return success(parsed.value as T[])
 }
 
+function uniqueStrings(values: readonly string[], label: string, normalize: (value: string) => string = (value) => value): Parsed<string[]> {
+  return new Set(values.map(normalize)).size === values.length ? success([...values]) : failure(`${label} contains duplicates`)
+}
+
 function parsePriors(value: unknown, allowUnknown: boolean): Parsed<TaskProfile['priors']> {
   const parsed = exactRecord(value, [], priorKeys)
   if (!parsed.ok) return failure(`priors ${parsed.error}`)
@@ -115,7 +119,8 @@ function parsePriors(value: unknown, allowUnknown: boolean): Parsed<TaskProfile[
 }
 
 function parseAliases(value: unknown): Parsed<string[]> {
-  return typedArray(value, 'aliases', identifier)
+  const parsed = typedArray(value, 'aliases', identifier)
+  return !parsed.ok ? parsed : uniqueStrings(parsed.value, 'aliases', (alias) => alias.toLowerCase())
 }
 
 function parseDataset(value: unknown): Parsed<DatasetContext> {
@@ -135,7 +140,8 @@ function parseMethod(value: unknown): Parsed<MethodCapability> {
   const parsedOutputs = typedArray(parsed.value.outputs, 'outputs', (item): item is MethodCapability['outputs'][number] => inSet(item, outputs), 1)
   const requiredPriors = typedArray(parsed.value.requiredPriors, 'requiredPriors', (item): item is MethodCapability['requiredPriors'][number] => inSet(item, priorKeys))
   const supportedGoals = typedArray(parsed.value.supportedGoals, 'supportedGoals', (item): item is MethodCapability['supportedGoals'][number] => inSet(item, goals), 1)
-  if (!identifier(parsed.value.id) || !aliases.ok || !nonempty(parsed.value.version) || !parsedModalities.ok || !inSet(parsed.value.maxScale, scales.slice(0, 4)) || !parsedOutputs.ok || !requiredPriors.ok || !supportedGoals.ok || ![1, 2, 3].includes(parsed.value.resourceTier as number) || !nonempty(parsed.value.installCommand) || !nonempty(parsed.value.license) || !absoluteHttpUrl(parsed.value.sourceUrl) || !absoluteHttpUrl(parsed.value.docsUrl) || !absoluteHttpUrl(parsed.value.paperUrl) || typeof parsed.value.executable !== 'boolean') return failure('method has invalid fields')
+  const uniqueOutputs = parsedOutputs.ok ? uniqueStrings(parsedOutputs.value, 'outputs') : parsedOutputs
+  if (!identifier(parsed.value.id) || !aliases.ok || !nonempty(parsed.value.version) || !parsedModalities.ok || !inSet(parsed.value.maxScale, scales.slice(0, 4)) || !parsedOutputs.ok || !uniqueOutputs.ok || !requiredPriors.ok || !supportedGoals.ok || ![1, 2, 3].includes(parsed.value.resourceTier as number) || !nonempty(parsed.value.installCommand) || !nonempty(parsed.value.license) || !absoluteHttpUrl(parsed.value.sourceUrl) || !absoluteHttpUrl(parsed.value.docsUrl) || !absoluteHttpUrl(parsed.value.paperUrl) || typeof parsed.value.executable !== 'boolean') return failure('method has invalid fields')
   return success({ id: parsed.value.id, aliases: aliases.value, version: parsed.value.version, modalities: parsedModalities.value, maxScale: parsed.value.maxScale as MethodCapability['maxScale'], outputs: parsedOutputs.value, requiredPriors: requiredPriors.value, supportedGoals: supportedGoals.value, resourceTier: parsed.value.resourceTier as 1 | 2 | 3, installCommand: parsed.value.installCommand, license: parsed.value.license, sourceUrl: parsed.value.sourceUrl, docsUrl: parsed.value.docsUrl, paperUrl: parsed.value.paperUrl, executable: parsed.value.executable })
 }
 
@@ -184,7 +190,9 @@ function parseProfile(value: unknown): Parsed<TaskProfile> {
   const priors = parsePriors(parsed.value.priors, true)
   const weights = parseWeights(parsed.value.weights)
   const candidates = Object.hasOwn(parsed.value, 'candidateMethodIds') ? typedArray(parsed.value.candidateMethodIds, 'candidateMethodIds', identifier) : success<string[] | undefined>(undefined)
-  if (!identifier(parsed.value.id) || !inSet(parsed.value.modality, modalities) || !inSet(parsed.value.scale, scales) || !parsedGoals.ok || !inSet(parsed.value.topology, topologies) || !priors.ok || (typeof parsed.value.perturbation !== 'boolean' && parsed.value.perturbation !== 'unknown') || !weights.ok || ![1, 2, 3].includes(parsed.value.maxResourceTier as number) || !Number.isInteger(parsed.value.minEffectiveDatasets) || (parsed.value.minEffectiveDatasets as number) < 1 || !Number.isFinite(parsed.value.minCriticalCoverage) || (parsed.value.minCriticalCoverage as number) < 0 || (parsed.value.minCriticalCoverage as number) > 1 || !Number.isInteger(parsed.value.seed) || (parsed.value.seed as number) < 0 || (parsed.value.seed as number) > 0xffffffff || !candidates.ok) return failure('profile has invalid fields')
+  const uniqueGoals = parsedGoals.ok ? uniqueStrings(parsedGoals.value, 'goals') : parsedGoals
+  const uniqueCandidates = candidates.ok && candidates.value !== undefined ? uniqueStrings(candidates.value, 'candidateMethodIds') : candidates
+  if (!identifier(parsed.value.id) || !inSet(parsed.value.modality, modalities) || !inSet(parsed.value.scale, scales) || !parsedGoals.ok || !uniqueGoals.ok || !inSet(parsed.value.topology, topologies) || !priors.ok || (typeof parsed.value.perturbation !== 'boolean' && parsed.value.perturbation !== 'unknown') || !weights.ok || ![1, 2, 3].includes(parsed.value.maxResourceTier as number) || !Number.isInteger(parsed.value.minEffectiveDatasets) || (parsed.value.minEffectiveDatasets as number) < 1 || !Number.isFinite(parsed.value.minCriticalCoverage) || (parsed.value.minCriticalCoverage as number) < 0 || (parsed.value.minCriticalCoverage as number) > 1 || !Number.isInteger(parsed.value.seed) || (parsed.value.seed as number) < 0 || (parsed.value.seed as number) > 0xffffffff || !candidates.ok || !uniqueCandidates.ok) return failure('profile has invalid fields')
   return success({ id: parsed.value.id, modality: parsed.value.modality, scale: parsed.value.scale, goals: parsedGoals.value, topology: parsed.value.topology, priors: priors.value, perturbation: parsed.value.perturbation, weights: weights.value, maxResourceTier: parsed.value.maxResourceTier as 1 | 2 | 3, minEffectiveDatasets: parsed.value.minEffectiveDatasets as number, minCriticalCoverage: parsed.value.minCriticalCoverage as number, seed: parsed.value.seed as number, ...(candidates.value === undefined ? {} : { candidateMethodIds: candidates.value }) })
 }
 

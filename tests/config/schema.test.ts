@@ -55,9 +55,21 @@ test('rejects exact-schema violations, unsafe own keys, non-data fields, unsafe 
   for (const [value, expected] of cases) assert.throws(() => validateExecutableConfig(value), expected)
 })
 
+test('accepts calendar-correct RFC3339 timestamps including the 2016 UTC leap second', () => {
+  const timestamps = ['2024-02-29T23:59:59+14:30', '2016-12-31T23:59:60Z']
+  for (const generatedAt of timestamps) {
+    const parsed = validateExecutableConfig({ ...executable, provenance: { ...executable.provenance, generatedAt } })
+    assert.equal(parsed.provenance.generatedAt, generatedAt)
+  }
+  for (const generatedAt of ['2023-02-29T00:00:00Z', '2024-02-30T00:00:00Z', '2016-12-31T23:59:60+00:00', '2015-12-31T23:59:60Z', '2024-01-01T00:00:00+24:00']) {
+    assert.throws(() => validateExecutableConfig({ ...executable, provenance: { ...executable.provenance, generatedAt } }), /timestamp|date-time/i)
+  }
+})
+
 test('validates template defaults against constraints and rejects unsafe Python parameter names and invalid constraint metadata', () => {
   const candidate = {
     methodId: 'graph_contrastive', version: '1.0.0', packageName: 'graph-contrastive', importName: 'graph_contrastive', constructor: 'GraphContrastive',
+    outputs: ['latent', 'metadata'],
     defaultParameters: { epochs: 10 }, allowedParameters: { epochs: { type: 'number', minimum: 1, integer: true } },
     outputKeys: { latent: 'X_graph', metadata: 'graph_metadata' }, downstream: { scRL: { decisionOutput: 'decision' } },
   }

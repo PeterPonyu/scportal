@@ -11,6 +11,7 @@ export const fixtureMethod: MethodCapability = {
 
 export const fixtureTemplate: MethodConfigTemplate = {
   methodId: fixtureMethod.id, version: fixtureMethod.version, packageName: 'graph-contrastive', importName: 'graph_contrastive', constructor: 'GraphContrastive',
+  outputs: ['latent', 'graph', 'metadata'],
   defaultParameters: { epochs: 10, learningRate: 0.1, useGpu: false, label: "O'Reilly" },
   allowedParameters: {
     epochs: { type: 'number', minimum: 1, maximum: 100, integer: true }, learningRate: { type: 'number', minimum: 0, maximum: 1 },
@@ -36,7 +37,7 @@ export const fixtureOutcome: RouterOutcome = {
   }],
 }
 
-export const fixtureCompiler = createCompilerEngine([fixtureMethod], [{ methodId: fixtureTemplate.methodId, version: fixtureTemplate.version, synthetic: true, template: { outputs: ['latent', 'graph', 'metadata'], packageName: fixtureTemplate.packageName, importName: fixtureTemplate.importName, constructor: fixtureTemplate.constructor, defaultParameters: fixtureTemplate.defaultParameters, allowedParameters: fixtureTemplate.allowedParameters, outputKeys: fixtureTemplate.outputKeys, downstream: fixtureTemplate.downstream } }])
+export const fixtureCompiler = createCompilerEngine([fixtureMethod], [{ methodId: fixtureTemplate.methodId, version: fixtureTemplate.version, synthetic: true, template: { outputs: fixtureTemplate.outputs, packageName: fixtureTemplate.packageName, importName: fixtureTemplate.importName, constructor: fixtureTemplate.constructor, defaultParameters: fixtureTemplate.defaultParameters, allowedParameters: fixtureTemplate.allowedParameters, outputKeys: fixtureTemplate.outputKeys, downstream: fixtureTemplate.downstream } }])
 
 export function createFixtureCompiler(methods: readonly unknown[], templates: readonly unknown[]) {
   return createCompilerEngine(methods, templates)

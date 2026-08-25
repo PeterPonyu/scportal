@@ -8,7 +8,7 @@
     "id": { "type": "string", "minLength": 1, "pattern": "\\S" },
     "modality": { "enum": ["scrna", "scatac", "multiome"] },
     "scale": { "enum": ["lt_10k", "10k_50k", "50k_200k", "gt_200k", "unknown"] },
-    "goals": { "type": "array", "minItems": 1, "items": { "enum": ["latent_representation", "trajectory_reconstruction", "fate_decision", "lineage_contribution"] } },
+    "goals": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["latent_representation", "trajectory_reconstruction", "fate_decision", "lineage_contribution"] } },
     "topology": { "enum": ["linear", "bifurcating", "multibranch", "cyclic", "mixed", "unknown"] },
     "priors": {
       "type": "object",
@@ -26,6 +26,6 @@
     "minEffectiveDatasets": { "type": "integer", "minimum": 1 },
     "minCriticalCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
     "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
-    "candidateMethodIds": { "type": "array", "items": { "type": "string", "minLength": 1, "pattern": "\\S" } }
+    "candidateMethodIds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "pattern": "\\S" } }
   }
 }

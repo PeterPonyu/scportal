@@ -110,3 +110,50 @@ test('does not retain caller registry or parameter mutations after compilation',
   assert.equal(compiled.config.parameters.epochs, 20)
   assert.equal(compiled.config.parameters.learningRate, 0.1)
 })
+
+test('binds provenance to a deterministic SHA-256 fingerprint of the normalized profile', () => {
+  const original = fixtureCompiler(input()).config.provenance.profileFingerprint
+  const reordered = fixtureCompiler(input({
+    profile: Object.fromEntries(Object.entries(fixtureProfile).reverse()) as typeof fixtureProfile,
+  })).config.provenance.profileFingerprint
+  const changed = fixtureCompiler(input({ profile: { ...fixtureProfile, seed: fixtureProfile.seed + 1 } })).config.provenance.profileFingerprint
+
+  assert.match(original, /^[a-f0-9]{64}$/)
+  assert.equal(reordered, original)
+  assert.notEqual(changed, original)
+})
+
+test('writes every declared result shape before complete downstream adapters', () => {
+  const completeMethod = { ...method, outputs: ['latent', 'graph', 'pseudotime', 'branch', 'metadata'] }
+  const completeTemplate = {
+    ...template,
+    template: {
+      ...template.template,
+      outputs: ['latent', 'graph', 'pseudotime', 'branch', 'metadata'],
+      outputKeys: { latent: 'X_complete', graph: 'graph', pseudotime: 'pt', branch: 'branch', metadata: 'metadata' },
+      downstream: { scFocus: { branchKey: 'branch', contributionOutput: 'contribution' }, scRL: { pseudotimeKey: 'pt', decisionOutput: 'decision' } },
+    },
+  }
+  const snippet = createFixtureCompiler([completeMethod], [completeTemplate])(input()).pythonSnippet
+
+  assert.match(snippet, /adata\.obsm\['X_complete'\] = result\.latent/)
+  assert.match(snippet, /adata\.obsp\['graph'\] = result\.graph/)
+  assert.match(snippet, /adata\.obs\['pt'\] = result\.pseudotime/)
+  assert.match(snippet, /adata\.obs\['branch'\] = result\.branch/)
+  assert.ok(snippet.indexOf("adata.obsm['X_complete']") < snippet.lastIndexOf('run_scfocus'))
+  assert.ok(snippet.indexOf("adata.obs['pt']") < snippet.lastIndexOf('run_scrl'))
+})
+
+test('rejects duplicate normalized compiler inputs and mismatched output contracts', () => {
+  const cases: Array<[string, readonly unknown[], readonly unknown[], Partial<CompileConfigInput>, RegExp]> = [
+    ['duplicate roles', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], roles: ['best_fit', 'best_fit'] }] } as never }, /duplicate|roles/i],
+    ['duplicate profile goals', [method], [template], { profile: { ...fixtureProfile, goals: ['latent_representation', 'latent_representation'] } as never }, /duplicate|goals/i],
+    ['duplicate candidates', [method], [template], { profile: { ...fixtureProfile, candidateMethodIds: [method.id, method.id] } }, /duplicate|candidate/i],
+    ['duplicate aliases', [{ ...method, aliases: ['same', 'same'] }], [template], {}, /duplicate|aliases/i],
+    ['duplicate method outputs', [{ ...method, outputs: ['latent', 'latent', 'metadata'] }], [template], {}, /duplicate|outputs/i],
+    ['wrapper output mismatch', [method], [{ ...template, template: { ...template.template, outputs: ['latent', 'metadata'] } }], {}, /output|coverage|match/i],
+    ['output key duplicate', [method], [{ ...template, template: { ...template.template, outputKeys: { latent: 'same', graph: 'same', metadata: 'metadata' } } }], {}, /duplicate|output/i],
+    ['control locator', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], evidenceLinks: [{ ...fixtureOutcome.recommendations[0].evidenceLinks[0], locator: 'table\u0000S1' }] }] } as never }, /locator|control/i],
+  ]
+  for (const [name, methods, templates, overrides, expected] of cases) assert.throws(() => createFixtureCompiler(methods, templates)(input(overrides)), expected, name)
+})

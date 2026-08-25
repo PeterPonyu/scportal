@@ -6,7 +6,7 @@
   "required": ["id", "aliases", "studyGroup", "modality", "scale", "topology", "priors", "perturbation"],
   "properties": {
     "id": { "type": "string", "minLength": 1, "pattern": "\\S" },
-    "aliases": { "type": "array", "items": { "type": "string", "minLength": 1, "pattern": "\\S" } },
+    "aliases": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "pattern": "\\S" } },
     "studyGroup": { "type": "string", "minLength": 1 },
     "modality": { "enum": ["scrna", "scatac", "multiome"] },
     "scale": { "enum": ["lt_10k", "10k_50k", "50k_200k", "gt_200k", "unknown"] },

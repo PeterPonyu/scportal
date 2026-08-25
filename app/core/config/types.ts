@@ -9,6 +9,7 @@ export interface MethodConfigTemplate {
   packageName: string
   importName: string
   constructor: string
+  outputs: Array<'latent' | 'graph' | 'pseudotime' | 'branch' | 'metadata'>
   defaultParameters: Record<string, ParameterValue>
   allowedParameters: Record<string, ParameterDefinition>
   outputKeys: { latent: string; graph?: string; pseudotime?: string; branch?: string; metadata: string }

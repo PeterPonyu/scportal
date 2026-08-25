@@ -13,10 +13,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:unit": "node --experimental-strip-types --test",
-    "test:config-python": "node --experimental-strip-types scripts/check_router_config_python.mjs | python3 -c \"import ast, sys; ast.parse(sys.stdin.read())\"",
+    "test:config-python": "node --experimental-strip-types tests/config/fixtures/python-snippets.mjs | python3 -c \"import ast, sys; ast.parse(sys.stdin.read())\"",
     "typecheck:router": "tsc --noEmit --strict --allowImportingTsExtensions --target ES2022 --module NodeNext --moduleResolution NodeNext app/core/router/types.ts app/core/router/ids.ts app/core/router/normalize.ts app/core/router/gower.ts app/core/router/shrinkage.ts app/core/router/constraints.ts app/core/router/pareto.ts app/core/router/random.ts app/core/router/bootstrap.ts app/core/router/outranking.ts app/core/router/confidence.ts app/core/router/recommend.ts app/core/router/explain.ts app/core/router/index.ts app/core/config/types.ts app/core/config/templates.ts app/core/config/serialize.ts app/core/config/compiler.ts",
+    "typecheck": "npm run typecheck:router",
     "validate:router-data": "node scripts/validate_router_data.mjs",
     "validate:public-graph": "node scripts/validate_public_graph.mjs",
+    "validate": "npm run validate:router-data && npm run validate:public-graph",
+    "diff": "git diff --check -- .",
     "check:rendered-public-graph": "node scripts/check_rendered_public_graph.mjs",
     "check": "npm run lint && npm run validate:public-graph && npm run generate && npm run check:rendered-public-graph"
   },
@@ -39,7 +42,7 @@
     "vue-tsc": "^2.2.12"
   },
   "engines": {
-    "node": ">=20.10.0"
+    "node": "22.18.0"
   },
   "repository": {
     "type": "git",

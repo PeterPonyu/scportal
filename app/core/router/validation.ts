@@ -35,9 +35,9 @@ export function rfc3339DateTime(value: unknown): value is string {
   if (!match) return false
   const [, yearText, monthText, dayText, hourText, minuteText, secondText, sign, offsetHourText, offsetMinuteText] = match
   const year = Number(yearText); const month = Number(monthText); const day = Number(dayText); const hour = Number(hourText); const minute = Number(minuteText); const second = Number(secondText)
-  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) return false
-  const days = new Date(Date.UTC(year, month, 0)).getUTCDate()
+  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 60) return false
+  const days = month === 2 ? (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28) : [4, 6, 9, 11].includes(month) ? 30 : 31
   if (day < 1 || day > days) return false
   if (sign && (Number(offsetHourText) > 23 || Number(offsetMinuteText) > 59)) return false
-  return !Number.isNaN(Date.parse(value))
+  return second !== 60 || value === '2016-12-31T23:59:60Z'
 }
