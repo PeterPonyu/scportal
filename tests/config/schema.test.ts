@@ -46,7 +46,9 @@ test('rejects exact-schema violations, unsafe own keys, non-data fields, unsafe 
     [{ ...executable, downstream: { scFocus: undefined } }, /handoff|undefined/i],
     [{ ...executable, downstream: { scRL: undefined } }, /handoff|undefined/i],
     [{ ...executable, provenance: { ...executable.provenance, generatedAt: '2026-08-24' } }, /date-time|timestamp/i],
+    [{ ...executable, provenance: { ...executable.provenance, generatedAt: '2026-02-30T00:00:00Z' } }, /date-time|timestamp/i],
     [{ ...executable, provenance: { ...executable.provenance, methodSource: 'javascript:alert(1)' } }, /http|url/i],
+    [{ ...executable, provenance: { ...executable.provenance, methodSource: 'https://' } }, /http|url/i],
     [{ ...executable, parameters: { label: 'bad\u0000value' } }, /control/i],
     [{ ...executable, outputs: { ...executable.outputs, latent: 'bad\u007fvalue' } }, /control/i],
   ]
@@ -69,7 +71,11 @@ test('validates template defaults against constraints and rejects unsafe Python 
     { ...candidate, allowedParameters: { epochs: { type: 'boolean', integer: true } } },
     { ...candidate, allowedParameters: { epochs: { type: 'number', enum: [] } } },
     { ...candidate, allowedParameters: { epochs: { type: 'number', enum: [1, 'two'] } } },
+    { ...candidate, allowedParameters: { epochs: { type: 'number', enum: Object.assign(new Array(1), {}) } } },
     { ...candidate, allowedParameters: { 'not-valid': { type: 'number' } }, defaultParameters: { 'not-valid': 1 } },
+    { ...candidate, importName: 'not-valid' },
+    { ...candidate, constructor: 'not-valid' },
+    { ...candidate, downstream: { scFocus: { contributionOutput: 'x', extra: true } } },
   ]
-  for (const value of cases) assert.throws(() => validateMethodConfigTemplate(value), /default|number|enum|identifier/i)
+  for (const value of cases) assert.throws(() => validateMethodConfigTemplate(value), /default|number|enum|identifier|unknown/i)
 })

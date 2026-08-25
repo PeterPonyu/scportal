@@ -1,11 +1,10 @@
 import { stringify as stringifyYaml } from 'yaml'
 import type { ExecutableConfig, ParameterValue } from './types.ts'
+import { absoluteHttpUrl, rfc3339DateTime, safeToken } from '../router/validation.ts'
 
 const dangerousKeys = new Set(['__proto__', 'prototype', 'constructor'])
 const pythonIdentifier = /^[A-Za-z_][A-Za-z0-9_]*$/
 const installGrammar = /^(?:python|python3|pip|pip3)(?: -m pip)? install [A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*$/
-const absoluteHttpUrl = /^https?:\/\/[^\s/$.?#][^\s]*$/i
-const rfc3339 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/
 
 function ownRecord(value: unknown, label: string): Record<string, unknown> {
   if (value === null || typeof value !== 'object' || Array.isArray(value) || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)) throw new Error(`${label} must be a plain own-data object`)
@@ -82,7 +81,7 @@ export function validateExecutableConfig(value: unknown): ExecutableConfig {
   const outcome = exact(provenance.outcome, 'executable config.provenance.outcome', ['status', 'methodId'])
   const methodSource = nonblank(provenance.methodSource, 'executable config.provenance.methodSource')
   const generatedAt = nonblank(provenance.generatedAt, 'executable config.provenance.generatedAt')
-  if (!Number.isInteger(provenance.recommendationSeed) || (provenance.recommendationSeed as number) < 0 || (provenance.recommendationSeed as number) > 0xffffffff || outcome.status !== 'OK' || nonblank(outcome.methodId, 'executable config.provenance.outcome.methodId') !== nonblank(method.id, 'executable config.method.id') || !/^[a-f0-9]{64}$/.test(nonblank(provenance.profileFingerprint, 'executable config.provenance.profileFingerprint')) || !absoluteHttpUrl.test(methodSource) || !rfc3339.test(generatedAt) || Number.isNaN(Date.parse(generatedAt))) throw new Error('executable config provenance schema validation failed (http URL and RFC3339 timestamp required)')
+  if (!Number.isInteger(provenance.recommendationSeed) || (provenance.recommendationSeed as number) < 0 || (provenance.recommendationSeed as number) > 0xffffffff || outcome.status !== 'OK' || nonblank(outcome.methodId, 'executable config.provenance.outcome.methodId') !== nonblank(method.id, 'executable config.method.id') || !/^[a-f0-9]{64}$/.test(nonblank(provenance.profileFingerprint, 'executable config.provenance.profileFingerprint')) || !absoluteHttpUrl(methodSource) || !rfc3339DateTime(generatedAt) || !safeToken(nonblank(config.routerVersion, 'executable config.routerVersion')) || !safeToken(nonblank(config.evidenceVersion, 'executable config.evidenceVersion')) || !safeToken(nonblank(method.id, 'executable config.method.id')) || !safeToken(nonblank(method.version, 'executable config.method.version'))) throw new Error('executable config provenance schema validation failed (safe tokens, http URL, and RFC3339 timestamp required)')
   return deepFreeze({ schemaVersion: '1.0', routerVersion: nonblank(config.routerVersion, 'executable config.routerVersion'), evidenceVersion: nonblank(config.evidenceVersion, 'executable config.evidenceVersion'), method: { id: method.id as string, version: nonblank(method.version, 'executable config.method.version'), install }, preprocessing: { modality: preprocessing.modality as ExecutableConfig['preprocessing']['modality'], normalization: nonblank(preprocessing.normalization, 'executable config.preprocessing.normalization'), featureSelection: nonblank(preprocessing.featureSelection, 'executable config.preprocessing.featureSelection') }, parameters: parsedParameters, outputs, downstream, provenance: { recommendationSeed: provenance.recommendationSeed as number, methodSource, generatedAt, profileFingerprint: provenance.profileFingerprint as string, outcome: { status: 'OK', methodId: method.id as string } } })
 }
 

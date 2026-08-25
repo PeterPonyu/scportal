@@ -1,4 +1,5 @@
 import type { MethodConfigTemplate, ParameterDefinition, ParameterValue } from './types.ts'
+import { denseOwnDataArray } from '../router/validation.ts'
 
 type RecordValue = Record<string, unknown>
 const dangerousKeys = new Set(['__proto__', 'prototype', 'constructor'])
@@ -59,8 +60,9 @@ function parseDefinition(value: unknown, label: string): ParameterDefinition {
   if (maximum !== undefined && (typeof maximum !== 'number' || !Number.isFinite(maximum))) throw new Error(`${label}.maximum must be finite`)
   if (minimum !== undefined && maximum !== undefined && minimum > maximum) throw new Error(`${label} minimum exceeds maximum`)
   if (record.integer !== undefined && typeof record.integer !== 'boolean') throw new Error(`${label}.integer must be boolean`)
-  if (record.enum !== undefined && (!Array.isArray(record.enum) || record.enum.length === 0)) throw new Error(`${label}.enum must be a non-empty array`)
-  const enumeration = record.enum === undefined ? undefined : frozen(record.enum.map((entry, index) => cloneValue(entry, `${label}.enum[${index}]`)))
+  if (record.enum !== undefined) denseOwnDataArray(record.enum, `${label}.enum`)
+  if (record.enum !== undefined && (record.enum as unknown[]).length === 0) throw new Error(`${label}.enum must be a non-empty array`)
+  const enumeration = record.enum === undefined ? undefined : frozen((record.enum as unknown[]).map((entry, index) => cloneValue(entry, `${label}.enum[${index}]`)))
   if (enumeration?.some((entry) => typeof entry !== type)) throw new Error(`${label}.enum values must match type`)
   if (enumeration && new Set(enumeration.map((entry) => `${typeof entry}:${String(entry)}`)).size !== enumeration.length) throw new Error(`${label}.enum must not contain duplicates`)
   return frozen({ type, ...(minimum === undefined ? {} : { minimum }), ...(maximum === undefined ? {} : { maximum }), ...(record.integer === undefined ? {} : { integer: record.integer }), ...(enumeration === undefined ? {} : { enum: enumeration }) })
@@ -71,7 +73,7 @@ function parseOutputs(value: unknown): MethodConfigTemplate['outputKeys'] {
   for (const key of Object.keys(record)) if (!['latent', 'graph', 'pseudotime', 'branch', 'metadata'].includes(key)) throw new Error(`template.outputKeys.${key} is unknown`)
   const latent = nonblank(required(record, 'latent', 'template.outputKeys'), 'template.outputKeys.latent')
   const metadata = nonblank(required(record, 'metadata', 'template.outputKeys'), 'template.outputKeys.metadata')
-  const optional = (key: 'graph' | 'pseudotime' | 'branch') => record[key] === undefined ? undefined : nonblank(record[key], `template.outputKeys.${key}`)
+  const optional = (key: 'graph' | 'pseudotime' | 'branch') => !Object.hasOwn(record, key) ? undefined : record[key] === undefined ? (() => { throw new Error(`template.outputKeys.${key} must not be undefined`) })() : nonblank(record[key], `template.outputKeys.${key}`)
   return frozen({ latent, metadata, ...(optional('graph') === undefined ? {} : { graph: optional('graph')! }), ...(optional('pseudotime') === undefined ? {} : { pseudotime: optional('pseudotime')! }), ...(optional('branch') === undefined ? {} : { branch: optional('branch')! }) })
 }
 
@@ -84,6 +86,7 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
   const packageName = nonblank(required(record, 'packageName', 'template'), 'template.packageName')
   const importName = nonblank(required(record, 'importName', 'template'), 'template.importName')
   const constructor = nonblank(required(record, 'constructor', 'template'), 'template.constructor')
+  if (!pythonIdentifier.test(importName) || !pythonIdentifier.test(constructor)) throw new Error('template importName and constructor must be Python identifiers')
   const defaults = ownRecord(required(record, 'defaultParameters', 'template'), 'template.defaultParameters')
   const definitions = ownRecord(required(record, 'allowedParameters', 'template'), 'template.allowedParameters')
   const defaultParameters: Record<string, ParameterValue> = Object.create(null)
@@ -100,14 +103,23 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
   for (const key of Object.keys(allowedParameters)) if (!Object.hasOwn(defaultParameters, key)) throw new Error(`template.allowedParameters.${key} lacks an exact default`)
   const outputKeys = parseOutputs(required(record, 'outputKeys', 'template'))
   let downstream: MethodConfigTemplate['downstream']
+  if (Object.hasOwn(record, 'downstream') && record.downstream === undefined) throw new Error('template.downstream must not be undefined')
   if (record.downstream !== undefined) {
     const downstreamRecord = ownRecord(record.downstream, 'template.downstream')
     downstream = {}
     for (const key of Object.keys(downstreamRecord)) {
       if (key !== 'scFocus' && key !== 'scRL') throw new Error(`template.downstream.${key} is unknown`)
+      if (downstreamRecord[key] === undefined) throw new Error(`template.downstream.${key} must not be undefined`)
       const adapter = ownRecord(downstreamRecord[key], `template.downstream.${key}`)
-      if (key === 'scFocus') downstream.scFocus = frozen({ contributionOutput: nonblank(required(adapter, 'contributionOutput', 'template.downstream.scFocus'), 'template.downstream.scFocus.contributionOutput'), ...(adapter.branchKey === undefined ? {} : { branchKey: nonblank(adapter.branchKey, 'template.downstream.scFocus.branchKey') }) })
-      else downstream.scRL = frozen({ decisionOutput: nonblank(required(adapter, 'decisionOutput', 'template.downstream.scRL'), 'template.downstream.scRL.decisionOutput'), ...(adapter.pseudotimeKey === undefined ? {} : { pseudotimeKey: nonblank(adapter.pseudotimeKey, 'template.downstream.scRL.pseudotimeKey') }) })
+      if (key === 'scFocus') {
+        for (const field of Object.keys(adapter)) if (!['contributionOutput', 'branchKey'].includes(field)) throw new Error(`template.downstream.scFocus.${field} is unknown`)
+        if (Object.hasOwn(adapter, 'branchKey') && adapter.branchKey === undefined) throw new Error('template.downstream.scFocus.branchKey must not be undefined')
+        downstream.scFocus = frozen({ contributionOutput: nonblank(required(adapter, 'contributionOutput', 'template.downstream.scFocus'), 'template.downstream.scFocus.contributionOutput'), ...(adapter.branchKey === undefined ? {} : { branchKey: nonblank(adapter.branchKey, 'template.downstream.scFocus.branchKey') }) })
+      } else {
+        for (const field of Object.keys(adapter)) if (!['decisionOutput', 'pseudotimeKey'].includes(field)) throw new Error(`template.downstream.scRL.${field} is unknown`)
+        if (Object.hasOwn(adapter, 'pseudotimeKey') && adapter.pseudotimeKey === undefined) throw new Error('template.downstream.scRL.pseudotimeKey must not be undefined')
+        downstream.scRL = frozen({ decisionOutput: nonblank(required(adapter, 'decisionOutput', 'template.downstream.scRL'), 'template.downstream.scRL.decisionOutput'), ...(adapter.pseudotimeKey === undefined ? {} : { pseudotimeKey: nonblank(adapter.pseudotimeKey, 'template.downstream.scRL.pseudotimeKey') }) })
+      }
     }
     downstream = frozen(downstream)
   }
@@ -122,9 +134,11 @@ export function validateConfigTemplateRegistryEntry(value: unknown): MethodConfi
   if (typeof required(record, 'synthetic', 'template registry entry') !== 'boolean') throw new Error('template registry entry.synthetic must be boolean')
   const nested = ownRecord(required(record, 'template', 'template registry entry'), 'template registry entry.template', ['constructor'])
   const outputs = required(nested, 'outputs', 'template registry entry.template')
-  if (!Array.isArray(outputs) || outputs.some((output) => typeof output !== 'string')) throw new Error('template registry entry.template.outputs must be a string array')
+  try { denseOwnDataArray(outputs, 'template registry entry.template.outputs') } catch { throw new Error('template registry entry.template.outputs must be a dense own-data string array') }
+  const outputArray = outputs as unknown[]
+  if (outputArray.some((output) => typeof output !== 'string')) throw new Error('template registry entry.template.outputs must be a string array')
   const { outputs: _outputs, ...templateFields } = nested
   const parsed = validateMethodConfigTemplate({ ...templateFields, methodId, version })
-  if (outputs.length !== Object.keys(parsed.outputKeys).length || outputs.some((output) => !Object.hasOwn(parsed.outputKeys, output))) throw new Error(`template registry entry outputs do not match outputKeys for ${methodId}`)
+  if (outputArray.length !== Object.keys(parsed.outputKeys).length || outputArray.some((output) => !Object.hasOwn(parsed.outputKeys, output as string))) throw new Error(`template registry entry outputs do not match outputKeys for ${methodId}`)
   return parsed
 }

@@ -19,6 +19,7 @@ import type {
   RouterOutcome,
   TaskProfile,
 } from './types.ts'
+import { absoluteHttpUrl, rfc3339DateTime } from './validation.ts'
 
 const groups: readonly MetricGroup[] = ['latent_geometry', 'continuity', 'trajectory', 'stability', 'biology', 'resources']
 const modalities = ['scrna', 'scatac', 'multiome'] as const
@@ -56,8 +57,6 @@ function failure<T>(error: string): Parsed<T> { return { ok: false, error } }
 function inSet<T extends string>(value: unknown, values: readonly T[]): value is T { return typeof value === 'string' && values.includes(value as T) }
 function nonempty(value: unknown): value is string { return typeof value === 'string' && value.length > 0 && ![...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f }) }
 function identifier(value: unknown): value is string { return nonempty(value) && /\S/.test(value) && value.trim() === value }
-function absoluteHttpUrl(value: unknown): value is string { return nonempty(value) && /^https?:\/\/[^\s/$.?#][^\s]*$/i.test(value) }
-function rfc3339(value: unknown): value is string { return nonempty(value) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) && !Number.isNaN(Date.parse(value)) }
 
 function exactRecord(value: unknown, required: readonly string[], optional: readonly string[] = []): Parsed<DataRecord> {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return failure('must be a plain object')
@@ -151,7 +150,7 @@ function parseMetric(value: unknown): Parsed<MetricDefinition> {
 function parseProvenance(value: unknown): Parsed<EvidenceProvenance> {
   const parsed = exactRecord(value, ['paperId', 'locator', 'datasetVersion', 'methodVersion', 'runConfigId', 'extractedAt'])
   if (!parsed.ok) return failure(`provenance ${parsed.error}`)
-  if (!identifier(parsed.value.paperId) || !nonempty(parsed.value.locator) || !nonempty(parsed.value.datasetVersion) || !nonempty(parsed.value.methodVersion) || !identifier(parsed.value.runConfigId) || !rfc3339(parsed.value.extractedAt)) return failure('provenance has invalid fields')
+  if (!identifier(parsed.value.paperId) || !nonempty(parsed.value.locator) || !nonempty(parsed.value.datasetVersion) || !nonempty(parsed.value.methodVersion) || !identifier(parsed.value.runConfigId) || !rfc3339DateTime(parsed.value.extractedAt)) return failure('provenance has invalid fields')
   return success(parsed.value as unknown as EvidenceProvenance)
 }
 
