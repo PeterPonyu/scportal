@@ -6,6 +6,7 @@ export function canonicalizeId(
   aliases: ReadonlyMap<string, string>,
 ): string {
   const normalized = value.trim().toLowerCase()
+  if (!normalized) throw new Error(`unknown ${kind} id or alias: ${value}`)
   const canonical = aliases.get(`${kind}:${normalized}`)
   if (!canonical) throw new Error(`unknown ${kind} id or alias: ${value}`)
   return canonical

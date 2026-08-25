@@ -64,6 +64,7 @@ export interface BenchmarkObservation {
 }
 
 export interface TaskProfile {
+  id: string
   modality: Modality
   scale: ScaleBand
   goals: TaskGoal[]

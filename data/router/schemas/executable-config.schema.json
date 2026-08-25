@@ -8,7 +8,7 @@
     "schemaVersion": { "const": "1.0" },
     "routerVersion": { "type": "string", "minLength": 1 },
     "evidenceVersion": { "type": "string", "minLength": 1 },
-    "method": { "type": "object", "additionalProperties": false, "required": ["id", "version", "install"], "properties": { "id": { "type": "string", "minLength": 1 }, "version": { "type": "string", "minLength": 1 }, "install": { "type": "string", "minLength": 1 } } },
+    "method": { "type": "object", "additionalProperties": false, "required": ["id", "version", "install"], "properties": { "id": { "type": "string", "minLength": 1, "pattern": "\\S" }, "version": { "type": "string", "minLength": 1 }, "install": { "type": "string", "minLength": 1 } } },
     "preprocessing": { "type": "object", "additionalProperties": false, "required": ["modality", "normalization", "featureSelection"], "properties": { "modality": { "enum": ["scrna", "scatac", "multiome"] }, "normalization": { "type": "string", "minLength": 1 }, "featureSelection": { "type": "string", "minLength": 1 } } },
     "parameters": { "type": "object", "additionalProperties": { "anyOf": [{ "type": "string" }, { "type": "number" }, { "type": "boolean" }] } },
     "outputs": { "type": "object", "additionalProperties": false, "required": ["latent", "metadata"], "properties": { "latent": { "type": "string", "minLength": 1 }, "graph": { "type": "string", "minLength": 1 }, "pseudotime": { "type": "string", "minLength": 1 }, "branch": { "type": "string", "minLength": 1 }, "metadata": { "type": "string", "minLength": 1 } } },

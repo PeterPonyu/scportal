@@ -5,20 +5,20 @@
   "additionalProperties": false,
   "required": ["datasetId", "methodId", "metricId", "rawValue", "provenance"],
   "properties": {
-    "datasetId": { "type": "string", "minLength": 1 },
-    "methodId": { "type": "string", "minLength": 1 },
-    "metricId": { "type": "string", "minLength": 1 },
+    "datasetId": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "methodId": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "metricId": { "type": "string", "minLength": 1, "pattern": "\\S" },
     "rawValue": { "type": "number" },
     "provenance": {
       "type": "object",
       "additionalProperties": false,
       "required": ["paperId", "locator", "datasetVersion", "methodVersion", "runConfigId", "extractedAt"],
       "properties": {
-        "paperId": { "type": "string", "minLength": 1 },
+        "paperId": { "type": "string", "minLength": 1, "pattern": "\\S" },
         "locator": { "type": "string", "minLength": 1 },
         "datasetVersion": { "type": "string", "minLength": 1 },
         "methodVersion": { "type": "string", "minLength": 1 },
-        "runConfigId": { "type": "string", "minLength": 1 },
+        "runConfigId": { "type": "string", "minLength": 1, "pattern": "\\S" },
         "extractedAt": { "type": "string", "minLength": 1 }
       }
     }

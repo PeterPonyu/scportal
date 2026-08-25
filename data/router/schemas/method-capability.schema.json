@@ -5,8 +5,8 @@
   "additionalProperties": false,
   "required": ["id", "aliases", "version", "modalities", "maxScale", "outputs", "requiredPriors", "supportedGoals", "resourceTier", "installCommand", "license", "sourceUrl", "docsUrl", "paperUrl", "executable"],
   "properties": {
-    "id": { "type": "string", "minLength": 1 },
-    "aliases": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "id": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "aliases": { "type": "array", "items": { "type": "string", "minLength": 1, "pattern": "\\S" } },
     "version": { "type": "string", "minLength": 1 },
     "modalities": { "type": "array", "minItems": 1, "items": { "enum": ["scrna", "scatac", "multiome"] } },
     "maxScale": { "enum": ["lt_10k", "10k_50k", "50k_200k", "gt_200k"] },

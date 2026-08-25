@@ -35,7 +35,9 @@ function assertJsonData(value, path = '$') {
 }
 
 function normalizeId(value) {
-  return value.trim().toLowerCase()
+  const normalized = value.trim().toLowerCase()
+  if (!normalized) throw new Error('blank id or alias')
+  return normalized
 }
 
 function formatErrors(errors) {
@@ -71,7 +73,12 @@ export async function createRouterDataValidator() {
     for (const entity of entities) {
       const candidates = [entity.id, ...entity.aliases]
       for (const candidate of candidates) {
-        const normalized = normalizeId(candidate)
+        let normalized
+        try {
+          normalized = normalizeId(candidate)
+        } catch {
+          throw new Error(`blank ${kind} id or alias`)
+        }
         if (seen.has(normalized)) throw new Error(`duplicate ${kind} id or alias: ${normalized}`)
         seen.add(normalized)
       }
@@ -83,22 +90,34 @@ export async function createRouterDataValidator() {
     parseMethod: (value) => parse('method', value),
     parseMetric: (value) => parse('metric', value),
     parseObservation: (value) => parse('observation', value),
-    parseTaskProfile: (value) => parse('taskProfile', value),
+    parseTaskProfile: (value) => {
+      const parsed = parse('taskProfile', value)
+      assertValidWeights(parsed.weights)
+      return parsed
+    },
     parseExecutableConfig: (value) => parse('executableConfig', value),
     assertUniqueEntityIds,
   }
 }
 
-export async function validateTaskProfile(profile) {
-  const validator = await createRouterDataValidator()
-  const parsed = validator.parseTaskProfile(profile)
-  const weights = parsed.weights
+let defaultValidatorPromise
+
+function getDefaultRouterDataValidator() {
+  defaultValidatorPromise ??= createRouterDataValidator()
+  return defaultValidatorPromise
+}
+
+function assertValidWeights(weights) {
   const sum = Object.values(weights).reduce((total, weight) => {
     if (!Number.isFinite(weight) || weight < 0) throw new Error('weights must be finite and non-negative')
     return total + weight
   }, 0)
   if (!Number.isFinite(sum) || sum <= 0) throw new Error('weights must sum to a positive value')
-  return parsed
+}
+
+export async function validateTaskProfile(profile) {
+  const validator = await getDefaultRouterDataValidator()
+  return validator.parseTaskProfile(profile)
 }
 
 function aliasesByCanonicalId(kind, entities) {
@@ -121,7 +140,7 @@ export async function validateRouterRegistry({ datasets, methods, metrics, obser
   const parsedMethods = methods.map(validator.parseMethod)
   const parsedMetrics = metrics.map(validator.parseMetric)
   const parsedObservations = observations.map(validator.parseObservation)
-  const parsedTaskProfiles = await Promise.all(taskProfiles.map(validateTaskProfile))
+  const parsedTaskProfiles = taskProfiles.map(validator.parseTaskProfile)
 
   validator.assertUniqueEntityIds('dataset', parsedDatasets)
   validator.assertUniqueEntityIds('method', parsedMethods)
@@ -153,37 +172,79 @@ export async function validateRouterRegistry({ datasets, methods, metrics, obser
   return { datasets: parsedDatasets, methods: parsedMethods, metrics: parsedMetrics, observations: parsedObservations, taskProfiles: parsedTaskProfiles }
 }
 
-async function loadRegistryFiles() {
-  const entries = await readdir(routerDataDirectory, { withFileTypes: true })
+async function loadRegistryFiles(dataDirectory) {
+  const entries = await readdir(dataDirectory, { withFileTypes: true })
   const files = entries.filter((entry) => entry.isFile() && extname(entry.name) === '.json')
-  const loaded = await Promise.all(files.map(async (entry) => [entry.name, JSON.parse(await readFile(join(routerDataDirectory, entry.name), 'utf8'))]))
+  const loaded = await Promise.all(files.map(async (entry) => {
+    const value = JSON.parse(await readFile(join(dataDirectory, entry.name), 'utf8'))
+    assertJsonData(value, entry.name)
+    return [entry.name, value]
+  }))
   return new Map(loaded)
 }
 
 function recordsFromFile(files, name) {
   const value = files.get(name)
-  if (value === undefined) return []
   if (!Array.isArray(value)) throw new Error(`${name} must contain a JSON array`)
   return value
 }
 
-export async function validateRouterDataDirectory() {
-  const files = await loadRegistryFiles()
+function configTemplatesFromFile(files) {
+  const templates = recordsFromFile(files, 'config-templates.json')
+  templates.forEach((template, index) => {
+    if (!isRecord(template)) throw new Error(`config-templates.json[${index}] must be a JSON object`)
+  })
+  return templates
+}
+
+function releaseFromFile(files) {
+  const release = files.get('release.json')
+  if (!isRecord(release)) throw new Error('release.json must contain a JSON object')
+  if (typeof release.id !== 'string' || !release.id.trim()) throw new Error('release.json must contain a nonblank id')
+  return release
+}
+
+const requiredRegistryFiles = [
+  'datasets.json',
+  'methods.json',
+  'metrics.json',
+  'task-profiles.json',
+  'config-templates.json',
+  'release.json',
+]
+
+function assertCompleteRegistryFiles(files) {
+  const observationNames = [...files.keys()].filter((name) => /^observations\..+\.json$/.test(name))
+  const recognizedNames = new Set([...requiredRegistryFiles, ...observationNames])
+  const unexpectedNames = [...files.keys()].filter((name) => !recognizedNames.has(name)).sort()
+  if (unexpectedNames.length > 0) throw new Error(`unexpected router data file: ${unexpectedNames.join(', ')}`)
+
+  const missingNames = requiredRegistryFiles.filter((name) => !files.has(name))
+  if (observationNames.length === 0) missingNames.push('observations.*.json')
+  if (missingNames.length > 0) throw new Error(`missing required router data files: ${missingNames.join(', ')}`)
+  return observationNames.sort()
+}
+
+export async function validateRouterDataDirectory(dataDirectory = routerDataDirectory) {
+  const files = await loadRegistryFiles(dataDirectory)
+  if (files.size === 0) {
+    await getDefaultRouterDataValidator()
+    return { status: 'NO_REGISTRY_FILES' }
+  }
+
+  const observationNames = assertCompleteRegistryFiles(files)
   const datasets = recordsFromFile(files, 'datasets.json')
   const methods = recordsFromFile(files, 'methods.json')
   const metrics = recordsFromFile(files, 'metrics.json')
-  const observations = [...files.entries()]
-    .filter(([name]) => name.startsWith('observations.') && name.endsWith('.json'))
-    .flatMap(([, value]) => {
+  const observations = observationNames
+    .flatMap((name) => {
+      const value = files.get(name)
       if (!Array.isArray(value)) throw new Error('observation files must contain JSON arrays')
       return value
     })
   const taskProfiles = recordsFromFile(files, 'task-profiles.json')
-
-  if (files.size === 0) {
-    await createRouterDataValidator()
-    return { status: 'NO_REGISTRY_FILES' }
-  }
+  configTemplatesFromFile(files)
+  releaseFromFile(files)
   await validateRouterRegistry({ datasets, methods, metrics, observations, taskProfiles })
   return { status: 'VALID', datasets: datasets.length, methods: methods.length, metrics: metrics.length, observations: observations.length, taskProfiles: taskProfiles.length }
 }
