@@ -32,3 +32,5 @@ coverage/
 *.local
 .output
 dist
+
+public/router-data/
