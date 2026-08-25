@@ -23,15 +23,50 @@ function isRecord(value) {
   return prototype === Object.prototype || prototype === null
 }
 
-function assertJsonData(value, path = '$') {
-  if (Array.isArray(value)) {
-    value.forEach((item, index) => assertJsonData(item, `${path}[${index}]`))
-    return
+function sanitizeJsonData(value, path = '$', ancestors = new Set()) {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return value
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) throw new Error(`${path} must be a finite JSON number`)
+    return value
   }
-  if (value !== null && typeof value === 'object') {
+  if (typeof value !== 'object') throw new Error(`${path} must contain only JSON values`)
+  if (ancestors.has(value)) throw new Error(`${path} must not contain circular references`)
+
+  ancestors.add(value)
+  try {
+    if (Object.getOwnPropertySymbols(value).some((symbol) => Object.getOwnPropertyDescriptor(value, symbol)?.enumerable)) {
+      throw new Error(`${path} must not contain enumerable symbol properties`)
+    }
+    if (Array.isArray(value)) {
+      const prototype = Object.getPrototypeOf(value)
+      if (prototype !== Array.prototype && prototype !== null) throw new Error(`${path} must be a plain JSON array`)
+      const keys = Object.keys(value)
+      if (keys.length !== value.length || keys.some((key, index) => key !== String(index))) {
+        throw new Error(`${path} must be a dense JSON array without extra properties`)
+      }
+      return keys.map((key) => sanitizeOwnDataProperty(value, key, `${path}[${key}]`, ancestors))
+    }
+
     if (!isRecord(value)) throw new Error(`${path} must be a plain JSON object`)
-    for (const [key, item] of Object.entries(value)) assertJsonData(item, `${path}.${key}`)
+    const sanitized = Object.create(null)
+    for (const key of Object.keys(value)) {
+      Object.defineProperty(sanitized, key, {
+        configurable: true,
+        enumerable: true,
+        value: sanitizeOwnDataProperty(value, key, `${path}.${key}`, ancestors),
+        writable: true,
+      })
+    }
+    return sanitized
+  } finally {
+    ancestors.delete(value)
   }
+}
+
+function sanitizeOwnDataProperty(source, key, path, ancestors) {
+  const descriptor = Object.getOwnPropertyDescriptor(source, key)
+  if (!descriptor || !Object.hasOwn(descriptor, 'value')) throw new Error(`${path} must be an own JSON data property`)
+  return sanitizeJsonData(descriptor.value, path, ancestors)
 }
 
 function normalizeId(value) {
@@ -62,10 +97,10 @@ export async function createRouterDataValidator() {
   )
 
   function parse(name, value) {
-    assertJsonData(value)
+    const sanitized = sanitizeJsonData(value)
     const validate = validators[name]
-    if (!validate(value)) throw new Error(`${name} schema validation failed: ${formatErrors(validate.errors)}`)
-    return value
+    if (!validate(sanitized)) throw new Error(`${name} schema validation failed: ${formatErrors(validate.errors)}`)
+    return sanitized
   }
 
   function assertUniqueEntityIds(kind, entities) {
@@ -177,8 +212,7 @@ async function loadRegistryFiles(dataDirectory) {
   const files = entries.filter((entry) => entry.isFile() && extname(entry.name) === '.json')
   const loaded = await Promise.all(files.map(async (entry) => {
     const value = JSON.parse(await readFile(join(dataDirectory, entry.name), 'utf8'))
-    assertJsonData(value, entry.name)
-    return [entry.name, value]
+    return [entry.name, sanitizeJsonData(value, entry.name)]
   }))
   return new Map(loaded)
 }

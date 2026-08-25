@@ -93,6 +93,26 @@ const emptyCompleteRegistry = {
   'observations.synthetic.json': [],
 }
 
+function withTemporaryObjectPrototypeProperty(
+  name: string,
+  value: unknown,
+  assertion: () => void,
+) {
+  const previousDescriptor = Object.getOwnPropertyDescriptor(Object.prototype, name)
+  Object.defineProperty(Object.prototype, name, {
+    configurable: true,
+    enumerable: false,
+    value,
+    writable: true,
+  })
+  try {
+    assertion()
+  } finally {
+    if (previousDescriptor) Object.defineProperty(Object.prototype, name, previousDescriptor)
+    else Reflect.deleteProperty(Object.prototype, name)
+  }
+}
+
 test('rejects duplicate canonical IDs and aliases in the same entity kind', async () => {
   const validator = await createRouterDataValidator()
 
@@ -139,6 +159,64 @@ test('rejects observations without complete provenance', async () => {
   assert.throws(
     () => validator.parseObservation({ ...validObservation, provenance: incompleteProvenance }),
     /locator/i,
+  )
+})
+
+test('does not accept an inherited dataset id as a required own field', { concurrency: false }, async () => {
+  const validator = await createRouterDataValidator()
+  const { id: _id, ...datasetWithoutId } = validDataset
+
+  withTemporaryObjectPrototypeProperty('id', 'polluted_dataset', () => {
+    assert.throws(() => validator.parseDataset(datasetWithoutId), /required property 'id'/i)
+  })
+})
+
+test('does not accept inherited nested provenance as a required own field', { concurrency: false }, async () => {
+  const validator = await createRouterDataValidator()
+  const { locator: _locator, ...provenanceWithoutLocator } = validObservation.provenance
+  const observation = { ...validObservation, provenance: provenanceWithoutLocator }
+
+  withTemporaryObjectPrototypeProperty('locator', 'polluted-locator', () => {
+    assert.throws(() => validator.parseObservation(observation), /required property 'locator'/i)
+  })
+})
+
+test('returns recursively sanitized prototype-free data', async () => {
+  const validator = await createRouterDataValidator()
+  const parsed = validator.parseDataset(validDataset)
+
+  assert.notEqual(parsed, validDataset)
+  assert.equal(Object.getPrototypeOf(parsed), null)
+  assert.equal(Object.getPrototypeOf(parsed.priors), null)
+  assert.equal(Object.getPrototypeOf(parsed.aliases), Array.prototype)
+})
+
+test('treats an own __proto__ key as data without mutating prototypes', async () => {
+  const validator = await createRouterDataValidator()
+  const dataset = JSON.parse(JSON.stringify(validDataset))
+  Object.defineProperty(dataset, '__proto__', {
+    configurable: true,
+    enumerable: true,
+    value: { polluted: true },
+    writable: true,
+  })
+
+  assert.throws(() => validator.parseDataset(dataset), /additional properties/i)
+  assert.equal(Object.prototype.polluted, undefined)
+})
+
+test('rejects enumerable symbol properties on nested arrays as non-JSON data', async () => {
+  const validator = await createRouterDataValidator()
+  const aliases = [...validDataset.aliases]
+  Object.defineProperty(aliases, Symbol('polluted'), {
+    configurable: true,
+    enumerable: true,
+    value: 'ignored-by-Object.keys',
+  })
+
+  assert.throws(
+    () => validator.parseDataset({ ...validDataset, aliases }),
+    /symbol properties/i,
   )
 })
 
