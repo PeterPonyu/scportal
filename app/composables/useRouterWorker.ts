@@ -1,19 +1,29 @@
-import { requiredObservationGroups } from '../autoselect/groups.ts'
 import { createRouterRunSession, type RouterRunSession } from '../autoselect/routerRunSession.ts'
 import type { RouterInput, RouterOutcome, TaskProfile } from '../core/router/types.ts'
 import { ROUTER_VERSION, loadObservationGroups, loadRouterCatalog, loadRouterRelease } from '../services/routerData.ts'
 import type { RouterWorkerRequest, RouterWorkerResponse } from '../workers/router-protocol.ts'
 
+const ROUTER_OBSERVATION_GROUPS = [
+  'latent_geometry',
+  'continuity',
+  'trajectory',
+  'stability',
+  'biology',
+  'resources',
+] as const
+
 export interface RouterWorkerState {
   status: 'idle' | 'loading' | 'success' | 'refused' | 'error'
   outcome: RouterOutcome | null
   message: string | null
+  submittedProfile: TaskProfile | null
 }
 
 let worker: Worker | null = null
 const ignoredRequestIds = new Set<string>()
 let applyResponse: ((response: RouterWorkerResponse) => void) | null = null
 let currentSession: RouterRunSession | null = null
+let pendingSubmittedProfile: TaskProfile | null = null
 
 function ensureWorker(): Worker {
   if (worker) return worker
@@ -25,7 +35,7 @@ function ensureWorker(): Worker {
 }
 
 function idleState(): RouterWorkerState {
-  return { status: 'idle', outcome: null, message: null }
+  return { status: 'idle', outcome: null, message: null, submittedProfile: null }
 }
 
 export function useRouterWorker() {
@@ -39,13 +49,14 @@ export function useRouterWorker() {
       return
     }
     if (response.type === 'ERROR') {
-      state.value = { status: 'error', outcome: null, message: response.message }
+      state.value = { status: 'error', outcome: null, message: response.message, submittedProfile: null }
       return
     }
     state.value = {
       status: response.outcome.status === 'OK' ? 'success' : 'refused',
       outcome: response.outcome,
       message: null,
+      submittedProfile: pendingSubmittedProfile,
     }
   }
 
@@ -59,13 +70,13 @@ export function useRouterWorker() {
     const session = createRouterRunSession(crypto.randomUUID())
     currentSession = session
     activeRequestId.value = session.requestId
-    state.value = { status: 'loading', outcome: null, message: null }
+    pendingSubmittedProfile = profile
+    state.value = { status: 'loading', outcome: null, message: null, submittedProfile: null }
     try {
-      const groups = requiredObservationGroups(profile.goals, profile.weights)
       const [catalog, release, observations] = await Promise.all([
         loadRouterCatalog(),
         loadRouterRelease(),
-        loadObservationGroups(groups),
+        loadObservationGroups([...ROUTER_OBSERVATION_GROUPS]),
       ])
       if (!session.shouldPostRoute()) return
       const input: RouterInput = {
@@ -79,7 +90,7 @@ export function useRouterWorker() {
       }
       if (!import.meta.client) {
         if (!session.shouldPostRoute()) return
-        state.value = { status: 'error', outcome: null, message: 'Router worker is only available in the browser.' }
+        state.value = { status: 'error', outcome: null, message: 'Router worker is only available in the browser.', submittedProfile: null }
         return
       }
       if (!session.markPosted()) return
@@ -91,6 +102,7 @@ export function useRouterWorker() {
         status: 'error',
         outcome: null,
         message: error instanceof Error ? error.message : 'Failed to load Router evidence.',
+        submittedProfile: null,
       }
     }
   }
