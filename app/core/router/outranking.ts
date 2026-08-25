@@ -68,6 +68,13 @@ function rankedMethodIds(values: Readonly<Record<string, number>>): string[] {
   return Object.keys(values).sort((left, right) => values[right] - values[left] || compareCodeUnits(left, right))
 }
 
+function topThreeMethodIds(values: Readonly<Record<string, number>>): Set<string> {
+  const ranked = rankedMethodIds(values)
+  if (ranked.length <= 3) return new Set(ranked)
+  const thirdUtility = values[ranked[2]]
+  return new Set(ranked.filter((methodId) => values[methodId] >= thirdUtility))
+}
+
 export function empiricalFifthPercentile(values: readonly number[]): number {
   if (values.length === 0) throw new Error('percentile requires at least one value')
   const ordered = [...values]
@@ -95,7 +102,7 @@ export function robustOutranking(input: RobustOutrankingInput): OutrankingResult
     const sampled = stratifiedResample(input.contexts, rng)
     const weights = perturbWeights(input.weights, rng)
     const values = utilities(sampled, ids, weights)
-    const topThree = new Set(rankedMethodIds(values).slice(0, 3))
+    const topThree = topThreeMethodIds(values)
     for (const methodId of ids) {
       replicateUtilities[methodId].push(values[methodId])
       if (topThree.has(methodId)) retention[methodId] += 1

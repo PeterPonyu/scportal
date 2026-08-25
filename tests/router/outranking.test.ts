@@ -68,6 +68,52 @@ test('handles zero, one, and tied methods with deterministic code-unit ordering'
   assert.equal(tied.topThreeRetention.z, 1)
 })
 
+test('retains every method in a four-way exact tie while presenting IDs in code-unit order', () => {
+  const tied = robustOutranking({
+    contexts: [{
+      datasetId: 'only',
+      studyGroup: 's',
+      evidence: { methods: {
+        z: { biology: 0.5 },
+        a: { biology: 0.5 },
+        A: { biology: 0.5 },
+        'ä': { biology: 0.5 },
+      } },
+    }],
+    weights: { biology: 1 },
+    delta: 0,
+    replicates: 1,
+    seed: 0,
+  })
+
+  assert.deepEqual(Object.keys(tied.topThreeRetention), ['A', 'a', 'z', 'ä'])
+  assert.deepEqual(tied.topThreeRetention, { A: 1, a: 1, z: 1, 'ä': 1 })
+})
+
+test('retains both methods tied exactly at the third-place utility boundary', () => {
+  const boundaryTie = robustOutranking({
+    contexts: [{
+      datasetId: 'only',
+      studyGroup: 's',
+      evidence: { methods: {
+        first: { biology: 0.9 },
+        second: { biology: 0.8 },
+        zThird: { biology: 0.5 },
+        aThird: { biology: 0.5 },
+      } },
+    }],
+    weights: { biology: 1 },
+    delta: 0,
+    replicates: 1,
+    seed: 0,
+  })
+
+  assert.equal(boundaryTie.topThreeRetention.first, 1)
+  assert.equal(boundaryTie.topThreeRetention.second, 1)
+  assert.equal(boundaryTie.topThreeRetention.aThird, 1)
+  assert.equal(boundaryTie.topThreeRetention.zThird, 1)
+})
+
 test('fails closed for invalid outranking inputs and missing conditional group evidence', () => {
   assert.throws(() => robustOutranking({ ...input, delta: -1 }), /delta/i)
   assert.throws(() => robustOutranking({ ...input, replicates: 0 }), /replicates/i)
