@@ -233,6 +233,7 @@ describe('local downloads and provenance', () => {
     assert.match(source, /compileConfig/)
     assert.match(source, /canDownload/)
     assert.match(source, /compileIfDownloadable/)
+    assert.match(source, /currentBoundProfile|submittedProfile/)
     assert.match(source, /DEFAULT_ADAPTERS/)
     assert.match(source, /declaredAdapters/)
     assert.match(source, /toISOString/)

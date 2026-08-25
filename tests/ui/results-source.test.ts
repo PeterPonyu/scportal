@@ -32,12 +32,22 @@ describe('AutoSelect results source contract', () => {
     assert.equal(worker.includes('../core/router/recommend'), false)
   })
 
-  it('useRouterWorker loads mandatory groups and never calls routeMethods', () => {
+  it('useRouterWorker loads all six observation groups and never calls routeMethods', () => {
     const composable = readSource('app/composables/useRouterWorker.ts')
     assert.match(composable, /loadRouterCatalog/)
     assert.match(composable, /loadRouterRelease/)
     assert.match(composable, /loadObservationGroups/)
-    assert.match(composable, /requiredObservationGroups/)
+    for (const group of [
+      'latent_geometry',
+      'continuity',
+      'trajectory',
+      'stability',
+      'biology',
+      'resources',
+    ]) {
+      assert.match(composable, new RegExp(`['"]${group}['"]`))
+    }
+    assert.equal(/requiredObservationGroups\s*\(/.test(composable), false)
     assert.match(composable, /ROUTER_VERSION/)
     assert.match(composable, /routerVersion:\s*ROUTER_VERSION/)
     assert.match(composable, /type:\s*['"]ROUTE['"]/)
@@ -100,6 +110,7 @@ describe('AutoSelect results source contract', () => {
     const results = readSource('app/components/autoselect/RecommendationResults.vue')
     assert.match(shell, /useRouterWorker/)
     assert.match(shell, /RecommendationResults|RefusalPanel/)
+    assert.match(shell, /currentBoundOutcome|visibleOutcome/)
     assert.equal(shell.includes('routeMethods'), false)
     assert.match(results, /RecommendationCard/)
     assert.match(results, /RefusalPanel/)

@@ -107,14 +107,27 @@
     >
       {{ routerState.message }}
     </p>
+    <p
+      v-if="staleResult"
+      aria-live="polite"
+      class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+      role="status"
+    >
+      Results apply only to the submitted profile. Run again after editing.
+    </p>
     <RecommendationResults
-      v-if="routerState.outcome"
-      :outcome="routerState.outcome"
+      v-if="visibleOutcome"
+      :outcome="visibleOutcome"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import {
+  boundRunFromWorkerState,
+  currentBoundOutcome,
+  isBoundRunStale,
+} from '../../autoselect/resultBinding'
 import { toTaskProfile } from '../../autoselect/state'
 import type { TaskProfile } from '../../core/router/types'
 import AdvancedControls from './AdvancedControls.vue'
@@ -135,6 +148,23 @@ const emit = defineEmits<{
 
 const { state, canGoBack, validationMessage, next, back, setMode } = useAutoSelect()
 const { state: routerState, run, cancel } = useRouterWorker()
+
+const liveProfile = computed(() => {
+  try {
+    return toTaskProfile(state.value)
+  }
+  catch {
+    return null
+  }
+})
+const boundRun = computed(() => boundRunFromWorkerState({
+  outcome: routerState.value.outcome,
+  submittedProfile: routerState.value.submittedProfile,
+}))
+const visibleOutcome = computed(() => currentBoundOutcome(boundRun.value, liveProfile.value))
+const staleResult = computed(() => {
+  return routerState.value.status !== 'loading' && isBoundRunStale(boundRun.value, liveProfile.value)
+})
 
 function onCandidateMethodIds(ids: string[] | undefined) {
   const nextState = { ...state.value }

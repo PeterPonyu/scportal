@@ -84,7 +84,7 @@
 <script setup lang="ts">
 import methodsJson from '../../../data/router/methods.json'
 import templatesJson from '../../../data/router/config-templates.json'
-import { toTaskProfile } from '../../autoselect/state'
+import { currentBoundProfile, boundRunFromWorkerState } from '../../autoselect/resultBinding'
 import type { AdapterName } from '../../core/config/types'
 import type { MethodCapability, Recommendation, RouterOutcome, TaskProfile } from '../../core/router/types'
 import {
@@ -106,7 +106,6 @@ const props = defineProps<{
 
 const methods = methodsJson as MethodCapability[]
 const templates = templatesJson as unknown[]
-const { state: wizard } = useAutoSelect()
 const { state: router } = useRouterWorker()
 const selectedAdapters = ref<AdapterName[]>([...DEFAULT_ADAPTERS])
 
@@ -120,12 +119,7 @@ const okOutcome = computed((): Extract<RouterOutcome, { status: 'OK' }> | null =
   return outcome?.status === 'OK' ? outcome : null
 })
 const profile = computed((): TaskProfile | null => {
-  try {
-    return toTaskProfile(wizard.value)
-  }
-  catch {
-    return null
-  }
+  return currentBoundProfile(boundRunFromWorkerState(router.value), router.value.submittedProfile)
 })
 const artifacts = computed(() => {
   if (!import.meta.client) return null
