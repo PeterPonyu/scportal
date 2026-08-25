@@ -86,3 +86,44 @@ test('requires eligibleDatasets to be a nonnegative integer at least as large as
     )
   }
 })
+
+test('rejects overflow in accumulated similarity-weighted values', () => {
+  assert.throws(
+    () => shrunkenEstimate([
+      { similarity: 1, value: Number.MAX_VALUE },
+      { similarity: 1, value: Number.MAX_VALUE },
+    ], 0, 1),
+    /shrinkage numeric overflow: accumulated weighted value/i,
+  )
+})
+
+test('rejects overflow in the prior contribution', () => {
+  assert.throws(
+    () => shrunkenEstimate([{ similarity: 1, value: 0 }], 2, Number.MAX_VALUE),
+    /shrinkage numeric overflow: prior contribution/i,
+  )
+})
+
+test('rejects overflow when finite mean components are added', () => {
+  assert.throws(
+    () => shrunkenEstimate([{ similarity: 1, value: Number.MAX_VALUE }], Number.MAX_VALUE, 1),
+    /shrinkage numeric overflow: shrunken mean numerator/i,
+  )
+})
+
+test('rejects overflow in weighted squared deviations', () => {
+  assert.throws(
+    () => shrunkenEstimate([
+      { similarity: 1, value: Number.MAX_VALUE },
+      { similarity: 1, value: -Number.MAX_VALUE },
+    ], 0, 1),
+    /shrinkage numeric overflow: squared deviation/i,
+  )
+})
+
+test('rejects non-finite Kish ESS from unrepresentable squared weights', () => {
+  assert.throws(
+    () => shrunkenEstimate([{ similarity: Number.MIN_VALUE, value: Number.MAX_VALUE }], 0, 1),
+    /shrinkage numeric overflow: squared similarity weight/i,
+  )
+})

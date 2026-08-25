@@ -11,6 +11,11 @@ export interface ConditionalSample {
   value: number
 }
 
+function requireFiniteShrinkage(value: number, stage: string): number {
+  if (!Number.isFinite(value)) throw new Error(`shrinkage numeric overflow: ${stage}`)
+  return value
+}
+
 export function shrunkenEstimate(
   samples: readonly ConditionalSample[],
   priorMean: number,
@@ -32,26 +37,70 @@ export function shrunkenEstimate(
     }
     if (!Number.isFinite(sample.value)) throw new Error('value must be finite')
     if (sample.similarity === 0) continue
-    evidenceWeight += sample.similarity
-    weightedValue += sample.similarity * sample.value
-    squaredWeight += sample.similarity ** 2
+    evidenceWeight = requireFiniteShrinkage(
+      evidenceWeight + sample.similarity,
+      'accumulated evidence weight',
+    )
+    const weightedContribution = requireFiniteShrinkage(
+      sample.similarity * sample.value,
+      'weighted value contribution',
+    )
+    weightedValue = requireFiniteShrinkage(
+      weightedValue + weightedContribution,
+      'accumulated weighted value',
+    )
+    const squaredSimilarity = sample.similarity ** 2
+    if (!Number.isFinite(squaredSimilarity) || squaredSimilarity === 0) {
+      throw new Error('shrinkage numeric overflow: squared similarity weight')
+    }
+    squaredWeight = requireFiniteShrinkage(
+      squaredWeight + squaredSimilarity,
+      'accumulated squared similarity weight',
+    )
   }
 
-  const coverage = eligibleDatasets === 0 ? 0 : samples.length / eligibleDatasets
+  const coverage = requireFiniteShrinkage(
+    eligibleDatasets === 0 ? 0 : samples.length / eligibleDatasets,
+    'coverage output',
+  )
+  requireFiniteShrinkage(evidenceWeight, 'evidence weight output')
   if (evidenceWeight === 0) {
     return { mean: priorMean, variance: 0, effectiveDatasets: 0, evidenceWeight: 0, coverage }
   }
 
-  const observedMean = weightedValue / evidenceWeight
+  const priorContribution = requireFiniteShrinkage(alpha * priorMean, 'prior contribution')
+  const estimateWeight = requireFiniteShrinkage(evidenceWeight + alpha, 'estimate weight')
+  const meanNumerator = requireFiniteShrinkage(
+    weightedValue + priorContribution,
+    'shrunken mean numerator',
+  )
+  const mean = requireFiniteShrinkage(meanNumerator / estimateWeight, 'mean output')
+  const observedMean = requireFiniteShrinkage(weightedValue / evidenceWeight, 'observed mean')
   let weightedSquaredDeviation = 0
   for (const sample of samples) {
-    if (sample.similarity > 0) weightedSquaredDeviation += sample.similarity * (sample.value - observedMean) ** 2
+    if (sample.similarity === 0) continue
+    const deviation = requireFiniteShrinkage(sample.value - observedMean, 'deviation')
+    const squaredDeviation = requireFiniteShrinkage(deviation ** 2, 'squared deviation')
+    const weightedDeviation = requireFiniteShrinkage(
+      sample.similarity * squaredDeviation,
+      'weighted squared deviation contribution',
+    )
+    weightedSquaredDeviation = requireFiniteShrinkage(
+      weightedSquaredDeviation + weightedDeviation,
+      'accumulated weighted squared deviation',
+    )
   }
+  const variance = requireFiniteShrinkage(weightedSquaredDeviation / evidenceWeight, 'variance output')
+  const squaredEvidenceWeight = requireFiniteShrinkage(evidenceWeight ** 2, 'squared evidence weight')
+  const effectiveDatasets = requireFiniteShrinkage(
+    squaredEvidenceWeight / squaredWeight,
+    'effective datasets output',
+  )
 
   return {
-    mean: (weightedValue + alpha * priorMean) / (evidenceWeight + alpha),
-    variance: weightedSquaredDeviation / evidenceWeight,
-    effectiveDatasets: (evidenceWeight ** 2) / squaredWeight,
+    mean,
+    variance,
+    effectiveDatasets,
     evidenceWeight,
     coverage,
   }

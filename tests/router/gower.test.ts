@@ -97,3 +97,35 @@ test('does not double-count perturbation inside aggregated priors', () => {
     { modality: 0, scale: 0, topology: 0, priors: 1, perturbation: 1 },
   ), 1)
 })
+
+test('rejects overflow in the accumulated Gower numerator', () => {
+  assert.throws(
+    () => gowerSimilarity(profile, dataset, {
+      modality: Number.MAX_VALUE,
+      scale: Number.MAX_VALUE,
+      topology: 0,
+      priors: 0,
+      perturbation: 0,
+    }),
+    /gower numeric overflow: accumulated weighted similarity/i,
+  )
+})
+
+test('rejects overflow in the accumulated Gower denominator', () => {
+  const incompatible: DatasetContext = {
+    ...dataset,
+    modality: 'scatac',
+    topology: 'cyclic',
+  }
+
+  assert.throws(
+    () => gowerSimilarity(profile, incompatible, {
+      modality: Number.MAX_VALUE,
+      scale: 0,
+      topology: Number.MAX_VALUE,
+      priors: 0,
+      perturbation: 0,
+    }),
+    /gower numeric overflow: accumulated usable weight/i,
+  )
+})

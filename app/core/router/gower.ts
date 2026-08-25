@@ -28,6 +28,11 @@ function knownPrior(value: boolean | 'unknown' | undefined): value is boolean {
   return value === true || value === false
 }
 
+function requireFiniteGower(value: number, stage: string): number {
+  if (!Number.isFinite(value)) throw new Error(`gower numeric overflow: ${stage}`)
+  return value
+}
+
 function priorSimilarity(profile: TaskProfile, dataset: DatasetContext): number | undefined {
   let matching = 0
   let comparable = 0
@@ -50,8 +55,12 @@ export function gowerSimilarity(
   let usableWeight = 0
   const add = (weight: number, similarity: number | undefined) => {
     if (similarity === undefined || weight === 0) return
-    weightedSimilarity += weight * similarity
-    usableWeight += weight
+    const contribution = requireFiniteGower(weight * similarity, 'weighted similarity contribution')
+    weightedSimilarity = requireFiniteGower(
+      weightedSimilarity + contribution,
+      'accumulated weighted similarity',
+    )
+    usableWeight = requireFiniteGower(usableWeight + weight, 'accumulated usable weight')
   }
 
   const modalityWeight = requireWeight(weights, 'modality')
@@ -82,5 +91,5 @@ export function gowerSimilarity(
   )
 
   if (usableWeight === 0) throw new Error('zero usable context weight')
-  return weightedSimilarity / usableWeight
+  return requireFiniteGower(weightedSimilarity / usableWeight, 'similarity result')
 }
