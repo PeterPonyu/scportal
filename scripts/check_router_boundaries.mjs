@@ -113,8 +113,13 @@ function resolveRelativeTarget(file, specifier) {
 
 function allowedJsonAdapter(root, file, specifier, node) {
   const allowed = new Set(['../../../data/router/methods.json', '../../../data/router/config-templates.json'])
-  return resolve(file) === resolve(root, 'app/core/config/compiler.ts') && allowed.has(specifier)
+  return ts.isImportDeclaration(node) && resolve(file) === resolve(root, 'app/core/config/compiler.ts') && allowed.has(specifier)
     && Boolean(node.attributes?.elements.some((element) => element.name.getText() === 'type' && element.value?.text === 'json'))
+}
+
+// Pure serialization adapter: this is the only bare runtime dependency allowed in Router/config core.
+function allowedBareModuleAdapter(root, file, specifier, node) {
+  return ts.isImportDeclaration(node) && resolve(file) === resolve(root, 'app/core/config/serialize.ts') && specifier === 'yaml'
 }
 
 function typescriptOnly(node) {
@@ -150,7 +155,7 @@ function scanFile(root, file) {
   scanBindings(sourceFile, rootScope, scopes)
   const coreDirectory = resolve(root, 'app/core')
   const checkSpecifier = (node, specifier, kind) => {
-    if (allowedJsonAdapter(root, file, specifier, node)) return
+    if (allowedJsonAdapter(root, file, specifier, node) || allowedBareModuleAdapter(root, file, specifier, node)) return
     if (!specifier.startsWith('./') && !specifier.startsWith('../')) finding(findings, sourceFile, node, `forbidden module specifier: ${specifier}`)
     else {
       const target = resolveRelativeTarget(file, specifier)
@@ -165,6 +170,13 @@ function scanFile(root, file) {
     if (javascriptExtensions.has(extname(file)) && typescriptOnly(node)) finding(findings, sourceFile, node, 'TypeScript-only syntax in JavaScript module')
     if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) checkSpecifier(node, node.moduleSpecifier.text, 'import')
     if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) checkSpecifier(node, node.moduleSpecifier.text, 'export')
+    if (ts.isImportEqualsDeclaration(node) && ts.isExternalModuleReference(node.moduleReference)) {
+      const specifier = node.moduleReference.expression
+      if (!specifier || !ts.isStringLiteral(specifier)) {
+        finding(findings, sourceFile, node, 'nonliteral require is forbidden')
+        finding(findings, sourceFile, node, 'direct require is forbidden')
+      } else checkSpecifier(node, specifier.text, 'require')
+    }
     if (ts.isCallExpression(node)) {
       if (node.expression.kind === ts.SyntaxKind.ImportKeyword) {
         if (node.arguments.length !== 1 || !ts.isStringLiteral(node.arguments[0])) finding(findings, sourceFile, node.expression, 'nonliteral dynamic import is forbidden')

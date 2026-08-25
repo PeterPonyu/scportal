@@ -40,17 +40,38 @@ test('routes an exact production-size fixture deterministically within the Route
   assert.equal(input.datasets.length, 50)
   assert.equal(input.methods.length, 25)
   assert.equal(input.metrics.length, 24)
+  assert.equal(input.observations.length, 50 * 25 * 24)
   assert.deepEqual(new Set(input.metrics.map(({ group }) => group)), new Set(groups))
+  const triples = input.observations.map(({ datasetId, methodId, metricId }) => `${datasetId}\u0000${methodId}\u0000${metricId}`)
+  assert.equal(new Set(triples).size, 50 * 25 * 24)
+  assert.deepEqual(
+    new Set(triples),
+    new Set(input.datasets.flatMap(({ id: datasetId }) => input.methods.flatMap(({ id: methodId }) => input.metrics.map(({ id: metricId }) => `${datasetId}\u0000${methodId}\u0000${metricId}`)))),
+  )
+  for (const observation of input.observations) {
+    assert.deepEqual(Object.keys(observation.provenance).sort(), ['datasetVersion', 'extractedAt', 'locator', 'methodVersion', 'paperId', 'runConfigId'])
+    assert.ok(Object.values(observation.provenance).every((value) => typeof value === 'string' && value.length > 0))
+    assert.equal(Number.isNaN(Date.parse(observation.provenance.extractedAt)), false)
+    assert.equal(observation.provenance.methodVersion, '1.0.0')
+  }
+  for (const group of groups) {
+    const metricIds = new Set(input.metrics.filter((metric) => metric.group === group).map((metric) => metric.id))
+    assert.ok(new Set(input.observations.filter((observation) => metricIds.has(observation.metricId)).map((observation) => observation.rawValue)).size > 1, group)
+  }
+
+  const options = { bootstrapReplicates: 500 } as const
+  assert.equal(options.bootstrapReplicates, 500)
 
   const firstStarted = performance.now()
-  const first = routeMethods(input, { bootstrapReplicates: 500 })
+  const first = routeMethods(input, options)
   const firstMs = performance.now() - firstStarted
   const secondStarted = performance.now()
-  const second = routeMethods(input, { bootstrapReplicates: 500 })
+  const second = routeMethods(input, options)
   const secondMs = performance.now() - secondStarted
 
   assert.deepEqual(first, second)
   assert.equal(first.status, 'OK')
+  assert.equal(first.seed, 20260823)
   assert.ok(firstMs < 2000, `first run took ${firstMs.toFixed(1)}ms`)
   assert.ok(secondMs < 2000, `second run took ${secondMs.toFixed(1)}ms`)
   console.log(`500-replicate routeMethods timings: first=${firstMs.toFixed(1)}ms, second=${secondMs.toFixed(1)}ms`)

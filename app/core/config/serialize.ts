@@ -1,3 +1,4 @@
+import { stringify as stringifyYaml } from 'yaml'
 import type { ExecutableConfig, ParameterValue } from './types.ts'
 import { absoluteHttpUrl, rfc3339DateTime, safeToken } from '../router/validation.ts'
 
@@ -89,7 +90,6 @@ export function validateExecutableConfig(value: unknown): ExecutableConfig {
 
 export function serializeConfig(value: ExecutableConfig): { json: string; yaml: string } {
   const config = sorted(validateExecutableConfig(value))
-  const json = JSON.stringify(config, null, 2)
-  return { json, yaml: json }
+  return { json: JSON.stringify(config, null, 2), yaml: stringifyYaml(config) }
 }
 function hasAsciiControl(value: string): boolean { return [...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f }) }

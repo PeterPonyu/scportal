@@ -24,6 +24,26 @@ function core(file: string): string {
   return `app/core/router/${file}`
 }
 
+test('allows yaml only as the exact pure config serialization adapter', async () => {
+  const allowed = await scan({
+    'app/core/config/serialize.ts': "import { stringify } from 'yaml'\nexport const yaml = stringify({ value: 1 })\n",
+  })
+  const rejected = await scan({
+    [core('other.ts')]: "import { stringify } from 'yaml'\nexport const yaml = stringify({ value: 1 })\n",
+  })
+  const rejectedFromAdapterFile = await scan({
+    'app/core/config/serialize.ts': "import Vue from 'vue'\nexport { Vue }\n",
+  })
+
+  assert.deepEqual(allowed, [])
+  assert.deepEqual(rejected, [
+    'app/core/router/other.ts:1:1 forbidden module specifier: yaml',
+  ])
+  assert.deepEqual(rejectedFromAdapterFile, [
+    'app/core/config/serialize.ts:1:1 forbidden module specifier: vue',
+  ])
+})
+
 test('allows relative TypeScript dependencies and runtime shadowing while type-only names do not mask globals', async () => {
   const findings = await scan({
     [core('dep.ts')]: 'export const value = 1\n',
@@ -85,4 +105,26 @@ test('rejects parse diagnostics and TypeScript-only grammar in JavaScript module
 
   assert.ok(findings.some((item) => /parse diagnostic/.test(item)))
   assert.ok(findings.some((item) => /TypeScript-only syntax in JavaScript module/.test(item)))
+})
+
+test('rejects every external-module import-equals dependency including relative targets', async () => {
+  const findings = await scan({
+    [core('dep.ts')]: 'export const value = 1\n',
+    [core('import-equals.ts')]: [
+      "import Fs = require('node:fs')",
+      "import Vue = require('vue')",
+      "import Package = require('package-name')",
+      "import Relative = require('./dep.ts')",
+    ].join('\n'),
+  })
+
+  assert.deepEqual(findings, [
+    'app/core/router/import-equals.ts:1:1 direct require is forbidden',
+    'app/core/router/import-equals.ts:1:1 forbidden module specifier: node:fs',
+    'app/core/router/import-equals.ts:2:1 direct require is forbidden',
+    'app/core/router/import-equals.ts:2:1 forbidden module specifier: vue',
+    'app/core/router/import-equals.ts:3:1 direct require is forbidden',
+    'app/core/router/import-equals.ts:3:1 forbidden module specifier: package-name',
+    'app/core/router/import-equals.ts:4:1 direct require is forbidden',
+  ])
 })
