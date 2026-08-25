@@ -24,7 +24,9 @@
     "validate": "npm run validate:router-data && npm run validate:public-graph",
     "diff": "git diff --check -- .",
     "check:rendered-public-graph": "node scripts/check_rendered_public_graph.mjs",
-    "check": "npm run lint && npm run check:router && npm run validate:public-graph && npm run generate && npm run check:rendered-public-graph"
+    "check": "npm run lint && npm run check:router && npm run test:site && npm run validate:public-graph && npm run generate && npm run check:static-routes && npm run check:rendered-public-graph",
+    "test:site": "node --experimental-strip-types --test tests/site/*.test.ts",
+    "check:static-routes": "node scripts/check_static_routes.mjs"
   },
   "dependencies": {
     "ajv": "^8.20.0",
