@@ -189,6 +189,9 @@ test('returns recursively sanitized prototype-free data', async () => {
   assert.equal(Object.getPrototypeOf(parsed), null)
   assert.equal(Object.getPrototypeOf(parsed.priors), null)
   assert.equal(Object.getPrototypeOf(parsed.aliases), Array.prototype)
+  assert.equal(JSON.stringify(parsed), JSON.stringify(validDataset))
+  assert.equal(Object.hasOwn(parsed, 'id'), true)
+  assert.equal(Object.hasOwn(parsed.priors, 'time'), true)
 })
 
 test('treats an own __proto__ key as data without mutating prototypes', async () => {
@@ -218,6 +221,68 @@ test('rejects enumerable symbol properties on nested arrays as non-JSON data', a
     () => validator.parseDataset({ ...validDataset, aliases }),
     /symbol properties/i,
   )
+})
+
+test('rejects non-enumerable own object names including __proto__', async () => {
+  const validator = await createRouterDataValidator()
+
+  for (const name of ['hidden', '__proto__']) {
+    const dataset = { ...validDataset }
+    Object.defineProperty(dataset, name, {
+      configurable: true,
+      enumerable: false,
+      value: 'must-not-be-dropped',
+    })
+    assert.throws(() => validator.parseDataset(dataset), /own string properties must be enumerable data properties/i)
+  }
+})
+
+test('rejects every own symbol property on objects and arrays', async () => {
+  const validator = await createRouterDataValidator()
+  const datasetWithSymbol = { ...validDataset }
+  Object.defineProperty(datasetWithSymbol, Symbol('hidden-object'), {
+    configurable: true,
+    enumerable: false,
+    value: 'must-not-be-dropped',
+  })
+  const aliasesWithSymbol = [...validDataset.aliases]
+  Object.defineProperty(aliasesWithSymbol, Symbol('hidden-array'), {
+    configurable: true,
+    enumerable: false,
+    value: 'must-not-be-dropped',
+  })
+
+  assert.throws(() => validator.parseDataset(datasetWithSymbol), /symbol properties/i)
+  assert.throws(() => validator.parseDataset({ ...validDataset, aliases: aliasesWithSymbol }), /symbol properties/i)
+})
+
+test('rejects hidden named array properties', async () => {
+  const validator = await createRouterDataValidator()
+  const aliases = [...validDataset.aliases]
+  Object.defineProperty(aliases, 'hidden', {
+    configurable: true,
+    enumerable: false,
+    value: 'must-not-be-dropped',
+  })
+
+  assert.throws(() => validator.parseDataset({ ...validDataset, aliases }), /array.*extra properties/i)
+})
+
+test('rejects accessors without evaluating getters', async () => {
+  const validator = await createRouterDataValidator()
+  const dataset = { ...validDataset }
+  let getterEvaluated = false
+  Object.defineProperty(dataset, 'hidden', {
+    configurable: true,
+    enumerable: false,
+    get() {
+      getterEvaluated = true
+      return 'must-not-be-read'
+    },
+  })
+
+  assert.throws(() => validator.parseDataset(dataset), /own string properties must be enumerable data properties/i)
+  assert.equal(getterEvaluated, false)
 })
 
 test('rejects invalid TaskProfile weight profiles without inherited-property trust', async () => {

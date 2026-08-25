@@ -34,26 +34,40 @@ function sanitizeJsonData(value, path = '$', ancestors = new Set()) {
 
   ancestors.add(value)
   try {
-    if (Object.getOwnPropertySymbols(value).some((symbol) => Object.getOwnPropertyDescriptor(value, symbol)?.enumerable)) {
-      throw new Error(`${path} must not contain enumerable symbol properties`)
-    }
+    const ownKeys = Reflect.ownKeys(value)
+    if (ownKeys.some((key) => typeof key === 'symbol')) throw new Error(`${path} must not contain symbol properties`)
     if (Array.isArray(value)) {
       const prototype = Object.getPrototypeOf(value)
       if (prototype !== Array.prototype && prototype !== null) throw new Error(`${path} must be a plain JSON array`)
-      const keys = Object.keys(value)
-      if (keys.length !== value.length || keys.some((key, index) => key !== String(index))) {
-        throw new Error(`${path} must be a dense JSON array without extra properties`)
+      const stringKeys = ownKeys
+      const lengthDescriptor = ownDataDescriptor(value, 'length')
+      if (!lengthDescriptor || lengthDescriptor.enumerable || !Number.isSafeInteger(lengthDescriptor.value) || lengthDescriptor.value < 0) {
+        throw new Error(`${path} array length must be a non-enumerable own data property`)
       }
-      return keys.map((key) => sanitizeOwnDataProperty(value, key, `${path}[${key}]`, ancestors))
+      const length = lengthDescriptor.value
+      const extraKey = stringKeys.find((key) => key !== 'length' && !isCanonicalArrayIndex(key, length))
+      if (extraKey !== undefined) throw new Error(`${path} array must not contain extra properties`)
+      if (stringKeys.length !== length + 1) throw new Error(`${path} must be a dense JSON array without holes`)
+
+      const sanitized = new Array(length)
+      for (let index = 0; index < length; index += 1) {
+        const key = String(index)
+        const descriptor = ownDataDescriptor(value, key)
+        if (!descriptor?.enumerable) throw new Error(`${path}[${key}] array indices must be enumerable own data properties`)
+        sanitized[index] = sanitizeJsonData(descriptor.value, `${path}[${key}]`, ancestors)
+      }
+      return sanitized
     }
 
     if (!isRecord(value)) throw new Error(`${path} must be a plain JSON object`)
     const sanitized = Object.create(null)
-    for (const key of Object.keys(value)) {
+    for (const key of ownKeys) {
+      const descriptor = ownDataDescriptor(value, key)
+      if (!descriptor?.enumerable) throw new Error(`${path} own string properties must be enumerable data properties`)
       Object.defineProperty(sanitized, key, {
         configurable: true,
         enumerable: true,
-        value: sanitizeOwnDataProperty(value, key, `${path}.${key}`, ancestors),
+        value: sanitizeJsonData(descriptor.value, `${path}.${key}`, ancestors),
         writable: true,
       })
     }
@@ -63,10 +77,15 @@ function sanitizeJsonData(value, path = '$', ancestors = new Set()) {
   }
 }
 
-function sanitizeOwnDataProperty(source, key, path, ancestors) {
+function ownDataDescriptor(source, key) {
   const descriptor = Object.getOwnPropertyDescriptor(source, key)
-  if (!descriptor || !Object.hasOwn(descriptor, 'value')) throw new Error(`${path} must be an own JSON data property`)
-  return sanitizeJsonData(descriptor.value, path, ancestors)
+  if (!descriptor || !Object.hasOwn(descriptor, 'value')) return undefined
+  return descriptor
+}
+
+function isCanonicalArrayIndex(key, length) {
+  const index = Number(key)
+  return Number.isInteger(index) && index >= 0 && index < length && String(index) === key
 }
 
 function normalizeId(value) {
