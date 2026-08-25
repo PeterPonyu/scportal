@@ -39,8 +39,10 @@ export interface CompiledArtifacts {
 export interface CompileConfigInput {
   outcome: RouterOutcome
   profile: TaskProfile
-  methods: readonly unknown[]
-  templates: readonly unknown[]
+  releaseRegistry: TrustedReleaseRegistry
   parameters?: Record<string, unknown>
   generatedAt: string
 }
+
+declare const trustedReleaseRegistryBrand: unique symbol
+export interface TrustedReleaseRegistry { readonly [trustedReleaseRegistryBrand]: true }

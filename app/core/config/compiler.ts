@@ -1,12 +1,17 @@
+import canonicalMethods from '../../../data/router/methods.json' with { type: 'json' }
+import canonicalTemplates from '../../../data/router/config-templates.json' with { type: 'json' }
+import canonicalRelease from '../../../data/router/release.json' with { type: 'json' }
 import { serializeConfig, validateExecutableConfig } from './serialize.ts'
 import { validateConfigTemplateRegistryEntry } from './templates.ts'
-import type { CompileConfigInput, CompiledArtifacts, ExecutableConfig, MethodConfigTemplate, ParameterValue } from './types.ts'
+import type { CompileConfigInput, CompiledArtifacts, ExecutableConfig, MethodConfigTemplate, ParameterValue, TrustedReleaseRegistry } from './types.ts'
 import type { MethodCapability } from '../router/types.ts'
 
 const shellCommand = /^(?:python|python3|pip|pip3)(?: -m pip)? install ([A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*)$/
 const pythonIdentifier = /^[A-Za-z_][A-Za-z0-9_]*$/
 const dangerousKeys = new Set(['__proto__', 'prototype', 'constructor'])
 const methodFields = ['id', 'aliases', 'version', 'modalities', 'maxScale', 'outputs', 'requiredPriors', 'supportedGoals', 'resourceTier', 'installCommand', 'license', 'sourceUrl', 'docsUrl', 'paperUrl', 'executable']
+const registryHandles = new WeakMap<object, { methods: readonly MethodCapability[]; templates: readonly MethodConfigTemplate[]; source: object; fingerprint: string }>()
+const canonicalSource = Object.freeze({ release: canonicalRelease.id })
 
 function ownRecord(value: unknown, label: string): Record<string, unknown> {
   if (value === null || typeof value !== 'object' || Array.isArray(value) || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)) throw new Error(`${label} must be a plain own-data object`)
@@ -26,13 +31,19 @@ function required(record: Record<string, unknown>, key: string, label: string): 
 }
 
 function nonblank(value: unknown, label: string): string {
-  if (typeof value !== 'string' || !value.trim()) throw new Error(`${label} must be a nonblank string`)
+  if (typeof value !== 'string' || !value.trim() || hasAsciiControl(value)) throw new Error(`${label} must be a nonblank control-free string`)
   return value
 }
 
 function strings(value: unknown, label: string): string[] {
-  if (!Array.isArray(value) || value.some((entry) => typeof entry !== 'string')) throw new Error(`${label} must be a string array`)
+  if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype || Reflect.ownKeys(value).length !== value.length + 1 || value.some((entry) => typeof entry !== 'string' || hasAsciiControl(entry))) throw new Error(`${label} must be a dense control-free string array`)
   return [...value]
+}
+
+function denseArray(value: unknown, label: string): unknown[] {
+  if (!Array.isArray(value) || (Object.getPrototypeOf(value) !== Array.prototype && Object.getPrototypeOf(value) !== null) || Reflect.ownKeys(value).length !== value.length + 1) throw new Error(`${label} must be a dense own-data array`)
+  for (let index = 0; index < value.length; index += 1) { const descriptor = Object.getOwnPropertyDescriptor(value, String(index)); if (!descriptor || !Object.hasOwn(descriptor, 'value') || !descriptor.enumerable) throw new Error(`${label} must be a dense own-data array`) }
+  return value
 }
 
 function parseMethod(value: unknown): MethodCapability {
@@ -47,7 +58,58 @@ function parseMethod(value: unknown): MethodCapability {
   const resourceTier = required(record, 'resourceTier', 'method registry entry')
   const executable = required(record, 'executable', 'method registry entry')
   if (!modalities.every((entry) => ['scrna', 'scatac', 'multiome'].includes(entry)) || !outputs.every((entry) => ['latent', 'graph', 'pseudotime', 'branch', 'metadata'].includes(entry)) || !priors.every((entry) => ['time', 'root_state', 'terminal_states', 'labels', 'perturbation'].includes(entry)) || !goals.every((entry) => ['latent_representation', 'trajectory_reconstruction', 'fate_decision', 'lineage_contribution'].includes(entry)) || !['lt_10k', '10k_50k', '50k_200k', 'gt_200k'].includes(maxScale as string) || ![1, 2, 3].includes(resourceTier as number) || typeof executable !== 'boolean') throw new Error(`method registry entry ${id} has invalid capability fields`)
-  return { id, aliases: strings(required(record, 'aliases', 'method registry entry'), 'method registry entry.aliases'), version: nonblank(required(record, 'version', 'method registry entry'), 'method registry entry.version'), modalities: modalities as MethodCapability['modalities'], maxScale: maxScale as MethodCapability['maxScale'], outputs: outputs as MethodCapability['outputs'], requiredPriors: priors as MethodCapability['requiredPriors'], supportedGoals: goals as MethodCapability['supportedGoals'], resourceTier: resourceTier as MethodCapability['resourceTier'], installCommand: nonblank(required(record, 'installCommand', 'method registry entry'), 'method registry entry.installCommand'), license: nonblank(required(record, 'license', 'method registry entry'), 'method registry entry.license'), sourceUrl: nonblank(required(record, 'sourceUrl', 'method registry entry'), 'method registry entry.sourceUrl'), docsUrl: nonblank(required(record, 'docsUrl', 'method registry entry'), 'method registry entry.docsUrl'), paperUrl: nonblank(required(record, 'paperUrl', 'method registry entry'), 'method registry entry.paperUrl'), executable }
+  const aliases = strings(required(record, 'aliases', 'method registry entry'), 'method registry entry.aliases')
+  for (const url of ['sourceUrl', 'docsUrl', 'paperUrl'] as const) { const candidate = nonblank(required(record, url, 'method registry entry'), `method registry entry.${url}`); if (!/^https?:\/\/[^\s/$.?#][^\s]*$/i.test(candidate)) throw new Error(`method registry entry.${url} must be an absolute http/https URL`) }
+  return { id, aliases, version: nonblank(required(record, 'version', 'method registry entry'), 'method registry entry.version'), modalities: modalities as MethodCapability['modalities'], maxScale: maxScale as MethodCapability['maxScale'], outputs: outputs as MethodCapability['outputs'], requiredPriors: priors as MethodCapability['requiredPriors'], supportedGoals: goals as MethodCapability['supportedGoals'], resourceTier: resourceTier as MethodCapability['resourceTier'], installCommand: nonblank(required(record, 'installCommand', 'method registry entry'), 'method registry entry.installCommand'), license: nonblank(required(record, 'license', 'method registry entry'), 'method registry entry.license'), sourceUrl: record.sourceUrl as string, docsUrl: record.docsUrl as string, paperUrl: record.paperUrl as string, executable }
+}
+
+function registryFingerprint(methods: readonly unknown[], templates: readonly unknown[]): string { return fingerprint({ release: canonicalRelease, methods, templates }) }
+function issueRegistry(methods: readonly unknown[], templates: readonly unknown[], source: object): TrustedReleaseRegistry {
+  const parsedMethods = denseArray(methods, 'release registry methods').map(parseMethod)
+  const parsedTemplates = denseArray(templates, 'release registry templates').map(validateConfigTemplateRegistryEntry)
+  if (parsedMethods.length === 0 || parsedMethods.length !== parsedTemplates.length) throw new Error('release registry must be complete')
+  const identities = new Set<string>()
+  for (const method of parsedMethods) for (const identity of [method.id, ...method.aliases]) { const normalized = identity.toLowerCase(); if (identities.has(normalized)) throw new Error('duplicate canonical method id or alias'); identities.add(normalized) }
+  const methodIds = new Set(parsedMethods.map((method) => method.id))
+  if (new Set(parsedTemplates.map((template) => template.methodId)).size !== parsedTemplates.length || parsedTemplates.some((template) => !methodIds.has(template.methodId))) throw new Error('release registry templates must be unique and complete')
+  const handle = Object.freeze({})
+  registryHandles.set(handle, { methods: deepFreeze(parsedMethods), templates: deepFreeze(parsedTemplates), source, fingerprint: registryFingerprint(methods, templates) })
+  return handle as TrustedReleaseRegistry
+}
+
+const canonicalFingerprint = registryFingerprint(canonicalMethods, canonicalTemplates)
+export const canonicalReleaseRegistry: TrustedReleaseRegistry = issueRegistry(canonicalMethods, canonicalTemplates, canonicalSource)
+export function createUnitFixtureReleaseRegistry(methods: readonly unknown[], templates: readonly unknown[]): TrustedReleaseRegistry {
+  if ((globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'test') throw new Error('unit fixture release registries are unavailable in production')
+  return issueRegistry(methods, templates, Object.freeze({ unitFixture: true }))
+}
+
+function trustedRegistry(value: unknown): { methods: readonly MethodCapability[]; templates: readonly MethodConfigTemplate[] } {
+  if (value === null || typeof value !== 'object') throw new Error('compileConfig requires a trusted release registry handle')
+  const issued = registryHandles.get(value)
+  if (!issued) throw new Error('compileConfig requires a trusted release registry handle')
+  if (issued.source === canonicalSource && issued.fingerprint !== canonicalFingerprint) throw new Error('canonical release registry fingerprint mismatch')
+  return issued
+}
+
+function exactInput(value: unknown): Record<string, unknown> {
+  const record = ownRecord(value, 'compileConfig input')
+  const fields = ['outcome', 'profile', 'releaseRegistry', 'parameters', 'generatedAt']
+  if (Object.keys(record).some((key) => !fields.includes(key)) || ['outcome', 'profile', 'releaseRegistry', 'generatedAt'].some((key) => !Object.hasOwn(record, key)) || (Object.hasOwn(record, 'parameters') && record.parameters === undefined)) throw new Error('compileConfig input has unknown, missing, or undefined fields')
+  for (const key of ['outcome', 'profile'] as const) { ownRecord(record[key], `compileConfig ${key}`); assertJsonData(record[key], `compileConfig ${key}`) }
+  return record
+}
+
+function assertJsonData(value: unknown, label: string, ancestors = new Set<object>()): void {
+  if (typeof value === 'string') { if (hasAsciiControl(value)) throw new Error(`${label} contains an ASCII control character`); return }
+  if (value === null || typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value))) return
+  if (typeof value !== 'object' || ancestors.has(value)) throw new Error(`${label} must contain finite acyclic JSON data`)
+  ancestors.add(value)
+  try {
+    if (Array.isArray(value)) { for (const item of denseArray(value, label)) assertJsonData(item, label, ancestors); return }
+    const record = ownRecord(value, label)
+    for (const item of Object.values(record)) assertJsonData(item, label, ancestors)
+  } finally { ancestors.delete(value) }
 }
 
 function validateInstall(methodId: string, install: string, packageName: string): string {
@@ -112,13 +174,16 @@ function deepFreeze<T>(value: T): T {
 }
 
 export function compileConfig(input: CompileConfigInput): CompiledArtifacts {
-  if (!Array.isArray(input.methods) || !Array.isArray(input.templates)) throw new Error('compileConfig requires complete canonical method and template registries')
-  if (input.outcome.status !== 'OK') throw new Error('compileConfig requires a successful recommendation')
-  const bestFits = input.outcome.recommendations.filter((recommendation) => recommendation.roles.includes('best_fit'))
+  const raw = exactInput(input)
+  const outcome = raw.outcome as CompileConfigInput['outcome']
+  const profile = raw.profile as CompileConfigInput['profile']
+  if (outcome.status !== 'OK') throw new Error('compileConfig requires a successful recommendation')
+  if (!Array.isArray(outcome.recommendations) || Object.getPrototypeOf(outcome.recommendations) !== Array.prototype) throw new Error('compileConfig outcome recommendations must be a dense own-data array')
+  for (const recommendation of outcome.recommendations) ownRecord(recommendation, 'compileConfig recommendation')
+  const bestFits = outcome.recommendations.filter((recommendation) => recommendation.roles.includes('best_fit'))
   const selected = bestFits[0]?.methodId
   if (bestFits.length !== 1 || typeof selected !== 'string' || !selected) throw new Error('compileConfig requires one canonical best_fit recommendation')
-  const methods = input.methods.map(parseMethod)
-  const templates = input.templates.map(validateConfigTemplateRegistryEntry)
+  const { methods, templates } = trustedRegistry(raw.releaseRegistry)
   const methodsById = new Map(methods.map((method) => [method.id, method]))
   const templatesById = new Map(templates.map((template) => [template.methodId, template]))
   if (methodsById.size !== methods.length) throw new Error('duplicate canonical method registry entry')
@@ -143,8 +208,9 @@ export function compileConfig(input: CompileConfigInput): CompiledArtifacts {
     if (!pseudotimeKey || !template.outputKeys.pseudotime) throw new Error('scRL handoff requires a declared pseudotime output')
     downstream.scRL = { latentKey: template.outputKeys.latent, pseudotimeKey, decisionOutput: template.downstream.scRL.decisionOutput }
   }
-  const config: ExecutableConfig = { schemaVersion: '1.0', routerVersion: input.outcome.routerVersion, evidenceVersion: input.outcome.evidenceVersion, method: { id: method.id, version: method.version, install: installCommand }, preprocessing: { modality: input.profile.modality, normalization: 'library_size_log1p', featureSelection: 'highly_variable_features' }, parameters: validateParameters(template, input.parameters), outputs: template.outputKeys, downstream, provenance: { recommendationSeed: input.outcome.seed, methodSource: method.sourceUrl, generatedAt: input.generatedAt, profileFingerprint: fingerprint(input.profile), outcome: { status: 'OK', methodId: method.id } } }
+  const config: ExecutableConfig = { schemaVersion: '1.0', routerVersion: outcome.routerVersion, evidenceVersion: outcome.evidenceVersion, method: { id: method.id, version: method.version, install: installCommand }, preprocessing: { modality: profile.modality, normalization: 'library_size_log1p', featureSelection: 'highly_variable_features' }, parameters: validateParameters(template, raw.parameters), outputs: template.outputKeys, downstream, provenance: { recommendationSeed: outcome.seed, methodSource: method.sourceUrl, generatedAt: raw.generatedAt as string, profileFingerprint: fingerprint(profile), outcome: { status: 'OK', methodId: method.id } } }
   const serialized = serializeConfig(config)
-  const stem = `${method.id}-${input.outcome.routerVersion}-seed-${input.outcome.seed}`
+  const stem = `${method.id}-${outcome.routerVersion}-seed-${outcome.seed}`
   return deepFreeze({ config: validateExecutableConfig(config), ...serialized, installCommand, pythonSnippet: renderPython(template, config), filenames: { json: `${stem}.json`, yaml: `${stem}.yaml`, python: `${stem}.py` } })
 }
+function hasAsciiControl(value: string): boolean { return [...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f }) }

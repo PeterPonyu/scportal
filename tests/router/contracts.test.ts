@@ -42,7 +42,7 @@ const validObservation = {
     datasetVersion: '1',
     methodVersion: '1.0.0',
     runConfigId: 'default',
-    extractedAt: '2026-08-23',
+    extractedAt: '2026-08-23T00:00:00Z',
   },
 }
 

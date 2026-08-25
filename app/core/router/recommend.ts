@@ -54,8 +54,10 @@ function compare(left: string, right: string): number { return left < right ? -1
 function success<T>(value: T): Parsed<T> { return { ok: true, value } }
 function failure<T>(error: string): Parsed<T> { return { ok: false, error } }
 function inSet<T extends string>(value: unknown, values: readonly T[]): value is T { return typeof value === 'string' && values.includes(value as T) }
-function nonempty(value: unknown): value is string { return typeof value === 'string' && value.length > 0 }
+function nonempty(value: unknown): value is string { return typeof value === 'string' && value.length > 0 && ![...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f }) }
 function identifier(value: unknown): value is string { return nonempty(value) && /\S/.test(value) && value.trim() === value }
+function absoluteHttpUrl(value: unknown): value is string { return nonempty(value) && /^https?:\/\/[^\s/$.?#][^\s]*$/i.test(value) }
+function rfc3339(value: unknown): value is string { return nonempty(value) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) && !Number.isNaN(Date.parse(value)) }
 
 function exactRecord(value: unknown, required: readonly string[], optional: readonly string[] = []): Parsed<DataRecord> {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return failure('must be a plain object')
@@ -134,7 +136,7 @@ function parseMethod(value: unknown): Parsed<MethodCapability> {
   const parsedOutputs = typedArray(parsed.value.outputs, 'outputs', (item): item is MethodCapability['outputs'][number] => inSet(item, outputs), 1)
   const requiredPriors = typedArray(parsed.value.requiredPriors, 'requiredPriors', (item): item is MethodCapability['requiredPriors'][number] => inSet(item, priorKeys))
   const supportedGoals = typedArray(parsed.value.supportedGoals, 'supportedGoals', (item): item is MethodCapability['supportedGoals'][number] => inSet(item, goals), 1)
-  if (!identifier(parsed.value.id) || !aliases.ok || !nonempty(parsed.value.version) || !parsedModalities.ok || !inSet(parsed.value.maxScale, scales.slice(0, 4)) || !parsedOutputs.ok || !requiredPriors.ok || !supportedGoals.ok || ![1, 2, 3].includes(parsed.value.resourceTier as number) || !nonempty(parsed.value.installCommand) || !nonempty(parsed.value.license) || !nonempty(parsed.value.sourceUrl) || !nonempty(parsed.value.docsUrl) || !nonempty(parsed.value.paperUrl) || typeof parsed.value.executable !== 'boolean') return failure('method has invalid fields')
+  if (!identifier(parsed.value.id) || !aliases.ok || !nonempty(parsed.value.version) || !parsedModalities.ok || !inSet(parsed.value.maxScale, scales.slice(0, 4)) || !parsedOutputs.ok || !requiredPriors.ok || !supportedGoals.ok || ![1, 2, 3].includes(parsed.value.resourceTier as number) || !nonempty(parsed.value.installCommand) || !nonempty(parsed.value.license) || !absoluteHttpUrl(parsed.value.sourceUrl) || !absoluteHttpUrl(parsed.value.docsUrl) || !absoluteHttpUrl(parsed.value.paperUrl) || typeof parsed.value.executable !== 'boolean') return failure('method has invalid fields')
   return success({ id: parsed.value.id, aliases: aliases.value, version: parsed.value.version, modalities: parsedModalities.value, maxScale: parsed.value.maxScale as MethodCapability['maxScale'], outputs: parsedOutputs.value, requiredPriors: requiredPriors.value, supportedGoals: supportedGoals.value, resourceTier: parsed.value.resourceTier as 1 | 2 | 3, installCommand: parsed.value.installCommand, license: parsed.value.license, sourceUrl: parsed.value.sourceUrl, docsUrl: parsed.value.docsUrl, paperUrl: parsed.value.paperUrl, executable: parsed.value.executable })
 }
 
@@ -149,7 +151,7 @@ function parseMetric(value: unknown): Parsed<MetricDefinition> {
 function parseProvenance(value: unknown): Parsed<EvidenceProvenance> {
   const parsed = exactRecord(value, ['paperId', 'locator', 'datasetVersion', 'methodVersion', 'runConfigId', 'extractedAt'])
   if (!parsed.ok) return failure(`provenance ${parsed.error}`)
-  if (!identifier(parsed.value.paperId) || !nonempty(parsed.value.locator) || !nonempty(parsed.value.datasetVersion) || !nonempty(parsed.value.methodVersion) || !identifier(parsed.value.runConfigId) || !nonempty(parsed.value.extractedAt)) return failure('provenance has invalid fields')
+  if (!identifier(parsed.value.paperId) || !nonempty(parsed.value.locator) || !nonempty(parsed.value.datasetVersion) || !nonempty(parsed.value.methodVersion) || !identifier(parsed.value.runConfigId) || !rfc3339(parsed.value.extractedAt)) return failure('provenance has invalid fields')
   return success(parsed.value as unknown as EvidenceProvenance)
 }
 

@@ -99,7 +99,7 @@ test('contains complete, synthetic-only evidence records with registered version
     assert.equal(observation.provenance.locator, 'table:S1')
     assert.equal(observation.provenance.datasetVersion, '1')
     assert.equal(observation.provenance.runConfigId, 'fixture-default')
-    assert.equal(observation.provenance.extractedAt, '2026-08-23')
+    assert.equal(observation.provenance.extractedAt, '2026-08-23T00:00:00Z')
     assert.equal(observation.provenance.methodVersion, methodVersions.get(observation.methodId))
     assert.equal(requiredProvenance.every((key) => Boolean(observation.provenance[key])), true)
   }

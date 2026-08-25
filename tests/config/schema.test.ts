@@ -39,6 +39,16 @@ test('rejects exact-schema violations, unsafe own keys, non-data fields, unsafe 
     [{ ...executable, method: { ...executable.method, install: 'pip install graph-contrastive==1.0.0; whoami' } }, /install/i],
     [{ ...executable, downstream: { scFocus: { latentKey: 'wrong', contributionOutput: 'x' } } }, /scFocus|latent/i],
     [{ ...executable, downstream: { scRL: { latentKey: 'X_graph', pseudotimeKey: 'pt', decisionOutput: 'x' } } }, /scRL|pseudotime/i],
+    [{ ...executable, outputs: { ...executable.outputs, graph: undefined } }, /graph|undefined/i],
+    [{ ...executable, outputs: { ...executable.outputs, pseudotime: undefined } }, /pseudotime|undefined/i],
+    [{ ...executable, outputs: { ...executable.outputs, branch: undefined } }, /branch|undefined/i],
+    [{ ...executable, downstream: { scFocus: { latentKey: 'X_graph', branchKey: undefined, contributionOutput: 'x' } } }, /branchKey|undefined/i],
+    [{ ...executable, downstream: { scFocus: undefined } }, /handoff|undefined/i],
+    [{ ...executable, downstream: { scRL: undefined } }, /handoff|undefined/i],
+    [{ ...executable, provenance: { ...executable.provenance, generatedAt: '2026-08-24' } }, /date-time|timestamp/i],
+    [{ ...executable, provenance: { ...executable.provenance, methodSource: 'javascript:alert(1)' } }, /http|url/i],
+    [{ ...executable, parameters: { label: 'bad\u0000value' } }, /control/i],
+    [{ ...executable, outputs: { ...executable.outputs, latent: 'bad\u007fvalue' } }, /control/i],
   ]
   for (const [value, expected] of cases) assert.throws(() => validateExecutableConfig(value), expected)
 })

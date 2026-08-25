@@ -3,6 +3,7 @@ import type { MethodConfigTemplate, ParameterDefinition, ParameterValue } from '
 type RecordValue = Record<string, unknown>
 const dangerousKeys = new Set(['__proto__', 'prototype', 'constructor'])
 const pythonIdentifier = /^[A-Za-z_][A-Za-z0-9_]*$/
+function hasAsciiControl(value: string): boolean { return [...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f }) }
 
 function ownRecord(value: unknown, label: string, allowedDangerous: readonly string[] = []): RecordValue {
   if (value === null || typeof value !== 'object' || Array.isArray(value) || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)) throw new Error(`${label} must be a plain own-data object`)
@@ -22,7 +23,7 @@ function required(record: RecordValue, key: string, label: string): unknown {
 }
 
 function nonblank(value: unknown, label: string): string {
-  if (typeof value !== 'string' || !value.trim()) throw new Error(`${label} must be a nonblank string`)
+  if (typeof value !== 'string' || !value.trim() || hasAsciiControl(value)) throw new Error(`${label} must be a nonblank control-free string`)
   return value
 }
 

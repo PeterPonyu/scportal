@@ -58,7 +58,7 @@ function unstableFourMethodInput() {
       methodId,
       metricId,
       rawValue: rows[datasetIndex][methodIndex],
-      provenance: { paperId: 'synthetic-contract-fixture', locator: 'table:S1', datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'unstable-fixture', extractedAt: '2026-08-23' },
+      provenance: { paperId: 'synthetic-contract-fixture', locator: 'table:S1', datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'unstable-fixture', extractedAt: '2026-08-23T00:00:00Z' },
     })))),
   }
 }
@@ -190,7 +190,7 @@ test('conditions bootstrap evidence so a distant contradictory dataset cannot ov
     methodId,
     metricId: 'trajectory_directionality',
     rawValue,
-    provenance: { paperId: 'synthetic-contract-fixture', locator: 'table:S1', datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'context-fixture', extractedAt: '2026-08-23' },
+    provenance: { paperId: 'synthetic-contract-fixture', locator: 'table:S1', datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'context-fixture', extractedAt: '2026-08-23T00:00:00Z' },
   }))
   const outcome = routeMethods({ ...input, profile, datasets, methods, observations }, {
     contextFeatureWeights: { modality: 1, scale: 0, topology: 0, priors: 0, perturbation: 0 },
@@ -325,7 +325,7 @@ test('rejects malformed nested registry and provenance records', () => {
   for (const candidate of cases) assert.equal(routeMethods(candidate).status, 'REFUSED')
 })
 
-test('treats observation identity structurally when distinct fields contain NUL characters', () => {
+test('rejects observation identities containing NUL characters before identity construction', () => {
   const input = executableRegistryInput()
   const sourceDataset = input.datasets[0]
   const sourceMethod = input.methods.find((method) => method.id === 'graph_contrastive')!
@@ -355,7 +355,7 @@ test('treats observation identity structurally when distinct fields contain NUL 
     observations,
   })
 
-  assert.equal(distinct.status, 'OK')
+  assert.equal(distinct.status, 'REFUSED')
 
   const duplicate = routeMethods({
     ...input,
@@ -370,7 +370,7 @@ test('treats observation identity structurally when distinct fields contain NUL 
     observations: [...observations, { ...observations[0] }],
   })
   assert.equal(duplicate.status, 'REFUSED')
-  if (duplicate.status === 'REFUSED') assert.match(duplicate.evidenceGaps.join('\n'), /duplicate canonical observation/)
+  if (duplicate.status === 'REFUSED') assert.match(duplicate.evidenceGaps.join('\n'), /invalid fields|control/i)
 })
 
 test('aggregates valid multiple runs without weighting coverage or effective datasets by run count', () => {

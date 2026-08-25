@@ -5,8 +5,8 @@
   "additionalProperties": false,
   "required": ["methodId", "version", "synthetic", "template"],
   "properties": {
-    "methodId": { "type": "string", "minLength": 1, "pattern": "\\S" },
-    "version": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "methodId": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" },
+    "version": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" },
     "synthetic": { "type": "boolean" },
     "template": {
       "type": "object",
@@ -42,13 +42,13 @@
         },
         "outputKeys": {
           "type": "object", "additionalProperties": false, "required": ["latent", "metadata"],
-          "properties": { "latent": { "type": "string", "minLength": 1 }, "graph": { "type": "string", "minLength": 1 }, "pseudotime": { "type": "string", "minLength": 1 }, "branch": { "type": "string", "minLength": 1 }, "metadata": { "type": "string", "minLength": 1 } }
+          "properties": { "latent": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "graph": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "pseudotime": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "branch": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "metadata": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" } }
         },
         "downstream": {
           "type": "object", "additionalProperties": false,
           "properties": {
-            "scFocus": { "type": "object", "additionalProperties": false, "required": ["contributionOutput"], "properties": { "contributionOutput": { "type": "string", "minLength": 1 }, "branchKey": { "type": "string", "minLength": 1 } } },
-            "scRL": { "type": "object", "additionalProperties": false, "required": ["decisionOutput"], "properties": { "decisionOutput": { "type": "string", "minLength": 1 }, "pseudotimeKey": { "type": "string", "minLength": 1 } } }
+            "scFocus": { "type": "object", "additionalProperties": false, "required": ["contributionOutput"], "properties": { "contributionOutput": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "branchKey": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" } } },
+            "scRL": { "type": "object", "additionalProperties": false, "required": ["decisionOutput"], "properties": { "decisionOutput": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "pseudotimeKey": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" } } }
           }
         }
       }

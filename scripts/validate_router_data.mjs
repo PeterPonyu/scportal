@@ -26,7 +26,11 @@ function isRecord(value) {
 }
 
 function sanitizeJsonData(value, path = '$', ancestors = new Set()) {
-  if (value === null || typeof value === 'string' || typeof value === 'boolean') return value
+  if (value === null || typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    if ([...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f })) throw new Error(`${path} must not contain ASCII control characters`)
+    return value
+  }
   if (typeof value === 'number') {
     if (!Number.isFinite(value)) throw new Error(`${path} must be a finite JSON number`)
     return value
