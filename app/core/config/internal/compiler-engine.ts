@@ -32,7 +32,14 @@ function parseRecommendation(value: unknown): Recommendation { const r = exact(v
 function parseOutcome(value: unknown): Extract<RouterOutcome, { status: 'OK' }> { const r = ownDataRecord(value, 'compileConfig outcome'); if (r.status !== 'OK') throw new Error('compileConfig requires a successful recommendation'); const parsed = exact(r, 'compileConfig outcome', ['status', 'recommendations', 'seed', 'evidenceVersion', 'routerVersion']); if (!safeToken(parsed.evidenceVersion) || !safeToken(parsed.routerVersion)) throw new Error('compileConfig versions must be safe tokens'); const recommendations = denseOwnDataArray(parsed.recommendations, 'recommendations').map(parseRecommendation); if (!recommendations.length) throw new Error('recommendations must be non-empty'); return { status: 'OK', recommendations, seed: uint32(parsed.seed, 'outcome seed'), evidenceVersion: parsed.evidenceVersion as string, routerVersion: parsed.routerVersion as string } }
 function freeze<T>(value: T): T { if (value && typeof value === 'object' && !Object.isFrozen(value)) { for (const key of Reflect.ownKeys(value)) freeze((value as Record<PropertyKey, unknown>)[key]); Object.freeze(value) } return value }
 function codeUnitSorted(value: unknown): unknown { if (Array.isArray(value)) return value.map(codeUnitSorted); if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value as Record<string, unknown>).sort().map((key) => [key, codeUnitSorted((value as Record<string, unknown>)[key])])); return value }
-function profileFingerprint(profile: TaskProfile): string { return sha256Hex(JSON.stringify(codeUnitSorted(profile))) }
+function profileFingerprint(profile: TaskProfile): string {
+  const canonicalProfile = {
+    ...profile,
+    goals: [...profile.goals].sort(),
+    ...(profile.candidateMethodIds === undefined ? {} : { candidateMethodIds: [...profile.candidateMethodIds].sort() }),
+  }
+  return sha256Hex(JSON.stringify(codeUnitSorted(canonicalProfile)))
+}
 function python(value: ParameterValue | undefined): string { if (value === undefined) return 'None'; if (typeof value === 'boolean') return value ? 'True' : 'False'; if (typeof value === 'number') return String(value); return `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'` }
 
 export function createCompilerEngine(rawMethods: readonly unknown[], rawTemplates: readonly unknown[]): (input: CompileConfigInput) => CompiledArtifacts {

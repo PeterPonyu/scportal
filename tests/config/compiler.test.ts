@@ -114,11 +114,20 @@ test('does not retain caller registry or parameter mutations after compilation',
 
 test('binds provenance to a deterministic SHA-256 fingerprint of the normalized profile', () => {
   assert.equal(sha256Hex('abc'), 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad')
-  const original = fixtureCompiler(input()).config.provenance.profileFingerprint
+  const profileWithSets = {
+    ...fixtureProfile,
+    goals: ['latent_representation', 'lineage_contribution'],
+    candidateMethodIds: ['z_method', 'a_method'],
+  } as typeof fixtureProfile & { candidateMethodIds: string[] }
+  const original = fixtureCompiler(input({ profile: profileWithSets })).config.provenance.profileFingerprint
   const reordered = fixtureCompiler(input({
-    profile: Object.fromEntries(Object.entries(fixtureProfile).reverse()) as typeof fixtureProfile,
+    profile: {
+      ...Object.fromEntries(Object.entries(profileWithSets).reverse()),
+      goals: [...profileWithSets.goals].reverse(),
+      candidateMethodIds: [...profileWithSets.candidateMethodIds].reverse(),
+    } as typeof profileWithSets,
   })).config.provenance.profileFingerprint
-  const changed = fixtureCompiler(input({ profile: { ...fixtureProfile, seed: fixtureProfile.seed + 1 } })).config.provenance.profileFingerprint
+  const changed = fixtureCompiler(input({ profile: { ...profileWithSets, candidateMethodIds: ['z_method', 'different_method'] } })).config.provenance.profileFingerprint
 
   assert.match(original, /^[a-f0-9]{64}$/)
   assert.equal(reordered, original)
