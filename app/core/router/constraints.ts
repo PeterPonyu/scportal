@@ -22,11 +22,12 @@ const scalePositions: Readonly<Record<Exclude<ScaleBand, 'unknown'>, number>> = 
   gt_200k: 3,
 }
 
-const requiredOutputs: Readonly<Record<TaskGoal, readonly MethodCapability['outputs'][number][]>> = {
+const acceptableOutputs: Readonly<Record<TaskGoal, readonly MethodCapability['outputs'][number][]>> = {
   latent_representation: ['latent'],
-  trajectory_reconstruction: ['pseudotime'],
-  fate_decision: ['branch'],
-  lineage_contribution: ['branch'],
+  trajectory_reconstruction: ['latent', 'graph', 'pseudotime'],
+  // Either an explicit branch assignment or an ordered pseudotime can resolve fate alternatives.
+  fate_decision: ['branch', 'pseudotime'],
+  lineage_contribution: ['graph', 'branch'],
 }
 
 function compareCodeUnits(left: string, right: string): number {
@@ -56,7 +57,7 @@ export function filterCompatibleMethods(
       reasons.push('MISSING_REQUIRED_PRIOR')
     }
     const methodOutputs = new Set(method.outputs)
-    if (profile.goals.some((goal) => requiredOutputs[goal].some((output) => !methodOutputs.has(output)))) {
+    if (profile.goals.some((goal) => !acceptableOutputs[goal].some((output) => methodOutputs.has(output)))) {
       reasons.push('MISSING_OUTPUT')
     }
     if (profile.goals.some((goal) => !method.supportedGoals.includes(goal))) reasons.push('UNSUPPORTED_GOAL')

@@ -71,6 +71,9 @@ export function paretoLayers(vectors: readonly ParetoVector[], epsilon: number =
     const frontier = remaining.filter((candidate) => (
       !remaining.some((other) => other !== candidate && dominates(other, candidate, dimensions, epsilon))
     ))
+    if (frontier.length === 0) {
+      throw new Error(`cyclic epsilon dominance: ${remaining.map(({ methodId }) => methodId).join(', ')}`)
+    }
     const frontierIds = new Set(frontier.map(({ methodId }) => methodId))
     for (const vector of frontier) layers.set(vector.methodId, layer)
     remaining.splice(0, remaining.length, ...remaining.filter(({ methodId }) => !frontierIds.has(methodId)))

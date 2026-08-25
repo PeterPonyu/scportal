@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import { filterCompatibleMethods } from '../../app/core/router/constraints.ts'
@@ -36,6 +37,10 @@ const compatibleMethod: MethodCapability = {
   paperUrl: 'https://example.test/paper',
   executable: true,
 }
+
+const registryMethods = JSON.parse(
+  readFileSync(new URL('../../data/router/methods.json', import.meta.url), 'utf8'),
+) as MethodCapability[]
 
 test('keeps only a fully compatible executable method', () => {
   assert.deepEqual(filterCompatibleMethods(profile, [compatibleMethod]), {
@@ -96,13 +101,47 @@ test('requires own true values for every required prior', () => {
   }
 })
 
-test('derives every required output directly from each requested goal', () => {
-  const missingOutputs: MethodCapability = { ...compatibleMethod, outputs: ['latent', 'metadata'] }
+test('requires an acceptable output capability for every requested goal', () => {
+  const metadataOnly: MethodCapability = {
+    ...compatibleMethod,
+    outputs: ['metadata'],
+    supportedGoals: ['trajectory_reconstruction'],
+  }
+  const trajectoryProfile: TaskProfile = { ...profile, goals: ['trajectory_reconstruction'] }
 
-  assert.deepEqual(filterCompatibleMethods(profile, [missingOutputs]).excluded, [{
+  assert.deepEqual(filterCompatibleMethods(trajectoryProfile, [metadataOnly]).excluded, [{
     methodId: 'compatible',
     reasons: ['MISSING_OUTPUT'],
   }])
+})
+
+test('accepts registry methods through their documented any-of output capabilities', () => {
+  const cases: Array<{ methodId: string; goals: TaskProfile['goals']; maxResourceTier: TaskProfile['maxResourceTier'] }> = [
+    {
+      methodId: 'geometry_vae',
+      goals: ['latent_representation', 'trajectory_reconstruction'],
+      maxResourceTier: 1,
+    },
+    {
+      methodId: 'graph_contrastive',
+      goals: ['latent_representation', 'trajectory_reconstruction', 'lineage_contribution'],
+      maxResourceTier: 2,
+    },
+    {
+      methodId: 'neural_ode',
+      goals: ['trajectory_reconstruction', 'fate_decision', 'lineage_contribution'],
+      maxResourceTier: 3,
+    },
+  ]
+
+  for (const { methodId, goals, maxResourceTier } of cases) {
+    const registryMethod = registryMethods.find((method) => method.id === methodId)
+    assert.ok(registryMethod, `missing registry method: ${methodId}`)
+    const executableMethod = { ...registryMethod, executable: true }
+    const result = filterCompatibleMethods({ ...profile, goals, maxResourceTier }, [executableMethod])
+
+    assert.deepEqual(result, { compatible: [executableMethod], excluded: [] })
+  }
 })
 
 test('treats a canonical candidate list as membership-only even with duplicate IDs', () => {

@@ -41,6 +41,30 @@ test('uses epsilon to avoid false dominance while preserving transitive layers',
   assert.deepEqual([...nearTie], [['a', 0], ['b', 0]])
 })
 
+test('throws deterministically when epsilon dominance forms the reviewer cycle', () => {
+  assert.throws(() => paretoLayers([
+    vector('a', { first: 2, second: 0, third: 1 }),
+    vector('b', { first: 0, second: 1, third: 2 }),
+    vector('c', { first: 1, second: -1, third: 3 }),
+  ], 1), /cyclic epsilon dominance: a, b, c/i)
+})
+
+test('continues making progress through a normal multilayer frontier', () => {
+  const layers = paretoLayers([
+    vector('layer_2', { trajectory: 1, resources: 1 }),
+    vector('layer_0', { trajectory: 3, resources: 3 }),
+    vector('layer_1', { trajectory: 2, resources: 2 }),
+    vector('tradeoff', { trajectory: 4, resources: 0 }),
+  ], 0)
+
+  assert.deepEqual([...layers], [
+    ['layer_0', 0],
+    ['tradeoff', 0],
+    ['layer_1', 1],
+    ['layer_2', 2],
+  ])
+})
+
 test('rejects malformed vectors before calculating Pareto layers', () => {
   for (const [expected, vectors, epsilon] of [
     [/duplicate IDs/i, [vector('same', { trajectory: 1 }), vector('same', { trajectory: 0 })], undefined],
