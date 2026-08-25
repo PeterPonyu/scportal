@@ -3,6 +3,7 @@ import test from 'node:test'
 
 import { routeMethods } from '../../app/core/router/index.ts'
 import type { DatasetContext, MethodCapability, MetricDefinition, RouterInput, TaskProfile } from '../../app/core/router/types.ts'
+import { withSyntheticRelease } from './release.ts'
 
 const groups = ['latent_geometry', 'continuity', 'trajectory', 'stability', 'biology', 'resources'] as const
 
@@ -32,7 +33,7 @@ function fixture(): RouterInput {
     rawValue: metric.direction === 'higher_is_better' ? (methodIndex * 101 + datasetIndex * 13 + metricIndex * 7) % 997 : (methodIndex * 89 + datasetIndex * 17 + metricIndex * 11) % 991,
     provenance: { paperId: `paper_${datasetIndex % 10}`, locator: `table:${metricIndex}`, datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'performance', extractedAt: '2026-08-23T00:00:00Z' },
   }))))
-  return { profile, datasets, methods, metrics, observations, evidenceVersion: 'performance-fixture-v1', routerVersion: 'router-core-v1', releaseSynthetic: true }
+  return withSyntheticRelease({ profile, datasets, methods, metrics, observations, routerVersion: 'router-core-v1' }, 'performance-fixture-v1')
 }
 
 test('routes an exact production-size fixture deterministically within the Router budget', { timeout: 4000 }, () => {

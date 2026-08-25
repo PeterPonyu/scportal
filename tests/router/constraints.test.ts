@@ -85,10 +85,11 @@ test('accumulates deterministic unique machine-readable hard-constraint reasons'
   })
 })
 
-test('fails closed when the profile scale is unknown for a method capacity limit', () => {
+test('keeps methods eligible when scale is unknown so Router can lower confidence instead of hard-excluding', () => {
   const result = filterCompatibleMethods({ ...profile, scale: 'unknown' }, [compatibleMethod])
 
-  assert.deepEqual(result.excluded, [{ methodId: 'compatible', reasons: ['SCALE_LIMIT'] }])
+  assert.deepEqual(result.compatible, [compatibleMethod])
+  assert.deepEqual(result.excluded, [])
 })
 
 test('requires own true values for every required prior', () => {

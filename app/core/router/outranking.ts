@@ -11,6 +11,10 @@ export interface RobustOutrankingInput {
   delta: number
   replicates: number
   seed: number
+  estimateReplicate?: (
+    contexts: readonly DatasetEvidenceContext<ConditionalMethodEvidence>[],
+    weights: Readonly<Record<string, number>>,
+  ) => Readonly<Record<string, number>>
 }
 
 export interface OutrankingResult {
@@ -75,6 +79,15 @@ function topThreeMethodIds(values: Readonly<Record<string, number>>): Set<string
   return new Set(ranked.filter((methodId) => values[methodId] >= thirdUtility))
 }
 
+function validateReplicateUtilities(values: Readonly<Record<string, number>>, ids: readonly string[]): Record<string, number> {
+  const result: Record<string, number> = Object.create(null)
+  for (const methodId of ids) {
+    if (!Object.hasOwn(values, methodId) || !Number.isFinite(values[methodId])) throw new Error(`invalid replicate utility: ${methodId}`)
+    result[methodId] = values[methodId]
+  }
+  return result
+}
+
 export function empiricalFifthPercentile(values: readonly number[]): number {
   if (values.length === 0) throw new Error('percentile requires at least one value')
   const ordered = [...values]
@@ -89,25 +102,26 @@ export function robustOutranking(input: RobustOutrankingInput): OutrankingResult
   const rng = createRng(input.seed)
   stratifiedResample(input.contexts, () => 0.5)
   const ids = methodIds(input.contexts)
-  const wins: Record<string, Record<string, number>> = {}
-  const retention: Record<string, number> = {}
-  const replicateUtilities: Record<string, number[]> = {}
+  const wins = new Map<string, Map<string, number>>()
+  const retention = new Map<string, number>()
+  const replicateUtilities = new Map<string, number[]>()
   for (const methodId of ids) {
-    wins[methodId] = {}
-    retention[methodId] = 0
-    replicateUtilities[methodId] = []
-    for (const opponentId of ids) wins[methodId][opponentId] = 0
+    wins.set(methodId, new Map(ids.map((opponentId) => [opponentId, 0])))
+    retention.set(methodId, 0)
+    replicateUtilities.set(methodId, [])
   }
   for (let replicate = 0; replicate < input.replicates; replicate += 1) {
     const sampled = stratifiedResample(input.contexts, rng)
     const weights = perturbWeights(input.weights, rng)
-    const values = utilities(sampled, ids, weights)
+    const values = input.estimateReplicate
+      ? validateReplicateUtilities(input.estimateReplicate(sampled, weights), ids)
+      : utilities(sampled, ids, weights)
     const topThree = topThreeMethodIds(values)
     for (const methodId of ids) {
-      replicateUtilities[methodId].push(values[methodId])
-      if (topThree.has(methodId)) retention[methodId] += 1
+      replicateUtilities.get(methodId)!.push(values[methodId])
+      if (topThree.has(methodId)) retention.set(methodId, retention.get(methodId)! + 1)
       for (const opponentId of ids) {
-        if (values[methodId] > values[opponentId] + input.delta) wins[methodId][opponentId] += 1
+        if (values[methodId] > values[opponentId] + input.delta) wins.get(methodId)!.set(opponentId, wins.get(methodId)!.get(opponentId)! + 1)
       }
     }
   }
@@ -119,13 +133,13 @@ export function robustOutranking(input: RobustOutrankingInput): OutrankingResult
     winProbability[methodId] = {}
     let net = 0
     for (const opponentId of ids) {
-      const probability = wins[methodId][opponentId] / input.replicates
+      const probability = wins.get(methodId)!.get(opponentId)! / input.replicates
       winProbability[methodId][opponentId] = requireFinite(probability, 'win probability')
-      if (methodId !== opponentId) net = requireFinite(net + probability - wins[opponentId][methodId] / input.replicates, 'net flow')
+      if (methodId !== opponentId) net = requireFinite(net + probability - wins.get(opponentId)!.get(methodId)! / input.replicates, 'net flow')
     }
     phi[methodId] = ids.length <= 1 ? 0 : requireFinite(net / (ids.length - 1), 'phi')
-    topThreeRetention[methodId] = requireFinite(retention[methodId] / input.replicates, 'top-three retention')
-    utilityLowerBound[methodId] = empiricalFifthPercentile(replicateUtilities[methodId])
+    topThreeRetention[methodId] = requireFinite(retention.get(methodId)! / input.replicates, 'top-three retention')
+    utilityLowerBound[methodId] = empiricalFifthPercentile(replicateUtilities.get(methodId)!)
   }
   return { phi, winProbability, topThreeRetention, utilityLowerBound, replicates: input.replicates, seed: input.seed }
 }

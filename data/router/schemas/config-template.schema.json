@@ -11,7 +11,7 @@
     "template": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["outputs", "packageName", "importName", "constructor", "defaultParameters", "allowedParameters", "outputKeys"],
+      "required": ["outputs", "packageName", "packageVersion", "importName", "constructor", "wrapper", "defaultParameters", "allowedParameters", "outputKeys"],
       "properties": {
         "outputs": {
           "type": "array",
@@ -20,8 +20,17 @@
           "items": { "enum": ["latent", "graph", "pseudotime", "branch", "metadata"] }
         },
         "packageName": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "packageVersion": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+!-]*$" },
         "importName": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
         "constructor": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
+        "wrapper": {
+          "type": "object", "additionalProperties": false, "required": ["fitMethod", "input", "resultAttributes"],
+          "properties": {
+            "fitMethod": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
+            "input": { "const": "adata" },
+            "resultAttributes": { "type": "object", "additionalProperties": false, "properties": { "latent": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "graph": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "pseudotime": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "branch": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "metadata": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" } } }
+          }
+        },
         "defaultParameters": { "type": "object", "propertyNames": { "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "additionalProperties": { "anyOf": [{ "type": "string" }, { "type": "number" }, { "type": "boolean" }] } },
         "allowedParameters": {
           "type": "object", "propertyNames": { "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
@@ -47,8 +56,8 @@
         "downstream": {
           "type": "object", "additionalProperties": false,
           "properties": {
-            "scFocus": { "type": "object", "additionalProperties": false, "required": ["contributionOutput"], "properties": { "contributionOutput": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "branchKey": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" } } },
-            "scRL": { "type": "object", "additionalProperties": false, "required": ["decisionOutput"], "properties": { "decisionOutput": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "pseudotimeKey": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" } } }
+            "scFocus": { "type": "object", "additionalProperties": false, "required": ["packageName", "packageVersion", "installCommand", "sourceUrl", "importName", "functionName", "contributionOutput"], "properties": { "packageName": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" }, "packageVersion": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._+!-]*$" }, "installCommand": { "type": "string", "pattern": "^(?:python(?:3)? -m pip|pip(?:3)?) install [A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*$" }, "sourceUrl": { "type": "string", "format": "uri", "pattern": "^https?://" }, "importName": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "functionName": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "contributionOutput": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "branchKey": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" } } },
+            "scRL": { "type": "object", "additionalProperties": false, "required": ["packageName", "packageVersion", "installCommand", "sourceUrl", "importName", "functionName", "decisionOutput"], "properties": { "packageName": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" }, "packageVersion": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._+!-]*$" }, "installCommand": { "type": "string", "pattern": "^(?:python(?:3)? -m pip|pip(?:3)?) install [A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*$" }, "sourceUrl": { "type": "string", "format": "uri", "pattern": "^https?://" }, "importName": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "functionName": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "decisionOutput": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" }, "pseudotimeKey": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001F\\u007F]+$" } } }
           }
         }
       }

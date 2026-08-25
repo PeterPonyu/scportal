@@ -1,9 +1,12 @@
 import type { MethodConfigTemplate, ParameterDefinition, ParameterValue } from './types.ts'
-import { denseOwnDataArray } from '../router/validation.ts'
+import { absoluteHttpUrl, denseOwnDataArray } from '../router/validation.ts'
 
 type RecordValue = Record<string, unknown>
 const dangerousKeys = new Set(['__proto__', 'prototype', 'constructor'])
 const pythonIdentifier = /^[A-Za-z_][A-Za-z0-9_]*$/
+const packageNameGrammar = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
+const packageVersionGrammar = /^[A-Za-z0-9][A-Za-z0-9._+!-]*$/
+const installGrammar = /^(?:python(?:3)? -m pip|pip(?:3)?) install ([A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*)$/
 function hasAsciiControl(value: string): boolean { return [...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f }) }
 
 function ownRecord(value: unknown, label: string, allowedDangerous: readonly string[] = []): RecordValue {
@@ -85,13 +88,50 @@ function distinct(values: readonly string[], label: string): void {
   if (new Set(values).size !== values.length) throw new Error(`${label} must not contain duplicates`)
 }
 
+function parseWrapper(value: unknown, outputs: MethodConfigTemplate['outputs']): MethodConfigTemplate['wrapper'] {
+  const record = ownRecord(value, 'template.wrapper')
+  if (Object.keys(record).length !== 3 || !['fitMethod', 'input', 'resultAttributes'].every((key) => Object.hasOwn(record, key))) throw new Error('template.wrapper must declare fitMethod, input, and resultAttributes')
+  const fitMethod = nonblank(record.fitMethod, 'template.wrapper.fitMethod')
+  if (!pythonIdentifier.test(fitMethod) || record.input !== 'adata') throw new Error('template.wrapper invocation must use a Python method identifier and adata input')
+  const attributes = ownRecord(record.resultAttributes, 'template.wrapper.resultAttributes')
+  if (Object.keys(attributes).length !== outputs.length || outputs.some((output, index) => Object.keys(attributes)[index] !== output)) throw new Error('template.wrapper result attributes must exactly match outputs in canonical order')
+  const resultAttributes: MethodConfigTemplate['wrapper']['resultAttributes'] = Object.create(null)
+  for (const output of outputs) {
+    const attribute = nonblank(attributes[output], `template.wrapper.resultAttributes.${output}`)
+    if (!pythonIdentifier.test(attribute)) throw new Error(`template.wrapper.resultAttributes.${output} must be a Python identifier`)
+    resultAttributes[output] = attribute
+  }
+  return frozen({ fitMethod, input: 'adata', resultAttributes: frozen(resultAttributes) })
+}
+
+function parseAdapterProvenance(record: RecordValue, label: string): {
+  packageName: string
+  packageVersion: string
+  installCommand: string
+  sourceUrl: string
+  importName: string
+  functionName: string
+} {
+  const packageName = nonblank(required(record, 'packageName', label), `${label}.packageName`)
+  const packageVersion = nonblank(required(record, 'packageVersion', label), `${label}.packageVersion`)
+  const installCommand = nonblank(required(record, 'installCommand', label), `${label}.installCommand`)
+  const sourceUrl = nonblank(required(record, 'sourceUrl', label), `${label}.sourceUrl`)
+  const importName = nonblank(required(record, 'importName', label), `${label}.importName`)
+  const functionName = nonblank(required(record, 'functionName', label), `${label}.functionName`)
+  const install = installGrammar.exec(installCommand)
+  if (!packageNameGrammar.test(packageName) || !packageVersionGrammar.test(packageVersion) || !install || install[1] !== `${packageName}==${packageVersion}`) throw new Error(`${label} package install provenance is invalid`)
+  if (!absoluteHttpUrl(sourceUrl) || !pythonIdentifier.test(importName) || !pythonIdentifier.test(functionName)) throw new Error(`${label} source or callable provenance is invalid`)
+  return { packageName, packageVersion, installCommand, sourceUrl, importName, functionName }
+}
+
 export function validateMethodConfigTemplate(value: unknown): MethodConfigTemplate {
   const record = ownRecord(value, 'template', ['constructor'])
-  const allowed = ['methodId', 'version', 'packageName', 'importName', 'constructor', 'outputs', 'defaultParameters', 'allowedParameters', 'outputKeys', 'downstream']
+  const allowed = ['methodId', 'version', 'packageName', 'packageVersion', 'importName', 'constructor', 'outputs', 'wrapper', 'defaultParameters', 'allowedParameters', 'outputKeys', 'downstream']
   for (const key of Object.keys(record)) if (!allowed.includes(key)) throw new Error(`template.${key} is unknown`)
   const methodId = nonblank(required(record, 'methodId', 'template'), 'template.methodId')
   const version = nonblank(required(record, 'version', 'template'), 'template.version')
   const packageName = nonblank(required(record, 'packageName', 'template'), 'template.packageName')
+  const packageVersion = nonblank(required(record, 'packageVersion', 'template'), 'template.packageVersion')
   const importName = nonblank(required(record, 'importName', 'template'), 'template.importName')
   const constructor = nonblank(required(record, 'constructor', 'template'), 'template.constructor')
   const outputs = denseOwnDataArray(required(record, 'outputs', 'template'), 'template.outputs')
@@ -100,6 +140,8 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
   const expectedOutputs = ['latent', 'graph', 'pseudotime', 'branch', 'metadata'].filter((output) => (outputs as string[]).includes(output))
   if (outputs.length !== expectedOutputs.length || outputs.some((output, index) => output !== expectedOutputs[index])) throw new Error('template.outputs must use canonical output order')
   if (!pythonIdentifier.test(importName) || !pythonIdentifier.test(constructor)) throw new Error('template importName and constructor must be Python identifiers')
+  if (!packageNameGrammar.test(packageName) || !packageVersionGrammar.test(packageVersion)) throw new Error('template package name or version is invalid')
+  const wrapper = parseWrapper(required(record, 'wrapper', 'template'), outputs as MethodConfigTemplate['outputs'])
   const defaults = ownRecord(required(record, 'defaultParameters', 'template'), 'template.defaultParameters')
   const definitions = ownRecord(required(record, 'allowedParameters', 'template'), 'template.allowedParameters')
   const defaultParameters: Record<string, ParameterValue> = Object.create(null)
@@ -127,20 +169,20 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
       if (downstreamRecord[key] === undefined) throw new Error(`template.downstream.${key} must not be undefined`)
       const adapter = ownRecord(downstreamRecord[key], `template.downstream.${key}`)
       if (key === 'scFocus') {
-        for (const field of Object.keys(adapter)) if (!['contributionOutput', 'branchKey'].includes(field)) throw new Error(`template.downstream.scFocus.${field} is unknown`)
+        for (const field of Object.keys(adapter)) if (!['packageName', 'packageVersion', 'installCommand', 'sourceUrl', 'importName', 'functionName', 'contributionOutput', 'branchKey'].includes(field)) throw new Error(`template.downstream.scFocus.${field} is unknown`)
         if (Object.hasOwn(adapter, 'branchKey') && adapter.branchKey === undefined) throw new Error('template.downstream.scFocus.branchKey must not be undefined')
-        downstream.scFocus = frozen({ contributionOutput: nonblank(required(adapter, 'contributionOutput', 'template.downstream.scFocus'), 'template.downstream.scFocus.contributionOutput'), ...(adapter.branchKey === undefined ? {} : { branchKey: nonblank(adapter.branchKey, 'template.downstream.scFocus.branchKey') }) })
+        downstream.scFocus = frozen({ ...parseAdapterProvenance(adapter, 'template.downstream.scFocus'), contributionOutput: nonblank(required(adapter, 'contributionOutput', 'template.downstream.scFocus'), 'template.downstream.scFocus.contributionOutput'), ...(adapter.branchKey === undefined ? {} : { branchKey: nonblank(adapter.branchKey, 'template.downstream.scFocus.branchKey') }) })
       } else {
-        for (const field of Object.keys(adapter)) if (!['decisionOutput', 'pseudotimeKey'].includes(field)) throw new Error(`template.downstream.scRL.${field} is unknown`)
+        for (const field of Object.keys(adapter)) if (!['packageName', 'packageVersion', 'installCommand', 'sourceUrl', 'importName', 'functionName', 'decisionOutput', 'pseudotimeKey'].includes(field)) throw new Error(`template.downstream.scRL.${field} is unknown`)
         if (Object.hasOwn(adapter, 'pseudotimeKey') && adapter.pseudotimeKey === undefined) throw new Error('template.downstream.scRL.pseudotimeKey must not be undefined')
-        downstream.scRL = frozen({ decisionOutput: nonblank(required(adapter, 'decisionOutput', 'template.downstream.scRL'), 'template.downstream.scRL.decisionOutput'), ...(adapter.pseudotimeKey === undefined ? {} : { pseudotimeKey: nonblank(adapter.pseudotimeKey, 'template.downstream.scRL.pseudotimeKey') }) })
+        downstream.scRL = frozen({ ...parseAdapterProvenance(adapter, 'template.downstream.scRL'), decisionOutput: nonblank(required(adapter, 'decisionOutput', 'template.downstream.scRL'), 'template.downstream.scRL.decisionOutput'), ...(adapter.pseudotimeKey === undefined ? {} : { pseudotimeKey: nonblank(adapter.pseudotimeKey, 'template.downstream.scRL.pseudotimeKey') }) })
       }
     }
     downstream = frozen(downstream)
   }
   if (downstream?.scFocus?.branchKey !== undefined && outputKeys.branch !== downstream.scFocus.branchKey) throw new Error('template scFocus branchKey must match outputKeys.branch')
   if (downstream?.scRL?.pseudotimeKey !== undefined && outputKeys.pseudotime !== downstream.scRL.pseudotimeKey) throw new Error('template scRL pseudotimeKey must match outputKeys.pseudotime')
-  return frozen({ methodId, version, packageName, importName, constructor, outputs: frozen([...outputs] as MethodConfigTemplate['outputs']), defaultParameters: frozen(defaultParameters), allowedParameters: frozen(allowedParameters), outputKeys, ...(downstream === undefined ? {} : { downstream }) })
+  return frozen({ methodId, version, packageName, packageVersion, importName, constructor, outputs: frozen([...outputs] as MethodConfigTemplate['outputs']), wrapper, defaultParameters: frozen(defaultParameters), allowedParameters: frozen(allowedParameters), outputKeys, ...(downstream === undefined ? {} : { downstream }) })
 }
 
 export function validateConfigTemplateRegistryEntry(value: unknown): MethodConfigTemplate {

@@ -7,7 +7,12 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = resolve(scriptDirectory, '..')
 const sourceExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'])
 const javascriptExtensions = new Set(['.js', '.jsx', '.mjs', '.cjs'])
-const forbiddenGlobals = new Set(['window', 'document', 'fetch', 'globalThis', 'eval', 'Function'])
+const forbiddenGlobals = new Set([
+  'window', 'document', 'navigator',
+  'fetch', 'WebSocket', 'XMLHttpRequest',
+  'process', 'Buffer', 'globalThis',
+  'eval', 'Function',
+])
 
 function compareCodeUnits(left, right) { return left < right ? -1 : left > right ? 1 : 0 }
 
@@ -113,13 +118,17 @@ function resolveRelativeTarget(file, specifier) {
 
 function allowedJsonAdapter(root, file, specifier, node) {
   const allowed = new Set(['../../../data/router/methods.json', '../../../data/router/config-templates.json'])
-  return ts.isImportDeclaration(node) && resolve(file) === resolve(root, 'app/core/config/compiler.ts') && allowed.has(specifier)
+  const compilerRegistry = resolve(file) === resolve(root, 'app/core/config/compiler.ts') && allowed.has(specifier)
+  const executableSchema = resolve(file) === resolve(root, 'app/core/config/schema.ts') && specifier === '../../../data/router/schemas/executable-config.schema.json'
+  return ts.isImportDeclaration(node) && (compilerRegistry || executableSchema)
     && Boolean(node.attributes?.elements.some((element) => element.name.getText() === 'type' && element.value?.text === 'json'))
 }
 
 // Pure serialization adapter: this is the only bare runtime dependency allowed in Router/config core.
 function allowedBareModuleAdapter(root, file, specifier, node) {
-  return ts.isImportDeclaration(node) && resolve(file) === resolve(root, 'app/core/config/serialize.ts') && specifier === 'yaml'
+  const serialization = resolve(file) === resolve(root, 'app/core/config/serialize.ts') && specifier === 'yaml'
+  const schema = resolve(file) === resolve(root, 'app/core/config/schema.ts') && (specifier === 'ajv/dist/2020.js' || specifier === 'ajv-formats')
+  return ts.isImportDeclaration(node) && (serialization || schema)
 }
 
 function typescriptOnly(node) {

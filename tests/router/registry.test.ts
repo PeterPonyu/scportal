@@ -200,6 +200,7 @@ test('allows missing observations for a release explicitly marked non-synthetic'
       synthetic: false,
       description: 'Non-synthetic release used to verify sparse evidence semantics.',
     }))
+    await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'config-templates.json', (templates) => templates.map((template) => ({ ...template, synthetic: false })))
     await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'observations.synthetic.json', (observations) => observations.slice(1))
     await mutateJsonFile<unknown[]>(directory, 'datasets.json', (datasets) => [datasets[1], datasets[0], ...datasets.slice(2)])
 
@@ -245,6 +246,52 @@ test('rejects template method foreign keys, versions, and outputs inconsistent w
       await assert.rejects(() => validateRouterDataDirectory(directory), mutation.expected)
     })
   }
+})
+
+test('rejects invalid pip runner forms that the executable grammar must never generate', async () => {
+  for (const installCommand of [
+    'python install geometry-vae==1.0.0',
+    'pip -m pip install geometry-vae==1.0.0',
+  ]) {
+    const registry = await loadRegistryInput()
+    registry.methods[0] = { ...registry.methods[0], installCommand }
+
+    await assert.rejects(
+      () => validateRouterRegistry(registry),
+      /install|runner|grammar/i,
+      installCommand,
+    )
+  }
+})
+
+test('rejects a config template whose synthetic provenance disagrees with its release', async () => {
+  const registry = await loadRegistryInput()
+  registry.configTemplates[0] = { ...registry.configTemplates[0], synthetic: false }
+
+  await assert.rejects(
+    () => validateRouterRegistry(registry),
+    /synthetic|release|provenance/i,
+  )
+})
+
+test('enforces auxiliary metrics as biology-only context and keeps primary evidence in every scientific group', async () => {
+  const movedAuxiliary = await loadRegistryInput()
+  movedAuxiliary.metrics[0] = { ...movedAuxiliary.metrics[0], group: 'trajectory' }
+  await assert.rejects(() => validateRouterRegistry(movedAuxiliary), /auxiliary.*biology|ontology/i)
+
+  const missingPrimary = await loadRegistryInput()
+  missingPrimary.metrics = missingPrimary.metrics.map((metric) => metric.group === 'trajectory' ? { ...metric, auxiliary: true } : metric)
+  await assert.rejects(() => validateRouterRegistry(missingPrimary), /primary.*trajectory|ontology/i)
+})
+
+test('binds each method install pin to the template package provenance', async () => {
+  const registry = await loadRegistryInput()
+  registry.configTemplates[0] = {
+    ...registry.configTemplates[0],
+    template: { ...registry.configTemplates[0].template, packageVersion: '2.0.0' },
+  }
+
+  await assert.rejects(() => validateRouterRegistry(registry), /package|install|version/i)
 })
 
 test('rejects duplicate and noncanonical config-template outputs', async () => {
@@ -369,6 +416,7 @@ test('rejects duplicate canonical template methods for a non-synthetic release',
     synthetic: false,
     description: 'Sparse non-synthetic evidence fixture.',
   }
+  registry.configTemplates = registry.configTemplates.map((template) => ({ ...template, synthetic: false }))
   registry.configTemplates.push({
     ...structuredClone(registry.configTemplates[0]),
     methodId: 'geometry-vae',

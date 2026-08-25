@@ -8,6 +8,7 @@ import { gradeConfidence, type ConfidenceResult } from './confidence.ts'
 import { explainRecommendation } from './explain.ts'
 import type {
   BenchmarkObservation,
+  AlternativeDisposition,
   DatasetContext,
   EvidenceProvenance,
   MethodCapability,
@@ -20,6 +21,8 @@ import type {
   TaskProfile,
 } from './types.ts'
 import { absoluteHttpUrl, rfc3339DateTime } from './validation.ts'
+import { isSafeCanonicalId } from './ids.ts'
+import { profileFingerprint, releaseEvidenceDigest } from './release-digest.ts'
 
 const groups: readonly MetricGroup[] = ['latent_geometry', 'continuity', 'trajectory', 'stability', 'biology', 'resources']
 const modalities = ['scrna', 'scatac', 'multiome'] as const
@@ -31,7 +34,7 @@ const outputs = ['latent', 'graph', 'pseudotime', 'branch', 'metadata'] as const
 const directions = ['higher_is_better', 'lower_is_better'] as const
 const defaultWeights: ContextFeatureWeights = { modality: 1, scale: 1, topology: 1, priors: 1, perturbation: 1 }
 const defaultOptions = { shrinkageAlpha: 1, bootstrapReplicates: 200, outrankingDelta: 0.02, minimumTopThreeRetention: 0.5 }
-const routerInputFields = ['profile', 'datasets', 'methods', 'metrics', 'observations', 'evidenceVersion', 'routerVersion', 'releaseSynthetic'] as const
+const routerInputFields = ['profile', 'datasets', 'methods', 'metrics', 'observations', 'routerVersion', 'release'] as const
 
 type DataRecord = Record<string, unknown>
 type Parsed<T> = { ok: true; value: T } | { ok: false; error: string }
@@ -56,7 +59,7 @@ function success<T>(value: T): Parsed<T> { return { ok: true, value } }
 function failure<T>(error: string): Parsed<T> { return { ok: false, error } }
 function inSet<T extends string>(value: unknown, values: readonly T[]): value is T { return typeof value === 'string' && values.includes(value as T) }
 function nonempty(value: unknown): value is string { return typeof value === 'string' && value.length > 0 && ![...value].some((character) => { const code = character.charCodeAt(0); return code <= 0x1f || code === 0x7f }) }
-function identifier(value: unknown): value is string { return nonempty(value) && /\S/.test(value) && value.trim() === value }
+function identifier(value: unknown): value is string { return nonempty(value) && /\S/.test(value) && value.trim() === value && isSafeCanonicalId(value) }
 
 function exactRecord(value: unknown, required: readonly string[], optional: readonly string[] = []): Parsed<DataRecord> {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return failure('must be a plain object')
@@ -234,7 +237,8 @@ function parseRouterInput(value: unknown): Parsed<RouterInput> {
   const observations = parseEntityArray(parsed.value.observations, 'observations', parseObservation)
   const invalid = [profile, datasets, methods, metrics, observations].find((result) => !result.ok)
   if (!profile.ok || !datasets.ok || !methods.ok || !metrics.ok || !observations.ok) return failure(`invalid Router input: ${invalid && !invalid.ok ? invalid.error : 'invalid records'}`)
-  if (!identifier(parsed.value.evidenceVersion) || !identifier(parsed.value.routerVersion) || typeof parsed.value.releaseSynthetic !== 'boolean') return failure('invalid Router input: versions and releaseSynthetic must be own typed fields')
+  const release = exactRecord(parsed.value.release, ['id', 'synthetic', 'description', 'configDigest', 'evidenceDigest'])
+  if (!release.ok || !identifier(parsed.value.routerVersion) || !identifier(release.value.id) || typeof release.value.synthetic !== 'boolean' || !nonempty(release.value.description) || !/^[a-f0-9]{64}$/.test(String(release.value.configDigest)) || !/^[a-f0-9]{64}$/.test(String(release.value.evidenceDigest))) return failure('invalid Router input: release receipt is invalid')
   const identityError = assertUniqueIdentities('dataset', datasets.value) ?? assertUniqueIdentities('method', methods.value) ?? assertUniqueIdentities('metric', metrics.value)
   if (identityError) return failure(`invalid Router input: ${identityError}`)
   const datasetIds = new Set(datasets.value.map(({ id }) => id))
@@ -259,7 +263,10 @@ function parseRouterInput(value: unknown): Parsed<RouterInput> {
     if (runConfigKeys.has(observation.provenance.runConfigId)) return failure('duplicate canonical observation')
     runConfigKeys.add(observation.provenance.runConfigId)
   }
-  return success({ profile: profile.value, datasets: datasets.value, methods: methods.value, metrics: metrics.value, observations: observations.value, evidenceVersion: parsed.value.evidenceVersion, routerVersion: parsed.value.routerVersion, releaseSynthetic: parsed.value.releaseSynthetic })
+  const boundRelease = { id: release.value.id as string, synthetic: release.value.synthetic as boolean, description: release.value.description as string, configDigest: release.value.configDigest as string, evidenceDigest: release.value.evidenceDigest as string }
+  const releaseMetadata = { id: boundRelease.id, synthetic: boundRelease.synthetic, description: boundRelease.description }
+  if (releaseEvidenceDigest({ datasets: datasets.value, methods: methods.value, metrics: metrics.value, observations: observations.value }, releaseMetadata, boundRelease.configDigest) !== boundRelease.evidenceDigest) return failure('invalid Router input: release evidence digest does not bind this bundle')
+  return success({ profile: profile.value, datasets: datasets.value, methods: methods.value, metrics: metrics.value, observations: observations.value, routerVersion: parsed.value.routerVersion as string, release: boundRelease })
 }
 
 function parseContextWeights(value: unknown): Parsed<ContextFeatureWeights> {
@@ -303,7 +310,8 @@ function safeOwnData(value: unknown, key: string): unknown {
 function refused(input: unknown, code: Extract<RouterOutcome, { status: 'REFUSED' }>['code'], evidenceGaps: string[], candidates: string[] = []): RouterOutcome {
   const profile = safeOwnData(input, 'profile')
   const seed = safeOwnData(profile, 'seed')
-  const evidenceVersion = safeOwnData(input, 'evidenceVersion')
+  const release = safeOwnData(input, 'release')
+  const evidenceVersion = safeOwnData(release, 'id')
   const routerVersion = safeOwnData(input, 'routerVersion')
   return { status: 'REFUSED', code, candidates: [...candidates].sort(compare), evidenceGaps, seed: Number.isInteger(seed) && (seed as number) >= 0 && (seed as number) <= 0xffffffff ? seed as number : 0, evidenceVersion: typeof evidenceVersion === 'string' ? evidenceVersion : 'invalid', routerVersion: typeof routerVersion === 'string' ? routerVersion : 'invalid' }
 }
@@ -358,7 +366,8 @@ function routeMethodsUnchecked(input: RouterInput, options: ParsedOptions): Rout
     const conflict = excluded.length > 0 && excluded.every((item) => item.reasons.some((reason) => reason === 'RESOURCE_LIMIT' || reason === 'MISSING_OUTPUT' || reason === 'MISSING_REQUIRED_PRIOR'))
     return refused(input, conflict ? 'CONFLICTING_REQUIREMENTS' : 'NO_COMPATIBLE_METHOD', ['no compatible method after hard constraints'])
   }
-  const selectedGroups = groups.filter((group) => input.profile.weights[group] > 0)
+  const mandatoryGroups = new Set<MetricGroup>(input.profile.goals.flatMap((goal) => goal === 'trajectory_reconstruction' ? ['latent_geometry', 'continuity', 'trajectory'] as MetricGroup[] : goal === 'fate_decision' ? ['trajectory', 'biology'] as MetricGroup[] : goal === 'lineage_contribution' ? ['trajectory', 'biology'] as MetricGroup[] : ['latent_geometry'] as MetricGroup[]))
+  const selectedGroups = groups.filter((group) => input.profile.weights[group] > 0 || mandatoryGroups.has(group))
   const selectedWeights = Object.fromEntries(selectedGroups.map((group) => [group, input.profile.weights[group]]))
   const metricGroups = new Map(input.metrics.map((metric) => [metric.id, metric.group]))
   const selectedMetrics = input.metrics.filter((metric) => !metric.auxiliary && selectedGroups.includes(metric.group))
@@ -367,17 +376,34 @@ function routeMethodsUnchecked(input: RouterInput, options: ParsedOptions): Rout
   const observations = input.observations.filter((observation) => compatibleIds.has(observation.methodId) && selectedMetricIds.has(observation.metricId))
   const normalized = percentileNormalize(aggregateObservationRuns(observations), new Map(input.metrics.map((metric) => [metric.id, metric])))
   const similarities = new Map(input.datasets.map((dataset) => [dataset.id, gowerSimilarity(input.profile, dataset, options.contextFeatureWeights)]))
+  const byMethodMetric = new Map<string, typeof normalized>()
+  const percentileByTriple = new Map<string, number>()
+  const byMetric = new Map<string, number[]>()
+  for (const observation of normalized) {
+    const methodMetricKey = `${observation.methodId}\u0000${observation.metricId}`
+    const methodMetric = byMethodMetric.get(methodMetricKey) ?? []
+    methodMetric.push(observation)
+    byMethodMetric.set(methodMetricKey, methodMetric)
+    percentileByTriple.set(`${observation.datasetId}\u0000${methodMetricKey}`, observation.percentile)
+    const metricValues = byMetric.get(observation.metricId) ?? []
+    metricValues.push(observation.percentile)
+    byMetric.set(observation.metricId, metricValues)
+  }
+  const empiricalPrior = (methodId: string, metricId: string): number => {
+    const methodHistory = byMethodMetric.get(`${methodId}\u0000${metricId}`) ?? []
+    if (methodHistory.length > 0) return average(methodHistory.map((observation) => observation.percentile))
+    const metricHistory = byMetric.get(metricId) ?? []
+    return metricHistory.length > 0 ? average(metricHistory) : 0.5
+  }
   const candidates = new Map<string, CandidateEvidence>()
   for (const method of compatible) {
     const scores: Record<string, number> = {}
     const estimates = selectedGroups.flatMap((group) => {
       const groupMetrics = selectedMetrics.filter((metric) => metric.group === group)
       const metricEstimates = groupMetrics.map((metric) => {
-        const samples = normalized.filter((observation) => observation.methodId === method.id && observation.metricId === metric.id)
+        const samples = (byMethodMetric.get(`${method.id}\u0000${metric.id}`) ?? [])
           .map((observation) => ({ similarity: similarities.get(observation.datasetId)!, value: observation.percentile }))
-        const empiricalPrior = normalized.filter((observation) => observation.metricId === metric.id)
-        const prior = empiricalPrior.length === 0 ? 0.5 : average(empiricalPrior.map((observation) => observation.percentile))
-        return shrunkenEstimate(samples, prior, options.shrinkageAlpha, input.datasets.length)
+        return shrunkenEstimate(samples, empiricalPrior(method.id, metric.id), options.shrinkageAlpha, input.datasets.length)
       })
       scores[group] = metricEstimates.length === 0 ? 0.5 : average(metricEstimates.map((estimate) => estimate.mean))
       return metricEstimates
@@ -394,28 +420,54 @@ function routeMethodsUnchecked(input: RouterInput, options: ParsedOptions): Rout
   if (evidenceQualified.length === 0) return refused(input, 'INSUFFICIENT_EVIDENCE', ['no Pareto candidate meets the effective dataset threshold'], frontier)
 
   const contexts = input.datasets.flatMap((dataset) => {
-    const methods: Record<string, Record<string, number>> = {}
+    const methods: Record<string, Record<string, number>> = Object.create(null)
     for (const methodId of evidenceQualified) {
-      const groupValues: Record<string, number> = {}
+      const groupValues: Record<string, number> = Object.create(null)
       for (const group of selectedGroups) {
         const observed = normalized.filter((observation) => observation.datasetId === dataset.id && observation.methodId === methodId && metricGroups.get(observation.metricId) === group)
         if (observed.length === 0) return []
-        const percentile = average(observed.map((observation) => observation.percentile))
-        const similarity = similarities.get(dataset.id)!
-        groupValues[group] = 0.5 + similarity * (percentile - 0.5)
+        groupValues[group] = average(observed.map((observation) => observation.percentile))
       }
       methods[methodId] = groupValues
     }
     return [{ datasetId: dataset.id, studyGroup: dataset.studyGroup, evidence: { methods } satisfies ConditionalMethodEvidence }]
   })
   if (contexts.length === 0) return refused(input, 'INSUFFICIENT_EVIDENCE', ['no common bootstrap context across qualified candidates and selected groups'], evidenceQualified)
-  const outranking = robustOutranking({ contexts, weights: selectedWeights, delta: options.outrankingDelta, replicates: options.bootstrapReplicates, seed: input.profile.seed })
+  const estimateReplicate = (sampled: readonly typeof contexts[number][], weights: Readonly<Record<string, number>>): Readonly<Record<string, number>> => {
+    const utilities: Record<string, number> = Object.create(null)
+    for (const methodId of evidenceQualified) {
+      let utility = 0
+      for (const group of selectedGroups) {
+        const metricEstimates = selectedMetrics.filter((metric) => metric.group === group).map((metric) => {
+          const samples = sampled.flatMap((context) => {
+            const value = percentileByTriple.get(`${context.datasetId}\u0000${methodId}\u0000${metric.id}`)
+            return value === undefined ? [] : [{ similarity: similarities.get(context.datasetId)!, value }]
+          })
+          return shrunkenEstimate(samples, empiricalPrior(methodId, metric.id), options.shrinkageAlpha, sampled.length).mean
+        })
+        const groupScore = metricEstimates.length === 0 ? 0.5 : average(metricEstimates)
+        utility += weights[group] * groupScore
+      }
+      utilities[methodId] = utility
+    }
+    return utilities
+  }
+  const outranking = robustOutranking({ contexts, weights: selectedWeights, delta: options.outrankingDelta, replicates: options.bootstrapReplicates, seed: input.profile.seed, estimateReplicate })
   const ranked = [...evidenceQualified].sort((left, right) => outranking.phi[right] - outranking.phi[left] || outranking.utilityLowerBound[right] - outranking.utilityLowerBound[left] || compare(left, right))
   const topTwoMargin = ranked.length < 2 ? 1 : Math.max(0, outranking.phi[ranked[0]] - outranking.phi[ranked[1]])
+  if (ranked.length > 1 && topTwoMargin <= 0) return refused(input, 'INSUFFICIENT_EVIDENCE', ['exact tie: no positive practical separation exceeds the outranking delta'], ranked)
   const confidence = new Map<string, ConfidenceResult>()
   for (const methodId of ranked) {
     const candidate = candidates.get(methodId)!
-    confidence.set(methodId, gradeConfidence({ effectiveDatasets: candidate.effectiveDatasets, criticalCoverage: candidate.criticalCoverage, weightedVariance: candidate.variance, topThreeRetention: outranking.topThreeRetention[methodId], topTwoMargin }, { minEffectiveDatasets: input.profile.minEffectiveDatasets, minCriticalCoverage: input.profile.minCriticalCoverage, maxWeightedVariance: 0.1, minTopThreeRetention: options.minimumTopThreeRetention, minTopTwoMargin: 0 }))
+    const graded = gradeConfidence({ effectiveDatasets: candidate.effectiveDatasets, criticalCoverage: candidate.criticalCoverage, weightedVariance: candidate.variance, topThreeRetention: outranking.topThreeRetention[methodId], topTwoMargin }, { minEffectiveDatasets: input.profile.minEffectiveDatasets, minCriticalCoverage: input.profile.minCriticalCoverage, maxWeightedVariance: 0.1, minTopThreeRetention: options.minimumTopThreeRetention, minTopTwoMargin: 0 })
+    const reasons = graded.reasons.length > 0 ? [...graded.reasons] : [
+      `effective datasets ${candidate.effectiveDatasets.toFixed(3)} meet threshold ${input.profile.minEffectiveDatasets}`,
+      `critical coverage ${(candidate.criticalCoverage * 100).toFixed(1)}% meets threshold ${(input.profile.minCriticalCoverage * 100).toFixed(1)}%`,
+      `top-three retention ${(outranking.topThreeRetention[methodId] * 100).toFixed(1)}% meets threshold ${(options.minimumTopThreeRetention * 100).toFixed(1)}%`,
+      `practical top-two flow margin is ${topTwoMargin.toFixed(6)}`,
+    ]
+    if (input.profile.scale === 'unknown') reasons.push('unknown scale leaves method capacity feasibility unresolved')
+    confidence.set(methodId, { grade: input.profile.scale === 'unknown' && graded.grade === 'high' ? 'medium' : graded.grade, reasons })
   }
   const stable = ranked.filter((methodId) => outranking.topThreeRetention[methodId] >= options.minimumTopThreeRetention)
   if (stable.length === 0) return refused(input, 'UNSTABLE_TOP_THREE', ['no candidate meets the nominal top-three retention threshold'], ranked)
@@ -428,11 +480,28 @@ function routeMethodsUnchecked(input: RouterInput, options: ParsedOptions): Rout
   const resource = [...qualified].filter((methodId) => outranking.utilityLowerBound[methodId] >= scientificFloor).sort((left, right) => input.methods.find((method) => method.id === left)!.resourceTier - input.methods.find((method) => method.id === right)!.resourceTier || compare(left, right))[0]
   const roles = new Map<string, Recommendation['roles']>()
   for (const [methodId, role] of [[bestFit, 'best_fit'], [robust, 'robust_alternative'], [resource, 'resource_aware']] as const) roles.set(methodId, [...(roles.get(methodId) ?? []), role])
+  const excludedById = new Map(excluded.map((entry) => [entry.methodId, entry.reasons]))
+  const dispositionFor = (selectedMethodId: string): AlternativeDisposition[] => input.methods
+    .filter((method) => method.id !== selectedMethodId)
+    .sort((left, right) => compare(left.id, right.id))
+    .map((method) => {
+      const hardReasons = excludedById.get(method.id)
+      if (hardReasons) return { methodId: method.id, status: 'excluded' as const, reasons: [...hardReasons] }
+      if (roles.has(method.id)) return { methodId: method.id, status: 'recommended_alternative' as const, reasons: [`selected for roles: ${roles.get(method.id)!.join(', ')}`] }
+      const reasons = !coverageQualified.includes(method.id) ? ['critical coverage below threshold']
+        : !frontier.includes(method.id) ? ['outside the Pareto frontier']
+          : !evidenceQualified.includes(method.id) ? ['effective datasets below threshold']
+            : !stable.includes(method.id) ? ['bootstrap instability below retention threshold']
+              : !qualified.includes(method.id) ? ['confidence below recommendation threshold']
+                : ['compatible but not selected for a recommendation role']
+      return { methodId: method.id, status: 'compatible_unselected' as const, reasons }
+    })
   const recommendations = [...roles.keys()].sort(compare).map((methodId) => {
     const candidate = candidates.get(methodId)!
-    return { methodId, roles: roles.get(methodId)!, paretoLayer: 0, outrankingFlow: outranking.phi[methodId], conservativeUtility: outranking.utilityLowerBound[methodId], confidence: confidence.get(methodId)!.grade, topThreeRetention: outranking.topThreeRetention[methodId], effectiveDatasets: candidate.effectiveDatasets, criticalCoverage: candidate.criticalCoverage, ...explainRecommendation({ methodId, profile: input.profile, groupScores: candidate.scores, observations, metricGroups, synthetic: input.releaseSynthetic }), excludedAlternatives: excluded }
+    const method = compatible.find((entry) => entry.id === methodId)!
+    return { methodId, roles: roles.get(methodId)!, paretoLayer: 0, outrankingFlow: outranking.phi[methodId], conservativeUtility: outranking.utilityLowerBound[methodId], confidence: confidence.get(methodId)!.grade, topThreeRetention: outranking.topThreeRetention[methodId], effectiveDatasets: candidate.effectiveDatasets, criticalCoverage: candidate.criticalCoverage, ...explainRecommendation({ methodId, profile: input.profile, groupScores: candidate.scores, observations, metricGroups, synthetic: input.release.synthetic, confidenceReasons: confidence.get(methodId)!.reasons, effectiveDatasets: candidate.effectiveDatasets, criticalCoverage: candidate.criticalCoverage, variance: candidate.variance, topThreeRetention: outranking.topThreeRetention[methodId], resourceTier: method.resourceTier, paretoCandidateCount: frontier.length, eligibleDatasetCount: input.datasets.length, shrinkageAlpha: options.shrinkageAlpha, alternativeDispositions: dispositionFor(methodId) }), excludedAlternatives: excluded }
   })
-  return { status: 'OK', recommendations, seed: input.profile.seed, evidenceVersion: input.evidenceVersion, routerVersion: input.routerVersion }
+  return { status: 'OK', recommendations, seed: input.profile.seed, evidenceVersion: input.release.id, routerVersion: input.routerVersion, receipt: { profileFingerprint: profileFingerprint(input.profile), release: input.release } }
 }
 
 export function routeMethods(input: RouterInput, options: RouterOptions = {}): RouterOutcome {

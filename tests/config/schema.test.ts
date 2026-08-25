@@ -10,10 +10,10 @@ import { rfc3339DateTime } from '../../app/core/router/validation.ts'
 
 const executable = {
   schemaVersion: '1.0', routerVersion: 'router-v1', evidenceVersion: 'evidence-v1',
-  method: { id: 'graph_contrastive', version: '1.0.0', install: 'python -m pip install graph-contrastive==1.0.0' },
+    method: { id: 'graph_contrastive', version: '1.0.0', packageName: 'graph-contrastive', packageVersion: '1.0.0', install: 'python -m pip install graph-contrastive==1.0.0' },
   preprocessing: { modality: 'scrna', normalization: 'library_size_log1p', featureSelection: 'highly_variable_features' },
   parameters: { epochs: 10 }, outputs: { latent: 'X_graph', metadata: 'graph_metadata' }, downstream: {},
-  provenance: { recommendationSeed: 17, methodSource: 'https://example.test/source', generatedAt: '2026-08-24T00:00:00.000Z', profileFingerprint: 'a'.repeat(64), outcome: { status: 'OK', methodId: 'graph_contrastive' } },
+    provenance: { recommendationSeed: 17, methodSource: 'https://example.test/source', generatedAt: '2026-08-24T00:00:00.000Z', profileFingerprint: 'a'.repeat(64), release: { id: 'evidence-v1', synthetic: true, configDigest: 'c'.repeat(64), evidenceDigest: 'd'.repeat(64) }, outcome: { status: 'OK', methodId: 'graph_contrastive' } },
 } as const
 
 test('validates strict schema-equivalent own data, freezes it, and serializes insertion-order-independently', () => {
@@ -94,10 +94,11 @@ test('accepts ajv-compatible RFC3339 timestamps including leap seconds', () => {
 
 test('validates template defaults against constraints and rejects unsafe Python parameter names and invalid constraint metadata', () => {
   const candidate = {
-    methodId: 'graph_contrastive', version: '1.0.0', packageName: 'graph-contrastive', importName: 'graph_contrastive', constructor: 'GraphContrastive',
+    methodId: 'graph_contrastive', version: '1.0.0', packageName: 'graph-contrastive', packageVersion: '1.0.0', importName: 'graph_contrastive', constructor: 'GraphContrastive',
     outputs: ['latent', 'metadata'],
+    wrapper: { fitMethod: 'fit_transform', input: 'adata', resultAttributes: { latent: 'latent', metadata: 'metadata' } },
     defaultParameters: { epochs: 10 }, allowedParameters: { epochs: { type: 'number', minimum: 1, integer: true } },
-    outputKeys: { latent: 'X_graph', metadata: 'graph_metadata' }, downstream: { scRL: { decisionOutput: 'decision' } },
+    outputKeys: { latent: 'X_graph', metadata: 'graph_metadata' },
   }
   const parsed = validateMethodConfigTemplate(candidate)
   assert.equal(Object.isFrozen(parsed), true)

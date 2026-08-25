@@ -79,15 +79,27 @@ export interface TaskProfile {
   candidateMethodIds?: string[]
 }
 
+export interface EvidenceRelease {
+  id: string
+  synthetic: boolean
+  description: string
+  configDigest: string
+  evidenceDigest: string
+}
+
+export interface RouterReceipt {
+  profileFingerprint: string
+  release: EvidenceRelease
+}
+
 export interface RouterInput {
   profile: TaskProfile
   datasets: DatasetContext[]
   methods: MethodCapability[]
   metrics: MetricDefinition[]
   observations: BenchmarkObservation[]
-  evidenceVersion: string
   routerVersion: string
-  releaseSynthetic: boolean
+  release: EvidenceRelease
 }
 
 export interface RouterOptions {
@@ -106,9 +118,20 @@ export interface RouterOptions {
 
 export interface EvidenceStatement {
   text: string
+  group: MetricGroup
+  score: number
+  baseline: number
+  contribution: number
+  direction: 'supports'
   metricIds: string[]
   datasetIds: string[]
   synthetic: boolean
+}
+
+export interface AlternativeDisposition {
+  methodId: string
+  status: 'recommended_alternative' | 'compatible_unselected' | 'excluded'
+  reasons: string[]
 }
 
 export interface EvidenceLink {
@@ -136,10 +159,12 @@ export interface Recommendation {
   positiveEvidence: string[]
   positiveEvidenceDetails: EvidenceStatement[]
   evidenceLinks: EvidenceLink[]
+  confidenceReasons: string[]
   limitations: string[]
+  alternativeDispositions: AlternativeDisposition[]
   excludedAlternatives: import('./constraints.ts').Exclusion[]
 }
 
 export type RouterOutcome =
-  | { status: 'OK'; recommendations: Recommendation[]; seed: number; evidenceVersion: string; routerVersion: string }
+  | { status: 'OK'; recommendations: Recommendation[]; seed: number; evidenceVersion: string; routerVersion: string; receipt: RouterReceipt }
   | { status: 'REFUSED'; code: RefusalCode; candidates: string[]; evidenceGaps: string[]; seed: number; evidenceVersion: string; routerVersion: string }

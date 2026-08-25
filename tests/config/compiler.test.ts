@@ -4,7 +4,7 @@ import test from 'node:test'
 
 import { compileConfig, type CompileConfigInput } from '../../app/core/config/compiler.ts'
 import { sha256Hex } from '../../app/core/config/internal/compiler-engine.ts'
-import { createFixtureCompiler, fixtureCompiler, fixtureInput, fixtureOutcome, fixtureProfile } from './helpers/compiler.ts'
+import { createFixtureCompiler, fixtureCompiler, fixtureInput, fixtureOutcome, fixtureOutcomeForProfile, fixtureProfile } from './helpers/compiler.ts'
 
 const method = {
   id: 'graph_contrastive', aliases: ['graph-contrastive'], version: '1.0.0', modalities: ['scrna'], maxScale: 'gt_200k',
@@ -16,7 +16,8 @@ const method = {
 const template = {
   methodId: method.id, version: method.version, synthetic: true,
   template: {
-    outputs: ['latent', 'graph', 'metadata'], packageName: 'graph-contrastive', importName: 'graph_contrastive', constructor: 'GraphContrastive',
+    outputs: ['latent', 'graph', 'metadata'], packageName: 'graph-contrastive', packageVersion: '1.0.0', importName: 'graph_contrastive', constructor: 'GraphContrastive',
+    wrapper: { fitMethod: 'fit_transform', input: 'adata', resultAttributes: { latent: 'latent', graph: 'graph', metadata: 'metadata' } },
     defaultParameters: { epochs: 10, learningRate: 0.1, useGpu: false, label: "O'Reilly" },
     allowedParameters: {
       epochs: { type: 'number', minimum: 1, maximum: 100, integer: true },
@@ -24,7 +25,7 @@ const template = {
       useGpu: { type: 'boolean' }, label: { type: 'string', enum: ["O'Reilly", 'default'] },
     },
     outputKeys: { latent: 'X_graph', graph: 'connectivities', metadata: 'graph_metadata' },
-    downstream: { scFocus: { contributionOutput: 'lineage_contributions' } },
+    downstream: { scFocus: { packageName: 'scfocus', packageVersion: '1.0.0', installCommand: 'python -m pip install scfocus==1.0.0', sourceUrl: 'https://example.test/scfocus', importName: 'scfocus', functionName: 'run_scfocus', contributionOutput: 'lineage_contributions' } },
   },
 } as const
 
@@ -41,11 +42,44 @@ test('compiles a successful recommendation through exactly one canonical registr
   assert.match(compiled.pythonSnippet, new RegExp(' {4}epochs=20,'))
   assert.match(compiled.pythonSnippet, /label='O\\'Reilly'/)
   assert.match(compiled.pythonSnippet, /adata\.obsm\['X_graph'\]/)
-  assert.match(compiled.pythonSnippet, /run_scfocus\(adata, latent_key='X_graph', branch_key=None, contribution_output='lineage_contributions'\)/)
+  assert.match(compiled.pythonSnippet, /adata\.uns\['graph_metadata'\] = result\.metadata/)
+  assert.doesNotMatch(compiled.pythonSnippet, /run_scfocus/)
+  assert.deepEqual(Object.keys(compiled.config.downstream), [])
   assert.equal(Object.isFrozen(compiled), true)
   assert.equal(Object.isFrozen(compiled.config), true)
   assert.equal(Object.isFrozen(compiled.config.parameters), true)
   assert.throws(() => { (compiled.config.parameters as { epochs: number }).epochs = 99 }, /read only|frozen/i)
+})
+
+test('selects any verified recommendation role and invokes only explicitly requested pinned adapters', () => {
+  const outcome = structuredClone(fixtureOutcome)
+  outcome.recommendations[0].roles = ['best_fit', 'robust_alternative', 'resource_aware']
+  const compiled = fixtureCompiler(input({ outcome, role: 'resource_aware', adapters: ['scFocus'] }))
+
+  assert.match(compiled.pythonSnippet, /from scfocus import run_scfocus/)
+  assert.match(compiled.pythonSnippet, /run_scfocus\(adata, latent_key='X_graph', branch_key=None, contribution_output='lineage_contributions'\)/)
+  assert.equal(compiled.config.downstream.scFocus?.packageVersion, '1.0.0')
+  assert.equal(compiled.config.downstream.scFocus?.sourceUrl, 'https://example.test/scfocus')
+  assert.deepEqual(compiled.installCommands, [
+    'python -m pip install graph-contrastive==1.0.0',
+    'python -m pip install scfocus==1.0.0',
+  ])
+})
+
+test('drives invocation and every result extraction from the validated declarative wrapper', () => {
+  const declarative = {
+    ...template,
+    template: {
+      ...template.template,
+      wrapper: { fitMethod: 'run_model', input: 'adata', resultAttributes: { latent: 'embedding', graph: 'network', metadata: 'run_metadata' } },
+    },
+  }
+  const snippet = createFixtureCompiler([method], [declarative])(input()).pythonSnippet
+
+  assert.match(snippet, /result = model\.run_model\(adata\)/)
+  assert.match(snippet, /adata\.obsm\['X_graph'\] = result\.embedding/)
+  assert.match(snippet, /adata\.obsp\['connectivities'\] = result\.network/)
+  assert.match(snippet, /adata\.uns\['graph_metadata'\] = result\.run_metadata/)
 })
 
 test('public compiler fails closed against the exact canonical release because every canonical method is non-executable', () => {
@@ -73,9 +107,33 @@ test('rejects malformed own-data router outcomes and task profiles before filena
   for (const [overrides, expected] of cases) assert.throws(() => fixtureCompiler(input(overrides)), expected)
 })
 
+test('accepts fractional Kish effective dataset counts from a successful Router recommendation', () => {
+  const outcome = structuredClone(fixtureOutcome)
+  outcome.recommendations[0].effectiveDatasets = 2.7010225612725214
+
+  assert.doesNotThrow(() => fixtureCompiler(input({ outcome })))
+})
+
+test('rejects an outcome mixed with a profile that has a different seed or hard capabilities', () => {
+  assert.throws(
+    () => fixtureCompiler(input({ profile: { ...fixtureProfile, seed: fixtureProfile.seed + 1 } })),
+    /seed|profile|receipt/i,
+  )
+  assert.throws(
+    () => fixtureCompiler(input({
+      profile: { ...fixtureProfile, goals: ['trajectory_reconstruction'] },
+    })),
+    /capability|compatible|goal|receipt/i,
+  )
+  assert.throws(
+    () => fixtureCompiler(input({ profile: { ...fixtureProfile, topology: 'mixed' } })),
+    /profile|receipt|fingerprint/i,
+  )
+})
+
 test('rejects aliases, forged handles, and untrusted registry construction', () => {
   const cases: Array<[string, Partial<CompileConfigInput>, RegExp]> = [
-    ['alias outcome', { outcome: { status: 'OK', recommendations: [{ methodId: 'graph-contrastive', roles: ['best_fit'] }], seed: 17, evidenceVersion: 'evidence-v1', routerVersion: 'router-v1' } }, /canonical|recommendation/i],
+    ['alias outcome', { outcome: { ...structuredClone(fixtureOutcome), recommendations: [{ ...fixtureOutcome.recommendations[0], methodId: 'graph-contrastive' }] } }, /canonical|recommendation/i],
     ['forged input registry', { releaseRegistry: { methods: [method], templates: [template] } as never }, /unknown|missing/i],
   ]
   for (const [name, overrides, expected] of cases) assert.throws(() => fixtureCompiler(input(overrides)), expected, name)
@@ -87,6 +145,14 @@ test('rejects aliases, forged handles, and untrusted registry construction', () 
     ['case-insensitive alias collision', [{ ...method, aliases: ['GRAPH_CONTRASTIVE'] }], [template]],
     ['sparse methods', Object.assign(new Array(1), {}), [template]],
   ] as const) assert.throws(() => createFixtureCompiler(methods, templates), /own|plain|duplicate|dense|canonical|complete/i, name)
+
+  assert.throws(
+    () => createFixtureCompiler(
+      [{ ...method, id: 'constructor', aliases: [] }],
+      [{ ...template, methodId: 'constructor' }],
+    ),
+    /canonical|unsafe|identity/i,
+  )
 })
 
 test('rejects unsafe commands, unsafe parameter names, and invalid parameter values', () => {
@@ -117,17 +183,19 @@ test('binds provenance to a deterministic SHA-256 fingerprint of the normalized 
   const profileWithSets = {
     ...fixtureProfile,
     goals: ['latent_representation', 'lineage_contribution'],
-    candidateMethodIds: ['z_method', 'a_method'],
+    candidateMethodIds: ['graph_contrastive', 'a_method'],
   } as typeof fixtureProfile & { candidateMethodIds: string[] }
-  const original = fixtureCompiler(input({ profile: profileWithSets })).config.provenance.profileFingerprint
+  const original = fixtureCompiler(input({ profile: profileWithSets, outcome: fixtureOutcomeForProfile(profileWithSets) })).config.provenance.profileFingerprint
   const reordered = fixtureCompiler(input({
     profile: {
       ...Object.fromEntries(Object.entries(profileWithSets).reverse()),
       goals: [...profileWithSets.goals].reverse(),
       candidateMethodIds: [...profileWithSets.candidateMethodIds].reverse(),
     } as typeof profileWithSets,
+    outcome: fixtureOutcomeForProfile({ ...Object.fromEntries(Object.entries(profileWithSets).reverse()), goals: [...profileWithSets.goals].reverse(), candidateMethodIds: [...profileWithSets.candidateMethodIds].reverse() } as typeof profileWithSets),
   })).config.provenance.profileFingerprint
-  const changed = fixtureCompiler(input({ profile: { ...profileWithSets, candidateMethodIds: ['z_method', 'different_method'] } })).config.provenance.profileFingerprint
+  const changedProfile = { ...profileWithSets, candidateMethodIds: ['graph_contrastive', 'different_method'] }
+  const changed = fixtureCompiler(input({ profile: changedProfile, outcome: fixtureOutcomeForProfile(changedProfile) })).config.provenance.profileFingerprint
 
   assert.match(original, /^[a-f0-9]{64}$/)
   assert.equal(reordered, original)
@@ -141,11 +209,15 @@ test('writes every declared result shape before complete downstream adapters', (
     template: {
       ...template.template,
       outputs: ['latent', 'graph', 'pseudotime', 'branch', 'metadata'],
+      wrapper: { ...template.template.wrapper, resultAttributes: { latent: 'latent', graph: 'graph', pseudotime: 'pseudotime', branch: 'branch', metadata: 'metadata' } },
       outputKeys: { latent: 'X_complete', graph: 'graph', pseudotime: 'pt', branch: 'branch', metadata: 'metadata' },
-      downstream: { scFocus: { branchKey: 'branch', contributionOutput: 'contribution' }, scRL: { pseudotimeKey: 'pt', decisionOutput: 'decision' } },
+      downstream: {
+        scFocus: { ...template.template.downstream.scFocus, branchKey: 'branch', contributionOutput: 'contribution' },
+        scRL: { packageName: 'scrl', packageVersion: '1.0.0', installCommand: 'python -m pip install scrl==1.0.0', sourceUrl: 'https://example.test/scrl', importName: 'scrl', functionName: 'run_scrl', pseudotimeKey: 'pt', decisionOutput: 'decision' },
+      },
     },
   }
-  const snippet = createFixtureCompiler([completeMethod], [completeTemplate])(input()).pythonSnippet
+  const snippet = createFixtureCompiler([completeMethod], [completeTemplate])(input({ adapters: ['scFocus', 'scRL'] })).pythonSnippet
 
   assert.match(snippet, /adata\.obsm\['X_complete'\] = result\.latent/)
   assert.match(snippet, /adata\.obsp\['graph'\] = result\.graph/)
@@ -173,6 +245,8 @@ test('rejects duplicate normalized compiler inputs and mismatched output contrac
     ['duplicate exclusion method IDs', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], excludedAlternatives: [{ methodId: 'other', reasons: ['RESOURCE_LIMIT'] }, { methodId: 'other', reasons: ['SCALE_LIMIT'] }] }] } as never }, /duplicate|excluded/i],
     ['duplicate exclusion reasons', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], excludedAlternatives: [{ methodId: 'other', reasons: ['RESOURCE_LIMIT', 'RESOURCE_LIMIT'] }] }] } as never }, /duplicate|reasons/i],
     ['wrapper output mismatch', [method], [{ ...template, template: { ...template.template, outputs: ['latent', 'metadata'] } }], {}, /output|coverage|match/i],
+    ['package pin mismatch', [method], [{ ...template, template: { ...template.template, packageVersion: '2.0.0' } }], {}, /package|install|version/i],
+    ['wrapper extraction mismatch', [method], [{ ...template, template: { ...template.template, wrapper: { ...template.template.wrapper, resultAttributes: { latent: 'latent', metadata: 'metadata' } } } }], {}, /wrapper|output|result/i],
     ['output key duplicate', [method], [{ ...template, template: { ...template.template, outputKeys: { latent: 'same', graph: 'same', metadata: 'metadata' } } }], {}, /duplicate|output/i],
     ['control locator', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], evidenceLinks: [{ ...fixtureOutcome.recommendations[0].evidenceLinks[0], locator: 'table\u0000S1' }] }] } as never }, /locator|control/i],
   ]

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import { routeMethods } from '../../app/core/router/index.ts'
+import { withSyntheticRelease } from './release.ts'
 
 const dataDirectory = new URL('../../data/router/', import.meta.url)
 
@@ -10,7 +11,7 @@ function json<T>(name: string): T {
   return JSON.parse(readFileSync(new URL(name, dataDirectory), 'utf8')) as T
 }
 
-function executableRegistryInput() {
+function rawRegistryInput() {
   return {
     profile: json<Record<string, unknown>[]>('task-profiles.json').find(({ id }) => id === 'quick_trajectory')!,
     datasets: json<unknown[]>('datasets.json'),
@@ -21,6 +22,21 @@ function executableRegistryInput() {
     routerVersion: 'router-core-v1',
     releaseSynthetic: true,
   }
+}
+
+function releaseBoundInput() {
+  const legacy = rawRegistryInput()
+  const { evidenceVersion, releaseSynthetic, ...input } = legacy
+  assert.equal(releaseSynthetic, true)
+  return withSyntheticRelease(input, evidenceVersion)
+}
+
+function executableRegistryInput() { return releaseBoundInput() }
+
+function reissueRelease<T extends ReturnType<typeof executableRegistryInput>>(input: T): T {
+  const { release: prior, ...bundle } = input
+  assert.equal(prior.synthetic, true)
+  return withSyntheticRelease(bundle, prior.id) as T
 }
 
 function onlyTrajectoryWeights(profile: Record<string, unknown>) {
@@ -63,6 +79,52 @@ function unstableFourMethodInput() {
   }
 }
 
+function sparsePriorInput() {
+  const base = executableRegistryInput()
+  const baseDataset = base.datasets[0]
+  const baseMethod = base.methods.find((method) => method.id === 'geometry_vae')!
+  const datasets = [
+    { ...baseDataset, id: 'distant_alpha', aliases: [], studyGroup: 'study-a', modality: 'scatac' },
+    { ...baseDataset, id: 'distant_beta', aliases: [], studyGroup: 'study-b', modality: 'scatac' },
+    { ...baseDataset, id: 'near_target', aliases: [], studyGroup: 'study-c', modality: 'scrna' },
+  ]
+  const methods = ['alpha', 'beta'].map((id) => ({
+    ...baseMethod,
+    id,
+    aliases: [],
+    executable: true,
+    supportedGoals: ['latent_representation'],
+  }))
+  const rankings = {
+    distant_alpha: { alpha: 10, beta: 0 },
+    distant_beta: { alpha: 0, beta: 10 },
+    near_target: { alpha: 10, beta: 0 },
+  }
+  const observations = datasets.flatMap((dataset) => methods.map((method) => ({
+    datasetId: dataset.id,
+    methodId: method.id,
+    metricId: 'intrinsic_geometry',
+    rawValue: rankings[dataset.id as keyof typeof rankings][method.id as 'alpha' | 'beta'],
+    provenance: { paperId: 'synthetic-contract-fixture', locator: 'table:prior', datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'sparse-prior', extractedAt: '2026-08-23T00:00:00Z' },
+  })))
+  return reissueRelease({
+    ...base,
+    profile: {
+      ...base.profile,
+      id: 'sparse_prior',
+      goals: ['latent_representation'],
+      weights: { latent_geometry: 1, continuity: 0, trajectory: 0, stability: 0, biology: 0, resources: 0 },
+      maxResourceTier: 1,
+      minEffectiveDatasets: 1,
+      minCriticalCoverage: 1,
+    },
+    datasets,
+    methods,
+    metrics: base.metrics.filter((metric) => metric.id === 'intrinsic_geometry'),
+    observations,
+  } as never)
+}
+
 test('routes canonical multi-method evidence into deterministic Pareto-qualified traceable roles', () => {
   const input = executableRegistryInput()
   const first = routeMethods(input)
@@ -93,13 +155,13 @@ test('refuses every public failure state without manufacturing rankings', () => 
     ['no compatible', { ...input, methods: [], observations: [] }, 'NO_COMPATIBLE_METHOD'],
     ['insufficient effective datasets', { ...input, profile: { ...input.profile, minEffectiveDatasets: 99 } }, 'INSUFFICIENT_EVIDENCE'],
     ['critical coverage', { ...input, observations: input.observations.filter((observation) => observation.metricId !== 'trajectory_directionality') }, 'CRITICAL_COVERAGE_GAP'],
-    ['unstable top three', { ...unstableFourMethodInput(), options: { minimumTopThreeRetention: 0.9 } }, 'UNSTABLE_TOP_THREE'],
+    ['unstable top three', { ...unstableFourMethodInput(), options: { minimumTopThreeRetention: 1 } }, 'UNSTABLE_TOP_THREE'],
     ['conflicting requirements', { ...input, profile: { ...input.profile, goals: ['fate_decision'], maxResourceTier: 1, priors: { time: false } } }, 'CONFLICTING_REQUIREMENTS'],
   ] as const
 
   for (const [name, candidate, code] of cases) {
     const { options, ...routerInput } = candidate
-    const outcome = routeMethods(routerInput, options)
+    const outcome = routeMethods(reissueRelease(routerInput as never), options)
     assert.equal(outcome.status, 'REFUSED', name)
     if (outcome.status !== 'REFUSED') continue
     assert.equal(outcome.code, code)
@@ -110,14 +172,14 @@ test('refuses every public failure state without manufacturing rankings', () => 
 
 test('fails closed when an input identity is not canonical registry data', () => {
   const input = executableRegistryInput()
-  const outcome = routeMethods({
+  const outcome = routeMethods(reissueRelease({
     ...input,
     observations: input.observations.map((observation) => (
       observation.datasetId === 'synthetic_branch_time'
         ? { ...observation, datasetId: 'synthetic-branch-time' }
         : observation
     )),
-  })
+  } as never))
 
   assert.equal(outcome.status, 'REFUSED')
   if (outcome.status === 'REFUSED') {
@@ -129,7 +191,7 @@ test('fails closed when an input identity is not canonical registry data', () =>
 test('accepts one candidate metric observed on two of three eligible datasets at the 0.6 coverage gate', () => {
   const input = executableRegistryInput()
   const missingDatasetId = input.datasets[0].id
-  const outcome = routeMethods({
+  const outcome = routeMethods(reissueRelease({
     ...input,
     profile: {
       ...onlyTrajectoryWeights(input.profile),
@@ -142,7 +204,7 @@ test('accepts one candidate metric observed on two of three eligible datasets at
       && observation.metricId === 'trajectory_directionality'
       && observation.datasetId === missingDatasetId
     )),
-  })
+  } as never))
 
   assert.equal(outcome.status, 'OK')
   if (outcome.status === 'OK') {
@@ -151,9 +213,9 @@ test('accepts one candidate metric observed on two of three eligible datasets at
   }
 })
 
-test('routes with only positively weighted trajectory observations', () => {
+test('does not let user weights remove mandatory trajectory-goal evidence groups', () => {
   const input = executableRegistryInput()
-  const outcome = routeMethods({
+  const outcome = routeMethods(reissueRelease({
     ...input,
     profile: {
       ...onlyTrajectoryWeights(input.profile),
@@ -161,9 +223,10 @@ test('routes with only positively weighted trajectory observations', () => {
       minEffectiveDatasets: 1,
     },
     observations: input.observations.filter((observation) => observation.metricId === 'trajectory_directionality'),
-  })
+  } as never))
 
-  assert.equal(outcome.status, 'OK')
+  assert.equal(outcome.status, 'REFUSED')
+  if (outcome.status === 'REFUSED') assert.equal(outcome.code, 'CRITICAL_COVERAGE_GAP')
 })
 
 test('conditions bootstrap evidence so a distant contradictory dataset cannot overturn the near context', () => {
@@ -180,7 +243,7 @@ test('conditions bootstrap evidence so a distant contradictory dataset cannot ov
     { ...baseDataset, id: 'distant', aliases: [], studyGroup: 'distant-study', modality: 'scatac' },
   ]
   const methods = ['alpha', 'zeta'].map((id) => ({ ...baseMethod, id, aliases: [] }))
-  const observations = [
+  const trajectoryObservations = [
     ['near', 'alpha', 0],
     ['near', 'zeta', 10],
     ['distant', 'alpha', 10],
@@ -192,7 +255,12 @@ test('conditions bootstrap evidence so a distant contradictory dataset cannot ov
     rawValue,
     provenance: { paperId: 'synthetic-contract-fixture', locator: 'table:S1', datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'context-fixture', extractedAt: '2026-08-23T00:00:00Z' },
   }))
-  const outcome = routeMethods({ ...input, profile, datasets, methods, observations }, {
+  const neutralObservations = ['intrinsic_geometry', 'continuity_preservation'].flatMap((metricId) => datasets.flatMap((dataset) => methods.map((method) => ({
+    datasetId: dataset.id, methodId: method.id, metricId, rawValue: 1,
+    provenance: { paperId: 'synthetic-contract-fixture', locator: 'table:S1', datasetVersion: '1', methodVersion: '1.0.0', runConfigId: 'context-fixture', extractedAt: '2026-08-23T00:00:00Z' },
+  }))))
+  const observations = [...trajectoryObservations, ...neutralObservations]
+  const outcome = routeMethods(reissueRelease({ ...input, profile, datasets, methods, observations } as never), {
     contextFeatureWeights: { modality: 1, scale: 0, topology: 0, priors: 0, perturbation: 0 },
   })
 
@@ -203,7 +271,7 @@ test('conditions bootstrap evidence so a distant contradictory dataset cannot ov
 })
 
 test('removes a four-method unstable candidate before assigning any role', () => {
-  const outcome = routeMethods(unstableFourMethodInput(), { minimumTopThreeRetention: 0.85 })
+  const outcome = routeMethods(reissueRelease(unstableFourMethodInput() as never), { minimumTopThreeRetention: 0.85 })
 
   assert.equal(outcome.status, 'OK')
   if (outcome.status === 'OK') {
@@ -225,7 +293,13 @@ test('refuses when qualified candidates have no common observed bootstrap contex
     { ...input.observations.find((observation) => observation.metricId === 'trajectory_directionality')!, datasetId: input.datasets[0].id, methodId: 'alpha' },
     { ...input.observations.find((observation) => observation.metricId === 'trajectory_directionality')!, datasetId: input.datasets[1].id, methodId: 'zeta' },
   ]
-  const outcome = routeMethods({ ...input, profile, methods, observations })
+  for (const metricId of ['intrinsic_geometry', 'continuity_preservation']) {
+    observations.push(
+      { ...observations[0], metricId },
+      { ...observations[1], metricId },
+    )
+  }
+  const outcome = routeMethods(reissueRelease({ ...input, profile, methods, observations } as never))
 
   assert.equal(outcome.status, 'REFUSED')
   if (outcome.status === 'REFUSED') {
@@ -234,18 +308,127 @@ test('refuses when qualified candidates have no common observed bootstrap contex
   }
 })
 
-test('uses explicit releaseSynthetic instead of inferring fixture status from the version string', () => {
+test('derives synthetic status exclusively from the bound release receipt', () => {
   const input = executableRegistryInput()
-  for (const releaseSynthetic of [false, true]) {
-    const outcome = routeMethods({ ...input, evidenceVersion: 'release-v1', releaseSynthetic })
-    assert.equal(outcome.status, 'OK')
-    if (outcome.status === 'OK') {
-      assert.ok(outcome.recommendations.every((recommendation) => (
-        recommendation.positiveEvidenceDetails.every((detail) => detail.synthetic === releaseSynthetic)
-        && recommendation.evidenceLinks.every((link) => link.synthetic === releaseSynthetic)
-      )))
-    }
+  const outcome = routeMethods(input)
+  assert.equal(outcome.status, 'OK')
+  if (outcome.status === 'OK') {
+    assert.ok(outcome.recommendations.every((recommendation) => (
+      recommendation.positiveEvidenceDetails.every((detail) => detail.synthetic === input.release.synthetic)
+      && recommendation.evidenceLinks.every((link) => link.synthetic === input.release.synthetic)
+    )))
   }
+})
+
+test('uses method-plus-metric global history before the neutral hierarchical prior for sparse local evidence', () => {
+  const outcome = routeMethods(sparsePriorInput(), {
+    contextFeatureWeights: { modality: 1, scale: 0, topology: 0, priors: 0, perturbation: 0 },
+    shrinkageAlpha: 1,
+  })
+
+  assert.equal(outcome.status, 'OK')
+  if (outcome.status !== 'OK') return
+  const best = outcome.recommendations.find((recommendation) => recommendation.roles.includes('best_fit'))!
+  const geometry = best.positiveEvidenceDetails.find((detail) => detail.group === 'latent_geometry')!
+  assert.equal(best.methodId, 'alpha')
+  assert.ok(Math.abs(geometry.score - 5 / 6) < 1e-12, `score=${geometry.score}`)
+  assert.equal(geometry.baseline, 0.5)
+  assert.equal(geometry.direction, 'supports')
+})
+
+test('recomputes the same empirical-Bayes estimator inside every bootstrap replicate and remains alpha-sensitive', () => {
+  const input = sparsePriorInput()
+  const options = { contextFeatureWeights: { modality: 1, scale: 0, topology: 0, priors: 0, perturbation: 0 }, bootstrapReplicates: 20 } as const
+  const weak = routeMethods(input, { ...options, shrinkageAlpha: 0.1 })
+  const strong = routeMethods(input, { ...options, shrinkageAlpha: 10 })
+
+  assert.equal(weak.status, 'OK')
+  assert.equal(strong.status, 'OK')
+  if (weak.status !== 'OK' || strong.status !== 'OK') return
+  const weakBest = weak.recommendations.find((recommendation) => recommendation.roles.includes('best_fit'))!
+  const strongBest = strong.recommendations.find((recommendation) => recommendation.roles.includes('best_fit'))!
+  const weakScore = weakBest.positiveEvidenceDetails.find((detail) => detail.group === 'latent_geometry')!.score
+  const strongScore = strongBest.positiveEvidenceDetails.find((detail) => detail.group === 'latent_geometry')!.score
+  assert.ok(Math.abs(weakBest.conservativeUtility - weakScore) < 1e-12)
+  assert.ok(Math.abs(strongBest.conservativeUtility - strongScore) < 1e-12)
+  assert.ok(weakBest.conservativeUtility > strongBest.conservativeUtility)
+})
+
+test('widens unknown scale matching but lowers confidence and explains unresolved feasibility', () => {
+  const input = executableRegistryInput()
+  const outcome = routeMethods(reissueRelease({ ...input, profile: { ...input.profile, scale: 'unknown' } } as never))
+
+  assert.equal(outcome.status, 'OK')
+  if (outcome.status !== 'OK') return
+  assert.ok(outcome.recommendations.every((recommendation) => recommendation.confidence !== 'high'))
+  assert.ok(outcome.recommendations.every((recommendation) => recommendation.confidenceReasons.some((reason) => /unknown scale|feasibility/i.test(reason))))
+  assert.ok(outcome.recommendations.every((recommendation) => recommendation.limitations.some((reason) => /unknown scale|feasibility/i.test(reason))))
+})
+
+test('explains only positive contributions numerically and disposes every non-recommended method', () => {
+  const input = executableRegistryInput()
+  const outcome = routeMethods(input)
+
+  assert.equal(outcome.status, 'OK')
+  if (outcome.status !== 'OK') return
+  const recommendedIds = new Set(outcome.recommendations.map(({ methodId }) => methodId))
+  for (const recommendation of outcome.recommendations) {
+    assert.ok(recommendation.confidenceReasons.length > 0)
+    assert.ok(recommendation.positiveEvidenceDetails.length > 0)
+    for (const detail of recommendation.positiveEvidenceDetails) {
+      assert.equal(detail.direction, 'supports')
+      assert.ok(detail.score > detail.baseline)
+      assert.ok(detail.contribution > 0)
+      assert.match(detail.text, /score|baseline|contribution/i)
+    }
+    assert.deepEqual(
+      new Set(recommendation.alternativeDispositions.map(({ methodId }) => methodId)),
+      new Set(input.methods.map(({ id }) => id).filter((id) => id !== recommendation.methodId)),
+    )
+    for (const disposition of recommendation.alternativeDispositions) {
+      if (!recommendedIds.has(disposition.methodId)) assert.ok(['compatible_unselected', 'excluded'].includes(disposition.status))
+      assert.ok(disposition.reasons.length > 0)
+    }
+    assert.ok(recommendation.limitations.some((limitation) => /prior|shrinkage/i.test(limitation)))
+  }
+})
+
+test('refuses a caller attempt to relabel synthetic fixture evidence as real', () => {
+  const input = executableRegistryInput()
+  const outcome = routeMethods({ ...input, release: { ...input.release, synthetic: false } })
+
+  assert.equal(outcome.status, 'REFUSED')
+  if (outcome.status === 'REFUSED') {
+    assert.match(outcome.evidenceGaps.join('\n'), /release|synthetic|provenance/i)
+  }
+})
+
+test('binds a successful outcome to the exact release bundle and task profile receipt', () => {
+  const input = releaseBoundInput()
+  const outcome = routeMethods(input as never)
+
+  assert.equal(outcome.status, 'OK')
+  if (outcome.status !== 'OK') return
+  assert.match(outcome.receipt.profileFingerprint, /^[a-f0-9]{64}$/)
+  assert.equal(outcome.receipt.release.id, input.release.id)
+  assert.equal(outcome.receipt.release.synthetic, true)
+  assert.equal(outcome.evidenceVersion, input.release.id)
+
+  const tampered = routeMethods({
+    ...input,
+    observations: input.observations.map((observation, index) => (
+      index === 0 ? { ...observation, rawValue: observation.rawValue + 1 } : observation
+    )),
+  } as never)
+  assert.equal(tampered.status, 'REFUSED')
+  if (tampered.status === 'REFUSED') assert.match(tampered.evidenceGaps.join('\n'), /digest|release/i)
+
+  const relabeled = routeMethods({
+    ...input,
+    release: { ...input.release, synthetic: false },
+  } as never)
+  assert.equal(relabeled.status, 'REFUSED')
+  if (relabeled.status === 'REFUSED') assert.match(relabeled.evidenceGaps.join('\n'), /digest|release|synthetic/i)
 })
 
 test('accepts exact valid context weights and rejects zero shrinkage alpha by option name', () => {
@@ -294,7 +477,7 @@ test('rejects inherited and accessor-backed public data without invoking accesso
 
 test('requires exact own Router input fields and canonical unique candidate IDs', () => {
   const input = executableRegistryInput()
-  const { releaseSynthetic: _releaseSynthetic, ...missingReleaseFlag } = input
+  const { release: _release, ...missingReleaseFlag } = input
   const cases = [
     missingReleaseFlag,
     { ...input, unexpected: true },
@@ -305,7 +488,7 @@ test('requires exact own Router input fields and canonical unique candidate IDs'
   for (const candidate of cases) {
     const outcome = routeMethods(candidate)
     assert.equal(outcome.status, 'REFUSED')
-    if (outcome.status === 'REFUSED') assert.match(outcome.evidenceGaps.join('\n'), /invalid|canonical|candidate|releaseSynthetic/i)
+    if (outcome.status === 'REFUSED') assert.match(outcome.evidenceGaps.join('\n'), /invalid|canonical|candidate|release/i)
   }
 })
 
@@ -389,9 +572,9 @@ test('aggregates valid multiple runs without weighting coverage or effective dat
     ...original,
     provenance: { ...original.provenance, runConfigId: 'fixture-secondary' },
   }
-  const baseline = routeMethods({ ...input, profile })
-  const appended = routeMethods({ ...input, profile, observations: [...input.observations, secondRun] })
-  const prepended = routeMethods({ ...input, profile, observations: [secondRun, ...input.observations] })
+  const baseline = routeMethods(reissueRelease({ ...input, profile } as never))
+  const appended = routeMethods(reissueRelease({ ...input, profile, observations: [...input.observations, secondRun] } as never))
+  const prepended = routeMethods(reissueRelease({ ...input, profile, observations: [secondRun, ...input.observations] } as never))
 
   assert.deepEqual(appended, prepended)
   assert.equal(baseline.status, 'OK')

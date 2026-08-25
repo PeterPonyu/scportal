@@ -141,7 +141,7 @@ test('rejects duplicate aliases and every set-like method/profile array', async 
 test('rejects noncanonical output ordering in methods and wrapper templates', async () => {
   const validator = await createRouterDataValidator()
   assert.throws(() => validator.parseMethod({ id: 'method', aliases: [], version: '1', modalities: ['scrna'], maxScale: '10k_50k', outputs: ['metadata', 'latent'], requiredPriors: [], supportedGoals: ['latent_representation'], resourceTier: 1, installCommand: 'python -m pip install package==1', license: 'MIT', sourceUrl: 'https://example.test/source', docsUrl: 'https://example.test/docs', paperUrl: 'https://example.test/paper', executable: false }), /canonical output order/i)
-  assert.throws(() => validator.parseConfigTemplate({ methodId: 'method', version: '1', synthetic: true, template: { outputs: ['latent', 'metadata'], packageName: 'package', importName: 'package', constructor: 'Package', defaultParameters: {}, allowedParameters: {}, outputKeys: { metadata: 'metadata', latent: 'latent' } } }), /canonical order/i)
+  assert.throws(() => validator.parseConfigTemplate({ methodId: 'method', version: '1', synthetic: true, template: { outputs: ['latent', 'metadata'], packageName: 'package', packageVersion: '1', importName: 'package', constructor: 'Package', wrapper: { fitMethod: 'fit_transform', input: 'adata', resultAttributes: { latent: 'latent', metadata: 'metadata' } }, defaultParameters: {}, allowedParameters: {}, outputKeys: { metadata: 'metadata', latent: 'latent' } } }), /canonical order/i)
 })
 
 test('resolves one GEO alias to its scoped canonical dataset ID', () => {
@@ -346,6 +346,32 @@ test('rejects whitespace-only entity IDs and aliases at schema and registry boun
     () => validator.assertUniqueEntityIds('dataset', [{ ...validDataset, aliases: ['  '] }]),
     /blank dataset id or alias/i,
   )
+})
+
+test('rejects prototype-sensitive canonical IDs through the shared entity grammar', async () => {
+  const validator = await createRouterDataValidator()
+
+  for (const id of ['__proto__', 'prototype', 'constructor']) {
+    assert.throws(() => validator.parseDataset({ ...validDataset, id }), /id|canonical|unsafe/i)
+    assert.throws(() => validator.parseMetric({ ...validMetric, id }), /id|canonical|unsafe/i)
+    assert.throws(() => validator.parseMethod({
+      id,
+      aliases: [],
+      version: '1.0.0',
+      modalities: ['scrna'],
+      maxScale: '10k_50k',
+      outputs: ['latent'],
+      requiredPriors: [],
+      supportedGoals: ['latent_representation'],
+      resourceTier: 1,
+      installCommand: 'python -m pip install package==1.0.0',
+      license: 'MIT',
+      sourceUrl: 'https://example.test/source',
+      docsUrl: 'https://example.test/docs',
+      paperUrl: 'https://example.test/paper',
+      executable: false,
+    }), /id|canonical|unsafe/i)
+  }
 })
 
 test('rejects a partial root registry once any registry JSON exists', async () => {

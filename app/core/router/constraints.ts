@@ -35,7 +35,7 @@ function compareCodeUnits(left: string, right: string): number {
 }
 
 function supportsProfileScale(profileScale: ScaleBand, methodScale: MethodCapability['maxScale']): boolean {
-  return profileScale !== 'unknown' && scalePositions[profileScale] <= scalePositions[methodScale]
+  return profileScale === 'unknown' || scalePositions[profileScale] <= scalePositions[methodScale]
 }
 
 export function filterCompatibleMethods(

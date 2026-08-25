@@ -1,3 +1,5 @@
+import type { EvidenceRelease, RouterInput, TaskProfile } from './types.ts'
+
 const initial = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]
 const roundConstants = [
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -9,6 +11,10 @@ const roundConstants = [
   0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
 ]
+
+function compare(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0
+}
 
 export function sha256Hex(value: string): string {
   const input = new TextEncoder().encode(value)
@@ -25,7 +31,8 @@ export function sha256Hex(value: string): string {
   for (let offset = 0; offset < bytes.length; offset += 64) {
     for (let index = 0; index < 16; index += 1) words[index] = view.getUint32(offset + index * 4)
     for (let index = 16; index < 64; index += 1) {
-      const a = words[index - 15]; const b = words[index - 2]
+      const a = words[index - 15]
+      const b = words[index - 2]
       words[index] = (((a >>> 7 | a << 25) ^ (a >>> 18 | a << 14) ^ a >>> 3) + words[index - 16] + ((b >>> 17 | b << 15) ^ (b >>> 19 | b << 13) ^ b >>> 10) + words[index - 7]) >>> 0
     }
     let [a, b, c, d, e, f, g, h] = state
@@ -42,4 +49,26 @@ export function sha256Hex(value: string): string {
     state[4] = (state[4] + e) >>> 0; state[5] = (state[5] + f) >>> 0; state[6] = (state[6] + g) >>> 0; state[7] = (state[7] + h) >>> 0
   }
   return state.map((word) => word.toString(16).padStart(8, '0')).join('')
+}
+
+export function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).sort(compare).join(',')}]`
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    return `{${Object.keys(record).sort(compare).map((key) => `${JSON.stringify(key)}:${canonicalJson(record[key])}`).join(',')}}`
+  }
+  const encoded = JSON.stringify(value)
+  if (encoded === undefined) throw new TypeError('canonical JSON does not support undefined values')
+  return encoded
+}
+
+export function profileFingerprint(profile: TaskProfile): string {
+  return sha256Hex(canonicalJson(profile))
+}
+
+type ReleaseBundle = Pick<RouterInput, 'datasets' | 'methods' | 'metrics' | 'observations'>
+type ReleaseMetadata = Omit<EvidenceRelease, 'configDigest' | 'evidenceDigest'>
+
+export function releaseEvidenceDigest(bundle: ReleaseBundle, release: ReleaseMetadata, configDigest: string): string {
+  return sha256Hex(canonicalJson({ release, configDigest, datasets: bundle.datasets, methods: bundle.methods, metrics: bundle.metrics, observations: bundle.observations }))
 }

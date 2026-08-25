@@ -128,3 +128,30 @@ test('rejects every external-module import-equals dependency including relative 
     'app/core/router/import-equals.ts:4:1 direct require is forbidden',
   ])
 })
+
+test('rejects network, DOM, and Node runtime globals while allowing deliberate local shadowing', async () => {
+  const findings = await scan({
+    [core('runtime-globals.ts')]: [
+      'WebSocket',
+      'XMLHttpRequest',
+      'navigator',
+      'process',
+      'Buffer',
+    ].map((name) => `export const use${name} = ${name}`).join('\n'),
+    [core('shadowed-globals.ts')]: [
+      'const WebSocket = 1',
+      'function local(XMLHttpRequest: number, navigator: number, process: number, Buffer: number) {',
+      '  return WebSocket + XMLHttpRequest + navigator + process + Buffer',
+      '}',
+      'export const value = local(1, 2, 3, 4)',
+    ].join('\n'),
+  })
+
+  assert.deepEqual(findings, [
+    'app/core/router/runtime-globals.ts:1:29 forbidden unshadowed global: WebSocket',
+    'app/core/router/runtime-globals.ts:2:34 forbidden unshadowed global: XMLHttpRequest',
+    'app/core/router/runtime-globals.ts:3:29 forbidden unshadowed global: navigator',
+    'app/core/router/runtime-globals.ts:4:27 forbidden unshadowed global: process',
+    'app/core/router/runtime-globals.ts:5:26 forbidden unshadowed global: Buffer',
+  ])
+})

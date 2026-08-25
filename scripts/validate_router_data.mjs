@@ -111,6 +111,14 @@ function assertCanonicalOutputs(outputs, outputKeys) {
   }
 }
 
+function assertDeclarativeWrapper(outputs, wrapper) {
+  if (wrapper === undefined) return
+  const attributes = wrapper.resultAttributes
+  if (Object.keys(attributes).length !== outputs.length || outputs.some((output, index) => Object.keys(attributes)[index] !== output)) {
+    throw new Error('template wrapper result attributes must exactly match outputs in canonical order')
+  }
+}
+
 function formatErrors(errors) {
   return errors?.map((error) => `${error.instancePath || '$'} ${error.message}`).join('; ') ?? 'unknown schema error'
 }
@@ -167,7 +175,7 @@ export async function createRouterDataValidator() {
       return parsed
     },
     parseExecutableConfig: (value) => parse('executableConfig', value),
-    parseConfigTemplate: (value) => { const parsed = parse('configTemplate', value); assertCanonicalOutputs(parsed.template.outputs, parsed.template.outputKeys); return parsed },
+    parseConfigTemplate: (value) => { const parsed = parse('configTemplate', value); assertCanonicalOutputs(parsed.template.outputs, parsed.template.outputKeys); assertDeclarativeWrapper(parsed.template.outputs, parsed.template.wrapper); return parsed },
     parseRelease: (value) => parse('release', value),
     assertUniqueEntityIds,
   }
@@ -231,6 +239,10 @@ function assertTemplateRegistry(configTemplates, methods, synthetic) {
     if (templateCounts.has(method.id)) throw new Error(`duplicate config template for method: ${method.id}`)
     if (configTemplate.version !== method.version) {
       throw new Error(`template version mismatch for ${method.id}: ${configTemplate.version}`)
+    }
+    const install = /^(?:python(?:3)? -m pip|pip(?:3)?) install ([A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*)$/.exec(method.installCommand)
+    if (!install || install[1] !== `${configTemplate.template.packageName}==${configTemplate.template.packageVersion}`) {
+      throw new Error(`template package version does not match method install provenance for ${method.id}`)
     }
     if (configTemplate.template.outputs.length !== method.outputs.length
       || configTemplate.template.outputs.some((output, index) => output !== method.outputs[index])) {
@@ -336,13 +348,20 @@ export async function validateRouterRegistry({
   validator.assertUniqueEntityIds('method', parsedMethods)
   validator.assertUniqueEntityIds('metric', parsedMetrics)
 
+  for (const metric of parsedMetrics) {
+    if (metric.auxiliary && metric.group !== 'biology') throw new Error(`auxiliary metric ontology requires biology group: ${metric.id}`)
+  }
+  for (const group of ['latent_geometry', 'continuity', 'trajectory', 'stability', 'biology', 'resources']) {
+    if (!parsedMetrics.some((metric) => metric.group === group && !metric.auxiliary)) throw new Error(`primary metric ontology requires non-auxiliary evidence for ${group}`)
+  }
+
   const datasetAliases = aliasesByCanonicalId('dataset', parsedDatasets)
   const methodAliases = aliasesByCanonicalId('method', parsedMethods)
   const metricAliases = aliasesByCanonicalId('metric', parsedMetrics)
   const methodVersions = new Map(parsedMethods.map((method) => [method.id, method.version]))
   for (const method of parsedMethods) {
     if (/[\n\r`]|\$\(|[;&|<>]/.test(method.installCommand)
-      || !/^(?:python|python3|pip|pip3)(?: -m pip)? install [A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*$/.test(method.installCommand)) {
+      || !/^(?:python(?:3)? -m pip|pip(?:3)?) install [A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*$/.test(method.installCommand)) {
       throw new Error(`method install command must be pinned and grammar-safe: ${method.id}`)
     }
   }
@@ -380,6 +399,9 @@ export async function validateRouterRegistry({
     return { ...configTemplate, methodId }
   })
 
+  if (canonicalConfigTemplates.some((template) => template.synthetic !== parsedRelease.synthetic)) {
+    throw new Error('config template synthetic provenance must match the release')
+  }
   assertTemplateRegistry(canonicalConfigTemplates, parsedMethods, parsedRelease.synthetic)
   if (parsedRelease.synthetic) {
     assertSyntheticFixture({
