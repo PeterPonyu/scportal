@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dataset-context.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "aliases", "studyGroup", "modality", "scale", "topology", "priors", "perturbation"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "aliases": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "studyGroup": { "type": "string", "minLength": 1 },
+    "modality": { "enum": ["scrna", "scatac", "multiome"] },
+    "scale": { "enum": ["lt_10k", "10k_50k", "50k_200k", "gt_200k", "unknown"] },
+    "topology": { "enum": ["linear", "bifurcating", "multibranch", "cyclic", "mixed", "unknown"] },
+    "priors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "time": { "type": "boolean" }, "root_state": { "type": "boolean" }, "terminal_states": { "type": "boolean" }, "labels": { "type": "boolean" }, "perturbation": { "type": "boolean" } }
+    },
+    "perturbation": { "anyOf": [{ "type": "boolean" }, { "const": "unknown" }] }
+  }
+}

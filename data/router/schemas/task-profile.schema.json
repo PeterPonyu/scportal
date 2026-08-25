@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-profile.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["modality", "scale", "goals", "topology", "priors", "perturbation", "weights", "maxResourceTier", "minEffectiveDatasets", "minCriticalCoverage", "seed"],
+  "properties": {
+    "modality": { "enum": ["scrna", "scatac", "multiome"] },
+    "scale": { "enum": ["lt_10k", "10k_50k", "50k_200k", "gt_200k", "unknown"] },
+    "goals": { "type": "array", "minItems": 1, "items": { "enum": ["latent_representation", "trajectory_reconstruction", "fate_decision", "lineage_contribution"] } },
+    "topology": { "enum": ["linear", "bifurcating", "multibranch", "cyclic", "mixed", "unknown"] },
+    "priors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "time": { "anyOf": [{ "type": "boolean" }, { "const": "unknown" }] }, "root_state": { "anyOf": [{ "type": "boolean" }, { "const": "unknown" }] }, "terminal_states": { "anyOf": [{ "type": "boolean" }, { "const": "unknown" }] }, "labels": { "anyOf": [{ "type": "boolean" }, { "const": "unknown" }] }, "perturbation": { "anyOf": [{ "type": "boolean" }, { "const": "unknown" }] } }
+    },
+    "perturbation": { "anyOf": [{ "type": "boolean" }, { "const": "unknown" }] },
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["latent_geometry", "continuity", "trajectory", "stability", "biology", "resources"],
+      "properties": { "latent_geometry": { "type": "number", "minimum": 0 }, "continuity": { "type": "number", "minimum": 0 }, "trajectory": { "type": "number", "minimum": 0 }, "stability": { "type": "number", "minimum": 0 }, "biology": { "type": "number", "minimum": 0 }, "resources": { "type": "number", "minimum": 0 } }
+    },
+    "maxResourceTier": { "enum": [1, 2, 3] },
+    "minEffectiveDatasets": { "type": "integer", "minimum": 1 },
+    "minCriticalCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
+    "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+    "candidateMethodIds": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  }
+}

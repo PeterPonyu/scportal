@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "benchmark-observation.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["datasetId", "methodId", "metricId", "rawValue", "provenance"],
+  "properties": {
+    "datasetId": { "type": "string", "minLength": 1 },
+    "methodId": { "type": "string", "minLength": 1 },
+    "metricId": { "type": "string", "minLength": 1 },
+    "rawValue": { "type": "number" },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["paperId", "locator", "datasetVersion", "methodVersion", "runConfigId", "extractedAt"],
+      "properties": {
+        "paperId": { "type": "string", "minLength": 1 },
+        "locator": { "type": "string", "minLength": 1 },
+        "datasetVersion": { "type": "string", "minLength": 1 },
+        "methodVersion": { "type": "string", "minLength": 1 },
+        "runConfigId": { "type": "string", "minLength": 1 },
+        "extractedAt": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
