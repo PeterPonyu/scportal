@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="autoselect-page">
     <div class="bg-gradient-to-r from-primary-700 to-accent-700 py-16">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mb-4 flex items-center gap-2 text-sm text-primary-100">
@@ -17,6 +17,9 @@
     </div>
 
     <div class="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <p class="mb-4 text-sm text-dark-600 dark:text-dark-400">
+        No expression matrix or cell-level data leaves this browser.
+      </p>
       <p class="mb-8 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100" role="status">
         Synthetic evidence preview. This release cannot support biological claims.
       </p>
@@ -26,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import AutoSelectShell from '../../components/autoselect/AutoSelectShell.vue'
 import type { TaskProfile } from '../../core/router/types'
 
 useSeoMeta({
@@ -41,3 +45,14 @@ function onRun(_profile: TaskProfile) {
   void _profile
 }
 </script>
+
+<style scoped>
+@media (prefers-reduced-motion: reduce) {
+  .autoselect-page,
+  .autoselect-page :deep(*) {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>

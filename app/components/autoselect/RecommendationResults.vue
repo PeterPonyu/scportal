@@ -17,6 +17,9 @@
 
 <script setup lang="ts">
 import type { RouterOutcome } from '../../core/router/types'
+import ReceiptStrip from './ReceiptStrip.vue'
+import RecommendationCard from './RecommendationCard.vue'
+import RefusalPanel from './RefusalPanel.vue'
 
 defineProps<{
   outcome: RouterOutcome | null

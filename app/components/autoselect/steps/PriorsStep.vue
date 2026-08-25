@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import type { PriorKey } from '../../../core/router/types'
+import ChoiceGroup from '../ChoiceGroup.vue'
 
 const props = defineProps<{
   priors: Partial<Record<PriorKey, boolean | 'unknown'>>

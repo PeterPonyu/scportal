@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import type { TaskGoal } from '../../../core/router/types'
+import ChoiceGroup from '../ChoiceGroup.vue'
 
 const props = defineProps<{
   goals: TaskGoal[]

@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import type { Topology } from '../../../core/router/types'
+import ChoiceGroup from '../ChoiceGroup.vue'
 
 defineProps<{
   topology: Topology

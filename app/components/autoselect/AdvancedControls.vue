@@ -13,6 +13,8 @@
 
 <script setup lang="ts">
 import type { MetricGroup } from '../../core/router/types'
+import MethodCandidatePicker from './MethodCandidatePicker.vue'
+import WeightEditor from './WeightEditor.vue'
 
 defineProps<{
   weights: Record<MetricGroup, number>

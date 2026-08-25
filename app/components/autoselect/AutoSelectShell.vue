@@ -65,7 +65,7 @@
       :seed="state.seed"
     />
 
-    <p v-if="validationMessage" class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100" role="status">
+    <p v-if="validationMessage" aria-live="polite" class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100" role="status">
       {{ validationMessage }}
     </p>
 
@@ -96,11 +96,12 @@
       </button>
     </div>
 
-    <p v-if="routerState.status === 'loading'" class="text-sm text-dark-600 dark:text-dark-400" role="status">
+    <p v-if="routerState.status === 'loading'" aria-live="polite" class="text-sm text-dark-600 dark:text-dark-400" role="status">
       Computing a recommendation without blocking the page…
     </p>
     <p
       v-else-if="routerState.status === 'error'"
+      aria-live="polite"
       class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-700 dark:bg-red-950/40 dark:text-red-100"
       role="status"
     >
@@ -116,6 +117,10 @@
 <script setup lang="ts">
 import { toTaskProfile } from '../../autoselect/state'
 import type { TaskProfile } from '../../core/router/types'
+import AdvancedControls from './AdvancedControls.vue'
+import AutoSelectStepper from './AutoSelectStepper.vue'
+import ModeToggle from './ModeToggle.vue'
+import RecommendationResults from './RecommendationResults.vue'
 import DataStep from './steps/DataStep.vue'
 import EnvironmentStep from './steps/EnvironmentStep.vue'
 import GoalsStep from './steps/GoalsStep.vue'

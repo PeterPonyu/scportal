@@ -50,6 +50,8 @@
 </template>
 
 <script setup lang="ts">
+import ChoiceGroup from '../ChoiceGroup.vue'
+
 defineProps<{
   maxResourceTier: 1 | 2 | 3
   minEffectiveDatasets: number

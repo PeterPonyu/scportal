@@ -30,7 +30,7 @@
         <dt class="font-medium text-dark-500 dark:text-dark-400">Confidence</dt>
         <dd class="mt-1 text-dark-900 dark:text-white">
           <span class="font-medium">{{ recommendation.confidence }}</span>
-          <span class="ml-1 text-dark-500 dark:text-dark-400">(text grade, not color-only)</span>
+          <span class="ml-1 text-dark-500 dark:text-dark-400">(high, medium, or low — text grade, not color-only)</span>
         </dd>
       </div>
       <div>
@@ -101,6 +101,8 @@
 <script setup lang="ts">
 import methodsJson from '../../../data/router/methods.json'
 import type { MethodCapability, Recommendation, RecommendationRole } from '../../core/router/types'
+import ConfigDownloads from './ConfigDownloads.vue'
+import EvidenceDrawer from './EvidenceDrawer.vue'
 
 const ROLE_LABELS: Record<RecommendationRole, string> = {
   best_fit: 'best fit for this profile',

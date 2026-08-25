@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import type { Modality, ScaleBand } from '../../../core/router/types'
+import ChoiceGroup from '../ChoiceGroup.vue'
 
 defineProps<{
   modality: Modality | null
