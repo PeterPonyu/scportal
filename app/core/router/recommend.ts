@@ -232,14 +232,19 @@ function parseRouterInput(value: unknown): Parsed<RouterInput> {
     const unique = new Set(candidateIds)
     if (unique.size !== candidateIds.length || candidateIds.some((id) => !methodsById.has(id))) return failure('invalid canonical candidateMethodIds: IDs must be known and unique')
   }
-  const observationKeys = new Set<string>()
+  const observationKeys = new Map<string, Map<string, Map<string, Set<string>>>>()
   for (const observation of observations.value) {
     const method = methodsById.get(observation.methodId)
     if (!datasetIds.has(observation.datasetId) || !method || !metricIds.has(observation.metricId)) return failure('observations must use canonical registry IDs')
     if (observation.provenance.methodVersion !== method.version) return failure(`observation method version mismatch: ${observation.methodId}`)
-    const key = [observation.datasetId, observation.methodId, observation.metricId, observation.provenance.runConfigId].join('\u0000')
-    if (observationKeys.has(key)) return failure('duplicate canonical observation')
-    observationKeys.add(key)
+    const methodKeys = observationKeys.get(observation.datasetId) ?? new Map<string, Map<string, Set<string>>>()
+    observationKeys.set(observation.datasetId, methodKeys)
+    const metricKeys = methodKeys.get(observation.methodId) ?? new Map<string, Set<string>>()
+    methodKeys.set(observation.methodId, metricKeys)
+    const runConfigKeys = metricKeys.get(observation.metricId) ?? new Set<string>()
+    metricKeys.set(observation.metricId, runConfigKeys)
+    if (runConfigKeys.has(observation.provenance.runConfigId)) return failure('duplicate canonical observation')
+    runConfigKeys.add(observation.provenance.runConfigId)
   }
   return success({ profile: profile.value, datasets: datasets.value, methods: methods.value, metrics: metrics.value, observations: observations.value, evidenceVersion: parsed.value.evidenceVersion, routerVersion: parsed.value.routerVersion, releaseSynthetic: parsed.value.releaseSynthetic })
 }
@@ -249,11 +254,14 @@ function parseContextWeights(value: unknown): Parsed<ContextFeatureWeights> {
   const parsed = exactRecord(value, keys)
   if (!parsed.ok) return failure(`contextFeatureWeights option ${parsed.error}`)
   const result = {} as ContextFeatureWeights
+  let total = 0
   for (const key of keys) {
     const weight = parsed.value[key]
     if (!Number.isFinite(weight) || (weight as number) < 0) return failure(`contextFeatureWeights option ${key} must be finite and nonnegative`)
     result[key] = weight as number
+    total += weight as number
   }
+  if (!Number.isFinite(total) || total <= 0) return failure('contextFeatureWeights option weights must have a positive total')
   return success(result)
 }
 
@@ -379,9 +387,5 @@ export function routeMethods(input: RouterInput, options: RouterOptions = {}): R
   if (!parsedInput.ok) return refused(input, 'INSUFFICIENT_EVIDENCE', [parsedInput.error])
   const parsedOptions = parseRouterOptions(options)
   if (!parsedOptions.ok) return refused(parsedInput.value, 'INSUFFICIENT_EVIDENCE', [parsedOptions.error])
-  try {
-    return routeMethodsUnchecked(parsedInput.value, parsedOptions.value)
-  } catch (error) {
-    return refused(parsedInput.value, 'INSUFFICIENT_EVIDENCE', [`invalid Router input: ${(error as Error).message}`])
-  }
+  return routeMethodsUnchecked(parsedInput.value, parsedOptions.value)
 }

@@ -324,3 +324,62 @@ test('rejects malformed nested registry and provenance records', () => {
   ]
   for (const candidate of cases) assert.equal(routeMethods(candidate).status, 'REFUSED')
 })
+
+test('treats observation identity structurally when distinct fields contain NUL characters', () => {
+  const input = executableRegistryInput()
+  const sourceDataset = input.datasets[0]
+  const sourceMethod = input.methods.find((method) => method.id === 'graph_contrastive')!
+  const sourceObservation = input.observations.find((observation) => observation.metricId === 'trajectory_directionality')!
+  const datasets = [
+    { ...sourceDataset, id: 'left\u0000right', aliases: [] },
+    { ...sourceDataset, id: 'left', aliases: [] },
+  ]
+  const methods = [
+    { ...sourceMethod, id: 'method', aliases: [] },
+    { ...sourceMethod, id: 'right\u0000method', aliases: [] },
+  ]
+  const observations = [
+    { ...sourceObservation, datasetId: 'left\u0000right', methodId: 'method' },
+    { ...sourceObservation, datasetId: 'left', methodId: 'right\u0000method' },
+  ]
+  const distinct = routeMethods({
+    ...input,
+    profile: {
+      ...onlyTrajectoryWeights(input.profile),
+      candidateMethodIds: ['method'],
+      minEffectiveDatasets: 1,
+      minCriticalCoverage: 0.5,
+    },
+    datasets,
+    methods,
+    observations,
+  })
+
+  assert.equal(distinct.status, 'OK')
+
+  const duplicate = routeMethods({
+    ...input,
+    profile: {
+      ...onlyTrajectoryWeights(input.profile),
+      candidateMethodIds: ['method'],
+      minEffectiveDatasets: 1,
+      minCriticalCoverage: 0.5,
+    },
+    datasets,
+    methods,
+    observations: [...observations, { ...observations[0] }],
+  })
+  assert.equal(duplicate.status, 'REFUSED')
+  if (duplicate.status === 'REFUSED') assert.match(duplicate.evidenceGaps.join('\n'), /duplicate canonical observation/)
+})
+
+test('rejects all-zero context feature weights during Router option validation', () => {
+  const outcome = routeMethods(executableRegistryInput(), {
+    contextFeatureWeights: { modality: 0, scale: 0, topology: 0, priors: 0, perturbation: 0 },
+  })
+
+  assert.equal(outcome.status, 'REFUSED')
+  if (outcome.status === 'REFUSED') {
+    assert.deepEqual(outcome.evidenceGaps, ['contextFeatureWeights option weights must have a positive total'])
+  }
+})
