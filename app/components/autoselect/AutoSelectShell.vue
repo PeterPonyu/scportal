@@ -1,5 +1,13 @@
 <template>
   <div class="space-y-6">
+    <ModeToggle :mode="state.mode" @update:mode="setMode" />
+    <AdvancedControls
+      v-if="state.mode === 'advanced'"
+      :weights="state.weights"
+      :candidate-method-ids="state.candidateMethodIds"
+      @update:weights="state.weights = $event"
+      @update:candidate-method-ids="onCandidateMethodIds"
+    />
     <AutoSelectStepper :current="state.step" />
 
     <DataStep
@@ -97,7 +105,18 @@ const emit = defineEmits<{
   run: [profile: TaskProfile]
 }>()
 
-const { state, canGoBack, validationMessage, next, back } = useAutoSelect()
+const { state, canGoBack, validationMessage, next, back, setMode } = useAutoSelect()
+
+function onCandidateMethodIds(ids: string[] | undefined) {
+  const nextState = { ...state.value }
+  if (ids === undefined) {
+    delete nextState.candidateMethodIds
+  }
+  else {
+    nextState.candidateMethodIds = ids
+  }
+  state.value = nextState
+}
 
 function onContinue() {
   if (validationMessage.value !== null) return
