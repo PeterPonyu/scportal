@@ -15,6 +15,8 @@ const schemaNames = {
   observation: 'benchmark-observation.schema.json',
   taskProfile: 'task-profile.schema.json',
   executableConfig: 'executable-config.schema.json',
+  configTemplate: 'config-template.schema.json',
+  release: 'release.schema.json',
 }
 
 function isRecord(value) {
@@ -150,6 +152,8 @@ export async function createRouterDataValidator() {
       return parsed
     },
     parseExecutableConfig: (value) => parse('executableConfig', value),
+    parseConfigTemplate: (value) => parse('configTemplate', value),
+    parseRelease: (value) => parse('release', value),
     assertUniqueEntityIds,
   }
 }
@@ -188,13 +192,94 @@ function resolveEntityId(kind, value, aliases) {
   return canonical
 }
 
-export async function validateRouterRegistry({ datasets, methods, metrics, observations, taskProfiles = [] }) {
+function compareCodeUnits(left, right) {
+  if (left < right) return -1
+  if (left > right) return 1
+  return 0
+}
+
+function assertAscendingCodeUnitOrder(label, records, keyOf) {
+  for (let index = 1; index < records.length; index += 1) {
+    if (compareCodeUnits(keyOf(records[index - 1]), keyOf(records[index])) >= 0) {
+      throw new Error(`synthetic ${label} must use ascending code-unit order`)
+    }
+  }
+}
+
+function assertTemplateRegistry(configTemplates, methods, synthetic) {
+  const methodsById = new Map(methods.map((method) => [method.id, method]))
+  const templateCounts = new Map()
+
+  for (const configTemplate of configTemplates) {
+    const method = methodsById.get(configTemplate.methodId)
+    if (!method) throw new Error(`unknown template method id: ${configTemplate.methodId}`)
+    if (configTemplate.version !== method.version) {
+      throw new Error(`template version mismatch for ${method.id}: ${configTemplate.version}`)
+    }
+    if (configTemplate.template.outputs.length !== method.outputs.length
+      || configTemplate.template.outputs.some((output, index) => output !== method.outputs[index])) {
+      throw new Error(`template outputs mismatch for ${method.id}`)
+    }
+    templateCounts.set(method.id, (templateCounts.get(method.id) ?? 0) + 1)
+  }
+
+  if (!synthetic) return
+  for (const method of methods) {
+    if (templateCounts.get(method.id) !== 1) throw new Error(`synthetic release requires exactly one template for method: ${method.id}`)
+  }
+}
+
+function assertSyntheticFixture({ datasets, methods, metrics, observations, taskProfiles, configTemplates }) {
+  const tripleCounts = new Map()
+  for (const observation of observations) {
+    const triple = [observation.datasetId, observation.methodId, observation.metricId].join('\u0000')
+    tripleCounts.set(triple, (tripleCounts.get(triple) ?? 0) + 1)
+  }
+
+  for (const dataset of datasets) {
+    for (const method of methods) {
+      for (const metric of metrics) {
+        const triple = [dataset.id, method.id, metric.id].join('\u0000')
+        if (tripleCounts.get(triple) !== 1) {
+          throw new Error(`synthetic observations must contain exactly one canonical observation for ${dataset.id}, ${method.id}, ${metric.id}`)
+        }
+      }
+    }
+  }
+
+  const expectedTripleCount = datasets.length * methods.length * metrics.length
+  if (tripleCounts.size !== expectedTripleCount) {
+    throw new Error('synthetic observations must contain exactly one canonical observation for every registry triple')
+  }
+
+  // JavaScript relational comparison is a deterministic UTF-16 code-unit order; locale collation is intentionally excluded.
+  assertAscendingCodeUnitOrder('datasets', datasets, (dataset) => dataset.id)
+  assertAscendingCodeUnitOrder('methods', methods, (method) => method.id)
+  assertAscendingCodeUnitOrder('metrics', metrics, (metric) => metric.id)
+  assertAscendingCodeUnitOrder('config templates', configTemplates, (template) => template.methodId)
+  assertAscendingCodeUnitOrder('task profiles', taskProfiles, (profile) => profile.id)
+  assertAscendingCodeUnitOrder('observations', observations, (observation) => (
+    [observation.datasetId, observation.methodId, observation.metricId].join('\u0000')
+  ))
+}
+
+export async function validateRouterRegistry({
+  datasets,
+  methods,
+  metrics,
+  observations,
+  taskProfiles = [],
+  configTemplates = [],
+  release,
+}) {
   const validator = await createRouterDataValidator()
   const parsedDatasets = datasets.map(validator.parseDataset)
   const parsedMethods = methods.map(validator.parseMethod)
   const parsedMetrics = metrics.map(validator.parseMetric)
   const parsedObservations = observations.map(validator.parseObservation)
   const parsedTaskProfiles = taskProfiles.map(validator.parseTaskProfile)
+  const parsedConfigTemplates = configTemplates.map(validator.parseConfigTemplate)
+  const parsedRelease = release === undefined ? undefined : validator.parseRelease(release)
 
   validator.assertUniqueEntityIds('dataset', parsedDatasets)
   validator.assertUniqueEntityIds('method', parsedMethods)
@@ -223,7 +308,27 @@ export async function validateRouterRegistry({ datasets, methods, metrics, obser
     for (const methodId of profile.candidateMethodIds ?? []) resolveEntityId('method', methodId, methodAliases)
   }
 
-  return { datasets: parsedDatasets, methods: parsedMethods, metrics: parsedMetrics, observations: parsedObservations, taskProfiles: parsedTaskProfiles }
+  assertTemplateRegistry(parsedConfigTemplates, parsedMethods, parsedRelease?.synthetic === true)
+  if (parsedRelease?.synthetic === true) {
+    assertSyntheticFixture({
+      datasets: parsedDatasets,
+      methods: parsedMethods,
+      metrics: parsedMetrics,
+      observations: parsedObservations,
+      taskProfiles: parsedTaskProfiles,
+      configTemplates: parsedConfigTemplates,
+    })
+  }
+
+  return {
+    datasets: parsedDatasets,
+    methods: parsedMethods,
+    metrics: parsedMetrics,
+    observations: parsedObservations,
+    taskProfiles: parsedTaskProfiles,
+    configTemplates: parsedConfigTemplates,
+    release: parsedRelease,
+  }
 }
 
 async function loadRegistryFiles(dataDirectory) {
@@ -296,9 +401,9 @@ export async function validateRouterDataDirectory(dataDirectory = routerDataDire
       return value
     })
   const taskProfiles = recordsFromFile(files, 'task-profiles.json')
-  configTemplatesFromFile(files)
-  releaseFromFile(files)
-  await validateRouterRegistry({ datasets, methods, metrics, observations, taskProfiles })
+  const configTemplates = configTemplatesFromFile(files)
+  const release = releaseFromFile(files)
+  await validateRouterRegistry({ datasets, methods, metrics, observations, taskProfiles, configTemplates, release })
   return { status: 'VALID', datasets: datasets.length, methods: methods.length, metrics: metrics.length, observations: observations.length, taskProfiles: taskProfiles.length }
 }
 

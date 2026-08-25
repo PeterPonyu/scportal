@@ -48,7 +48,7 @@ test('uses exact canonical IDs, complete primary metric groups, and auxiliary AR
     loadJson<Array<{ id: string, group: string, auxiliary: boolean }>>('metrics.json'),
   ])
 
-  assert.deepEqual(datasets.map((dataset) => dataset.id), ['synthetic_linear_small', 'synthetic_branch_time', 'synthetic_large_sparse'])
+  assert.deepEqual(datasets.map((dataset) => dataset.id), ['synthetic_branch_time', 'synthetic_large_sparse', 'synthetic_linear_small'])
   assert.deepEqual(methods.map((method) => method.id), ['geometry_vae', 'graph_contrastive', 'neural_ode'])
   assert.equal(methods.every((method) => !method.executable), true)
   assert.equal(methods.every((method) => [method.sourceUrl, method.docsUrl, method.paperUrl].every((url) => url.startsWith('https://'))), true)
@@ -155,7 +155,7 @@ test('rejects a missing synthetic Cartesian cell even when an extra run variant 
 
     await assert.rejects(
       () => validateRouterDataDirectory(directory),
-      /synthetic observations must contain exactly one canonical observation.*synthetic_linear_small.*geometry_vae.*intrinsic_geometry/i,
+      /synthetic observations must contain exactly one canonical observation.*synthetic_branch_time.*geometry_vae.*ari/i,
     )
   })
 })
@@ -185,6 +185,7 @@ test('allows missing observations for a release explicitly marked non-synthetic'
       description: 'Non-synthetic release used to verify sparse evidence semantics.',
     }))
     await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'observations.synthetic.json', (observations) => observations.slice(1))
+    await mutateJsonFile<unknown[]>(directory, 'datasets.json', (datasets) => [datasets[1], datasets[0], ...datasets.slice(2)])
 
     const result = await validateRouterDataDirectory(directory)
     assert.equal(result.observations, 62)
@@ -238,6 +239,21 @@ test('rejects duplicate and noncanonical config-template outputs', async () => {
         ...templates.slice(1),
       ])
       await assert.rejects(() => validateRouterDataDirectory(directory), /configTemplate schema validation failed/i)
+    })
+  }
+})
+
+test('requires exactly one config template for every synthetic fixture method', async () => {
+  for (const mutate of [
+    (templates: unknown[]) => templates.slice(1),
+    (templates: unknown[]) => [...templates, structuredClone(templates[0])],
+  ]) {
+    await withRegistryCopy(async (directory) => {
+      await mutateJsonFile<unknown[]>(directory, 'config-templates.json', mutate)
+      await assert.rejects(
+        () => validateRouterDataDirectory(directory),
+        /synthetic release requires exactly one template for method/i,
+      )
     })
   }
 })
