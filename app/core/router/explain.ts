@@ -1,11 +1,10 @@
-import type { EvidenceLink, EvidenceStatement, MetricGroup, TaskProfile } from './types.ts'
-import type { NormalizedObservation } from './normalize.ts'
+import type { BenchmarkObservation, EvidenceLink, EvidenceStatement, MetricGroup, TaskProfile } from './types.ts'
 
 export interface ExplanationInput {
   methodId: string
   profile: TaskProfile
   groupScores: Readonly<Partial<Record<MetricGroup, number>>>
-  observations: readonly NormalizedObservation[]
+  observations: readonly BenchmarkObservation[]
   metricGroups: ReadonlyMap<string, MetricGroup>
   synthetic: boolean
 }
@@ -43,11 +42,21 @@ export function explainRecommendation(input: ExplanationInput): {
       locator: observation.provenance.locator,
       datasetId: observation.datasetId,
       metricId: observation.metricId,
+      datasetVersion: observation.provenance.datasetVersion,
+      methodVersion: observation.provenance.methodVersion,
+      runConfigId: observation.provenance.runConfigId,
+      extractedAt: observation.provenance.extractedAt,
       synthetic: input.synthetic,
     }))
     .sort((left, right) => (
       (left.datasetId < right.datasetId ? -1 : left.datasetId > right.datasetId ? 1 : 0)
       || (left.metricId < right.metricId ? -1 : left.metricId > right.metricId ? 1 : 0)
+      || (left.paperId < right.paperId ? -1 : left.paperId > right.paperId ? 1 : 0)
+      || (left.locator < right.locator ? -1 : left.locator > right.locator ? 1 : 0)
+      || (left.datasetVersion < right.datasetVersion ? -1 : left.datasetVersion > right.datasetVersion ? 1 : 0)
+      || (left.methodVersion < right.methodVersion ? -1 : left.methodVersion > right.methodVersion ? 1 : 0)
+      || (left.runConfigId < right.runConfigId ? -1 : left.runConfigId > right.runConfigId ? 1 : 0)
+      || (left.extractedAt < right.extractedAt ? -1 : left.extractedAt > right.extractedAt ? 1 : 0)
     ))
   return {
     positiveEvidence: details.map((detail) => detail.text),

@@ -373,6 +373,61 @@ test('treats observation identity structurally when distinct fields contain NUL 
   if (duplicate.status === 'REFUSED') assert.match(duplicate.evidenceGaps.join('\n'), /duplicate canonical observation/)
 })
 
+test('aggregates valid multiple runs without weighting coverage or effective datasets by run count', () => {
+  const input = executableRegistryInput()
+  const profile = {
+    ...onlyTrajectoryWeights(input.profile),
+    minEffectiveDatasets: 1,
+    minCriticalCoverage: 1,
+  }
+  const original = input.observations.find((observation) => (
+    observation.datasetId === 'synthetic_branch_time'
+    && observation.methodId === 'graph_contrastive'
+    && observation.metricId === 'trajectory_directionality'
+  ))!
+  const secondRun = {
+    ...original,
+    provenance: { ...original.provenance, runConfigId: 'fixture-secondary' },
+  }
+  const baseline = routeMethods({ ...input, profile })
+  const appended = routeMethods({ ...input, profile, observations: [...input.observations, secondRun] })
+  const prepended = routeMethods({ ...input, profile, observations: [secondRun, ...input.observations] })
+
+  assert.deepEqual(appended, prepended)
+  assert.equal(baseline.status, 'OK')
+  assert.equal(appended.status, 'OK')
+  if (baseline.status !== 'OK' || appended.status !== 'OK') return
+  const baselineRecommendation = baseline.recommendations.find(({ methodId }) => methodId === 'graph_contrastive')!
+  const multiRunRecommendation = appended.recommendations.find(({ methodId }) => methodId === 'graph_contrastive')!
+  assert.equal(multiRunRecommendation.criticalCoverage, 1)
+  assert.equal(multiRunRecommendation.effectiveDatasets, baselineRecommendation.effectiveDatasets)
+  assert.deepEqual(
+    multiRunRecommendation.evidenceLinks
+      .filter(({ datasetId, metricId }) => datasetId === original.datasetId && metricId === original.metricId)
+      .map(({ runConfigId }) => runConfigId),
+    ['fixture-default', 'fixture-secondary'],
+  )
+})
+
+test('rejects a second run whose provenance method version does not match the canonical method', () => {
+  const input = executableRegistryInput()
+  const original = input.observations.find((observation) => (
+    observation.methodId === 'graph_contrastive'
+    && observation.metricId === 'trajectory_directionality'
+  ))!
+  const outcome = routeMethods({
+    ...input,
+    profile: onlyTrajectoryWeights(input.profile),
+    observations: [...input.observations, {
+      ...original,
+      provenance: { ...original.provenance, runConfigId: 'fixture-secondary', methodVersion: 'wrong-version' },
+    }],
+  })
+
+  assert.equal(outcome.status, 'REFUSED')
+  if (outcome.status === 'REFUSED') assert.match(outcome.evidenceGaps.join('\n'), /method version mismatch/)
+})
+
 test('rejects all-zero context feature weights during Router option validation', () => {
   const outcome = routeMethods(executableRegistryInput(), {
     contextFeatureWeights: { modality: 0, scale: 0, topology: 0, priors: 0, perturbation: 0 },

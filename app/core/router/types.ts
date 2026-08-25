@@ -116,6 +116,10 @@ export interface EvidenceLink {
   locator: string
   datasetId: string
   metricId: string
+  datasetVersion: string
+  methodVersion: string
+  runConfigId: string
+  extractedAt: string
   synthetic: boolean
 }
 

@@ -299,6 +299,46 @@ function average(values: readonly number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length
 }
 
+function meanRunValue(runs: readonly BenchmarkObservation[]): number {
+  let scale = 0
+  for (const run of runs) scale = Math.max(scale, Math.abs(run.rawValue))
+  if (scale === 0) return 0
+  let scaledTotal = 0
+  for (const run of runs) {
+    scaledTotal += run.rawValue / scale
+    if (!Number.isFinite(scaledTotal)) throw new Error('observation run mean overflow')
+  }
+  const mean = scale * (scaledTotal / runs.length)
+  if (!Number.isFinite(mean)) throw new Error('observation run mean overflow')
+  return mean
+}
+
+function aggregateObservationRuns(observations: readonly BenchmarkObservation[]): BenchmarkObservation[] {
+  const datasets = new Map<string, Map<string, Map<string, BenchmarkObservation[]>>>()
+  for (const observation of observations) {
+    const methods = datasets.get(observation.datasetId) ?? new Map<string, Map<string, BenchmarkObservation[]>>()
+    datasets.set(observation.datasetId, methods)
+    const metrics = methods.get(observation.methodId) ?? new Map<string, BenchmarkObservation[]>()
+    methods.set(observation.methodId, metrics)
+    const runs = metrics.get(observation.metricId) ?? []
+    metrics.set(observation.metricId, runs)
+    runs.push(observation)
+  }
+  const aggregated: BenchmarkObservation[] = []
+  for (const datasetId of [...datasets.keys()].sort(compare)) {
+    const methods = datasets.get(datasetId)!
+    for (const methodId of [...methods.keys()].sort(compare)) {
+      const metrics = methods.get(methodId)!
+      for (const metricId of [...metrics.keys()].sort(compare)) {
+        const runs = [...metrics.get(metricId)!].sort((left, right) => compare(left.provenance.runConfigId, right.provenance.runConfigId))
+        // Scoring needs one existing provenance-shaped row; explanations consume every original run below.
+        aggregated.push({ ...runs[0], rawValue: meanRunValue(runs) })
+      }
+    }
+  }
+  return aggregated
+}
+
 function routeMethodsUnchecked(input: RouterInput, options: ParsedOptions): RouterOutcome {
   const { compatible, excluded } = filterCompatibleMethods(input.profile, input.methods)
   if (compatible.length === 0) {
@@ -312,7 +352,7 @@ function routeMethodsUnchecked(input: RouterInput, options: ParsedOptions): Rout
   const selectedMetricIds = new Set(selectedMetrics.map((metric) => metric.id))
   const compatibleIds = new Set(compatible.map((method) => method.id))
   const observations = input.observations.filter((observation) => compatibleIds.has(observation.methodId) && selectedMetricIds.has(observation.metricId))
-  const normalized = percentileNormalize(observations, new Map(input.metrics.map((metric) => [metric.id, metric])))
+  const normalized = percentileNormalize(aggregateObservationRuns(observations), new Map(input.metrics.map((metric) => [metric.id, metric])))
   const similarities = new Map(input.datasets.map((dataset) => [dataset.id, gowerSimilarity(input.profile, dataset, options.contextFeatureWeights)]))
   const candidates = new Map<string, CandidateEvidence>()
   for (const method of compatible) {
@@ -377,7 +417,7 @@ function routeMethodsUnchecked(input: RouterInput, options: ParsedOptions): Rout
   for (const [methodId, role] of [[bestFit, 'best_fit'], [robust, 'robust_alternative'], [resource, 'resource_aware']] as const) roles.set(methodId, [...(roles.get(methodId) ?? []), role])
   const recommendations = [...roles.keys()].sort(compare).map((methodId) => {
     const candidate = candidates.get(methodId)!
-    return { methodId, roles: roles.get(methodId)!, paretoLayer: 0, outrankingFlow: outranking.phi[methodId], conservativeUtility: outranking.utilityLowerBound[methodId], confidence: confidence.get(methodId)!.grade, topThreeRetention: outranking.topThreeRetention[methodId], effectiveDatasets: candidate.effectiveDatasets, criticalCoverage: candidate.criticalCoverage, ...explainRecommendation({ methodId, profile: input.profile, groupScores: candidate.scores, observations: normalized, metricGroups, synthetic: input.releaseSynthetic }), excludedAlternatives: excluded }
+    return { methodId, roles: roles.get(methodId)!, paretoLayer: 0, outrankingFlow: outranking.phi[methodId], conservativeUtility: outranking.utilityLowerBound[methodId], confidence: confidence.get(methodId)!.grade, topThreeRetention: outranking.topThreeRetention[methodId], effectiveDatasets: candidate.effectiveDatasets, criticalCoverage: candidate.criticalCoverage, ...explainRecommendation({ methodId, profile: input.profile, groupScores: candidate.scores, observations, metricGroups, synthetic: input.releaseSynthetic }), excludedAlternatives: excluded }
   })
   return { status: 'OK', recommendations, seed: input.profile.seed, evidenceVersion: input.evidenceVersion, routerVersion: input.routerVersion }
 }
