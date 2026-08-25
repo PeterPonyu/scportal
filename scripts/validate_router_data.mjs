@@ -221,12 +221,32 @@ function assertTemplateRegistry(configTemplates, methods, synthetic) {
       || configTemplate.template.outputs.some((output, index) => output !== method.outputs[index])) {
       throw new Error(`template outputs mismatch for ${method.id}`)
     }
+    const outputKeys = Object.keys(configTemplate.template.outputKeys)
+    if (outputKeys.length !== method.outputs.length
+      || method.outputs.some((output) => !Object.hasOwn(configTemplate.template.outputKeys, output))) {
+      throw new Error(`template output keys mismatch for ${method.id}`)
+    }
+    const allowedParameters = configTemplate.template.allowedParameters
+    const defaultParameters = configTemplate.template.defaultParameters
+    if (Object.keys(allowedParameters).length !== Object.keys(defaultParameters).length
+      || Object.keys(allowedParameters).some((key) => !Object.hasOwn(defaultParameters, key))) {
+      throw new Error(`template parameter definitions and defaults mismatch for ${method.id}`)
+    }
+    for (const [key, definition] of Object.entries(allowedParameters)) {
+      const defaultValue = defaultParameters[key]
+      if (typeof defaultValue !== definition.type || (typeof defaultValue === 'number' && !Number.isFinite(defaultValue))) throw new Error(`template default type mismatch for ${method.id}.${key}`)
+      if (typeof defaultValue === 'number' && definition.minimum !== undefined && defaultValue < definition.minimum) throw new Error(`template default below minimum for ${method.id}.${key}`)
+      if (typeof defaultValue === 'number' && definition.maximum !== undefined && defaultValue > definition.maximum) throw new Error(`template default above maximum for ${method.id}.${key}`)
+      if (typeof defaultValue === 'number' && definition.integer && !Number.isInteger(defaultValue)) throw new Error(`template default must be integer for ${method.id}.${key}`)
+      if (definition.enum && !definition.enum.includes(defaultValue)) throw new Error(`template default outside enum for ${method.id}.${key}`)
+    }
+    if (configTemplate.template.downstream?.scFocus?.branchKey !== undefined && configTemplate.template.downstream.scFocus.branchKey !== configTemplate.template.outputKeys.branch) throw new Error(`scFocus branch handoff mismatch for ${method.id}`)
+    if (configTemplate.template.downstream?.scRL && (!configTemplate.template.outputKeys.pseudotime || configTemplate.template.downstream.scRL.pseudotimeKey !== configTemplate.template.outputKeys.pseudotime)) throw new Error(`scRL pseudotime handoff mismatch for ${method.id}`)
     templateCounts.set(method.id, 1)
   }
 
-  if (!synthetic) return
   for (const method of methods) {
-    if (templateCounts.get(method.id) !== 1) throw new Error(`synthetic release requires exactly one template for method: ${method.id}`)
+    if (templateCounts.get(method.id) !== 1) throw new Error(`${synthetic ? 'synthetic release' : 'release'} requires exactly one template for method: ${method.id}`)
   }
 }
 
@@ -282,7 +302,16 @@ export async function validateRouterRegistry({
   const parsedMetrics = metrics.map(validator.parseMetric)
   const parsedObservations = observations.map(validator.parseObservation)
   const parsedTaskProfiles = taskProfiles.map(validator.parseTaskProfile)
-  const parsedConfigTemplates = configTemplates.map(validator.parseConfigTemplate)
+  const parsedConfigTemplates = configTemplates.map((configTemplate) => {
+    const nested = configTemplate?.template
+    if (isRecord(nested) && Object.keys(nested).length === 1 && Array.isArray(nested.outputs)) {
+      const outputs = nested.outputs
+      if (new Set(outputs).size === outputs.length && outputs.every((output) => ['latent', 'graph', 'pseudotime', 'branch', 'metadata'].includes(output))) {
+        throw new Error(`template outputs mismatch for ${configTemplate.methodId ?? 'unknown method'}`)
+      }
+    }
+    return validator.parseConfigTemplate(configTemplate)
+  })
 
   validator.assertUniqueEntityIds('dataset', parsedDatasets)
   validator.assertUniqueEntityIds('method', parsedMethods)
@@ -292,6 +321,12 @@ export async function validateRouterRegistry({
   const methodAliases = aliasesByCanonicalId('method', parsedMethods)
   const metricAliases = aliasesByCanonicalId('metric', parsedMetrics)
   const methodVersions = new Map(parsedMethods.map((method) => [method.id, method.version]))
+  for (const method of parsedMethods) {
+    if (/[\n\r`]|\$\(|[;&|<>]/.test(method.installCommand)
+      || !/^(?:python|python3|pip|pip3)(?: -m pip)? install [A-Za-z0-9][A-Za-z0-9._-]*==[A-Za-z0-9][A-Za-z0-9._+!-]*$/.test(method.installCommand)) {
+      throw new Error(`method install command must be pinned and grammar-safe: ${method.id}`)
+    }
+  }
   const observationKeys = new Set()
   const canonicalObservations = parsedObservations.map((observation) => ({
     ...observation,
