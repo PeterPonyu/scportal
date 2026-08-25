@@ -92,6 +92,9 @@
         </li>
       </ul>
     </section>
+
+    <EvidenceDrawer :recommendation="recommendation" />
+    <ConfigDownloads :recommendation="recommendation" />
   </article>
 </template>
 
