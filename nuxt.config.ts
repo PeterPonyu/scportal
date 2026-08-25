@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config'
+import { PUBLIC_ROUTES } from './config/site.ts'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -67,7 +68,7 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       crawlLinks: true,
-      routes: ['/', '/datasets', '/explorer', '/benchmarks', '/models', '/about']
+      routes: [...PUBLIC_ROUTES],
     }
   },
 
