@@ -5,6 +5,7 @@
     "noEmit": true
   },
   "exclude": [
-    "app/core/**"
+    "app/core/**",
+    "app/workers/**"
   ]
 }

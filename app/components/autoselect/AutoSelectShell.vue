@@ -81,12 +81,35 @@
       <button
         type="button"
         class="min-h-11 rounded-xl bg-primary-600 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50"
-        :disabled="validationMessage !== null"
+        :disabled="validationMessage !== null || routerState.status === 'loading'"
         @click="onContinue"
       >
         {{ state.step === 'review' ? 'Run' : 'Continue' }}
       </button>
+      <button
+        v-if="routerState.status === 'loading'"
+        type="button"
+        class="min-h-11 rounded-xl border border-dark-300 px-5 py-3 text-sm font-medium text-dark-700 transition-colors hover:bg-dark-100 dark:border-dark-700 dark:text-dark-200 dark:hover:bg-dark-800"
+        @click="cancel"
+      >
+        Cancel
+      </button>
     </div>
+
+    <p v-if="routerState.status === 'loading'" class="text-sm text-dark-600 dark:text-dark-400" role="status">
+      Computing a recommendation without blocking the page…
+    </p>
+    <p
+      v-else-if="routerState.status === 'error'"
+      class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-700 dark:bg-red-950/40 dark:text-red-100"
+      role="status"
+    >
+      {{ routerState.message }}
+    </p>
+    <RecommendationResults
+      v-if="routerState.outcome"
+      :outcome="routerState.outcome"
+    />
   </div>
 </template>
 
@@ -106,6 +129,7 @@ const emit = defineEmits<{
 }>()
 
 const { state, canGoBack, validationMessage, next, back, setMode } = useAutoSelect()
+const { state: routerState, run, cancel } = useRouterWorker()
 
 function onCandidateMethodIds(ids: string[] | undefined) {
   const nextState = { ...state.value }
@@ -121,7 +145,9 @@ function onCandidateMethodIds(ids: string[] | undefined) {
 function onContinue() {
   if (validationMessage.value !== null) return
   if (state.value.step === 'review') {
-    emit('run', toTaskProfile(state.value))
+    const profile = toTaskProfile(state.value)
+    emit('run', profile)
+    void run(profile)
     return
   }
   next()
