@@ -35,6 +35,12 @@ async function withRegistryCopy(assertion: (directory: string) => Promise<void>)
   }
 }
 
+async function mutateJsonFile<T>(directory: string, name: string, mutate: (value: T) => T) {
+  const path = join(directory, name)
+  const value = JSON.parse(await readFile(path, 'utf8')) as T
+  await writeFile(path, JSON.stringify(mutate(value)), 'utf8')
+}
+
 test('uses exact canonical IDs, complete primary metric groups, and auxiliary ARI', async () => {
   const [datasets, methods, metrics] = await Promise.all([
     loadJson<Array<{ id: string }>>('datasets.json'),
@@ -136,4 +142,111 @@ test('rejects duplicate observations and broken registry foreign keys through th
     await writeFile(observationsPath, JSON.stringify(observations), 'utf8')
     await assert.rejects(() => validateRouterDataDirectory(directory), /unknown method id or alias/i)
   })
+})
+
+test('rejects a missing synthetic Cartesian cell even when an extra run variant preserves 63 rows', async () => {
+  await withRegistryCopy(async (directory) => {
+    await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'observations.synthetic.json', (observations) => {
+      const duplicate = structuredClone(observations[1]) as Record<string, unknown>
+      const provenance = duplicate.provenance as Record<string, unknown>
+      duplicate.provenance = { ...provenance, runConfigId: 'fixture-alternate' }
+      return [duplicate, ...observations.slice(1)]
+    })
+
+    await assert.rejects(
+      () => validateRouterDataDirectory(directory),
+      /synthetic observations must contain exactly one canonical observation.*synthetic_linear_small.*geometry_vae.*intrinsic_geometry/i,
+    )
+  })
+})
+
+test('rejects an extra synthetic run variant for an otherwise complete triple', async () => {
+  await withRegistryCopy(async (directory) => {
+    await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'observations.synthetic.json', (observations) => {
+      const extra = structuredClone(observations[0]) as Record<string, unknown>
+      const provenance = extra.provenance as Record<string, unknown>
+      extra.provenance = { ...provenance, runConfigId: 'fixture-alternate' }
+      return [...observations, extra]
+    })
+
+    await assert.rejects(
+      () => validateRouterDataDirectory(directory),
+      /synthetic observations must contain exactly one canonical observation/i,
+    )
+  })
+})
+
+test('allows missing observations for a release explicitly marked non-synthetic', async () => {
+  await withRegistryCopy(async (directory) => {
+    await mutateJsonFile<Record<string, unknown>>(directory, 'release.json', (release) => ({
+      ...release,
+      id: 'router-evidence-real-v1',
+      synthetic: false,
+      description: 'Non-synthetic release used to verify sparse evidence semantics.',
+    }))
+    await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'observations.synthetic.json', (observations) => observations.slice(1))
+
+    const result = await validateRouterDataDirectory(directory)
+    assert.equal(result.observations, 62)
+  })
+})
+
+test('rejects unknown release and config-template fields through strict schemas', async () => {
+  await withRegistryCopy(async (directory) => {
+    await mutateJsonFile<Record<string, unknown>>(directory, 'release.json', (release) => ({ ...release, unknown: true }))
+    await assert.rejects(() => validateRouterDataDirectory(directory), /release schema validation failed:.*additional properties/i)
+  })
+
+  await withRegistryCopy(async (directory) => {
+    await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'config-templates.json', (templates) => [
+      { ...templates[0], unknown: true },
+      ...templates.slice(1),
+    ])
+    await assert.rejects(() => validateRouterDataDirectory(directory), /configTemplate schema validation failed:.*additional properties/i)
+  })
+})
+
+test('rejects template method foreign keys, versions, and outputs inconsistent with the method registry', async () => {
+  const mutations: Array<{
+    mutate: (template: Record<string, unknown>) => Record<string, unknown>
+    expected: RegExp
+  }> = [
+    { mutate: (template) => ({ ...template, methodId: 'unknown_method' }), expected: /unknown template method id/i },
+    { mutate: (template) => ({ ...template, version: '9.9.9' }), expected: /template version mismatch/i },
+    {
+      mutate: (template) => ({ ...template, template: { outputs: ['latent', 'graph', 'metadata'] } }),
+      expected: /template outputs mismatch/i,
+    },
+  ]
+
+  for (const mutation of mutations) {
+    await withRegistryCopy(async (directory) => {
+      await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'config-templates.json', (templates) => [
+        mutation.mutate(templates[0]),
+        ...templates.slice(1),
+      ])
+      await assert.rejects(() => validateRouterDataDirectory(directory), mutation.expected)
+    })
+  }
+})
+
+test('rejects duplicate and noncanonical config-template outputs', async () => {
+  for (const outputs of [['latent', 'latent'], ['latent', 'unknown_output']]) {
+    await withRegistryCopy(async (directory) => {
+      await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'config-templates.json', (templates) => [
+        { ...templates[0], template: { outputs } },
+        ...templates.slice(1),
+      ])
+      await assert.rejects(() => validateRouterDataDirectory(directory), /configTemplate schema validation failed/i)
+    })
+  }
+})
+
+test('rejects nondeterministic code-unit ordering in every synthetic registry array', async () => {
+  for (const name of ['datasets.json', 'methods.json', 'metrics.json', 'config-templates.json', 'task-profiles.json', 'observations.synthetic.json']) {
+    await withRegistryCopy(async (directory) => {
+      await mutateJsonFile<unknown[]>(directory, name, (records) => [records[1], records[0], ...records.slice(2)])
+      await assert.rejects(() => validateRouterDataDirectory(directory), /synthetic .* must use ascending code-unit order/i)
+    })
+  }
 })
