@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import { compileConfig, type CompileConfigInput } from '../../app/core/config/compiler.ts'
+import { sha256Hex } from '../../app/core/config/internal/compiler-engine.ts'
 import { createFixtureCompiler, fixtureCompiler, fixtureInput, fixtureOutcome, fixtureProfile } from './helpers/compiler.ts'
 
 const method = {
@@ -112,6 +113,7 @@ test('does not retain caller registry or parameter mutations after compilation',
 })
 
 test('binds provenance to a deterministic SHA-256 fingerprint of the normalized profile', () => {
+  assert.equal(sha256Hex('abc'), 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad')
   const original = fixtureCompiler(input()).config.provenance.profileFingerprint
   const reordered = fixtureCompiler(input({
     profile: Object.fromEntries(Object.entries(fixtureProfile).reverse()) as typeof fixtureProfile,
@@ -151,6 +153,16 @@ test('rejects duplicate normalized compiler inputs and mismatched output contrac
     ['duplicate candidates', [method], [template], { profile: { ...fixtureProfile, candidateMethodIds: [method.id, method.id] } }, /duplicate|candidate/i],
     ['duplicate aliases', [{ ...method, aliases: ['same', 'same'] }], [template], {}, /duplicate|aliases/i],
     ['duplicate method outputs', [{ ...method, outputs: ['latent', 'latent', 'metadata'] }], [template], {}, /duplicate|outputs/i],
+    ['duplicate method modalities', [{ ...method, modalities: ['scrna', 'scrna'] }], [template], {}, /duplicate|modalities/i],
+    ['duplicate method priors', [{ ...method, requiredPriors: ['time', 'time'] }], [template], {}, /duplicate|priors/i],
+    ['duplicate method goals', [{ ...method, supportedGoals: ['latent_representation', 'latent_representation'] }], [template], {}, /duplicate|goals/i],
+    ['reordered method outputs', [{ ...method, outputs: ['metadata', 'latent', 'graph'] }], [template], {}, /output|order|match/i],
+    ['reordered wrapper outputs', [method], [{ ...template, template: { ...template.template, outputs: ['metadata', 'latent', 'graph'] } }], {}, /output|order|match/i],
+    ['reordered output keys', [method], [{ ...template, template: { ...template.template, outputKeys: { metadata: 'graph_metadata', latent: 'X_graph', graph: 'connectivities' } } }], {}, /output|order/i],
+    ['duplicate evidence metric IDs', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], positiveEvidenceDetails: [{ ...fixtureOutcome.recommendations[0].positiveEvidenceDetails[0], metricIds: ['intrinsic_geometry', 'intrinsic_geometry'] }] }] } as never }, /duplicate|metricIds/i],
+    ['duplicate evidence dataset IDs', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], positiveEvidenceDetails: [{ ...fixtureOutcome.recommendations[0].positiveEvidenceDetails[0], datasetIds: ['fixture_dataset', 'fixture_dataset'] }] }] } as never }, /duplicate|datasetIds/i],
+    ['duplicate exclusion method IDs', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], excludedAlternatives: [{ methodId: 'other', reasons: ['RESOURCE_LIMIT'] }, { methodId: 'other', reasons: ['SCALE_LIMIT'] }] }] } as never }, /duplicate|excluded/i],
+    ['duplicate exclusion reasons', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], excludedAlternatives: [{ methodId: 'other', reasons: ['RESOURCE_LIMIT', 'RESOURCE_LIMIT'] }] }] } as never }, /duplicate|reasons/i],
     ['wrapper output mismatch', [method], [{ ...template, template: { ...template.template, outputs: ['latent', 'metadata'] } }], {}, /output|coverage|match/i],
     ['output key duplicate', [method], [{ ...template, template: { ...template.template, outputKeys: { latent: 'same', graph: 'same', metadata: 'metadata' } } }], {}, /duplicate|output/i],
     ['control locator', [method], [template], { outcome: { ...fixtureOutcome, recommendations: [{ ...fixtureOutcome.recommendations[0], evidenceLinks: [{ ...fixtureOutcome.recommendations[0].evidenceLinks[0], locator: 'table\u0000S1' }] }] } as never }, /locator|control/i],

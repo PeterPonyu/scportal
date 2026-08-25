@@ -58,8 +58,11 @@ export function validateExecutableConfig(value: unknown): ExecutableConfig {
   const output = ownRecord(config.outputs, 'executable config.outputs')
   const outputFields = ['latent', 'graph', 'pseudotime', 'branch', 'metadata']
   if (Object.keys(output).some((key) => !outputFields.includes(key)) || !Object.hasOwn(output, 'latent') || !Object.hasOwn(output, 'metadata')) throw new Error('executable config.outputs has unknown or missing schema fields')
-  const outputs = { latent: nonblank(output.latent, 'executable config.outputs.latent'), metadata: nonblank(output.metadata, 'executable config.outputs.metadata') } as ExecutableConfig['outputs']
+  const expectedOutputFields = outputFields.filter((key) => Object.hasOwn(output, key))
+  if (Object.keys(output).length !== expectedOutputFields.length || Object.keys(output).some((key, index) => key !== expectedOutputFields[index])) throw new Error('executable config.outputs must use canonical output order')
+  const outputs = { latent: nonblank(output.latent, 'executable config.outputs.latent') } as ExecutableConfig['outputs']
   for (const key of ['graph', 'pseudotime', 'branch'] as const) if (Object.hasOwn(output, key)) { if (output[key] === undefined) throw new Error(`executable config.outputs.${key} must not be undefined`); outputs[key] = nonblank(output[key], `executable config.outputs.${key}`) }
+  outputs.metadata = nonblank(output.metadata, 'executable config.outputs.metadata')
   const handoffs = ownRecord(config.downstream, 'executable config.downstream')
   if (Object.keys(handoffs).some((key) => key !== 'scFocus' && key !== 'scRL')) throw new Error('executable config.downstream has unknown schema fields')
   const downstream: ExecutableConfig['downstream'] = Object.create(null)

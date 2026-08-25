@@ -30,14 +30,19 @@ export function absoluteHttpUrl(value: unknown): value is string {
 }
 
 export function rfc3339DateTime(value: unknown): value is string {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value)) return false
-  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|([+-])(\d{2}):(\d{2}))$/.exec(value)
-  if (!match) return false
-  const [, yearText, monthText, dayText, hourText, minuteText, secondText, sign, offsetHourText, offsetMinuteText] = match
-  const year = Number(yearText); const month = Number(monthText); const day = Number(dayText); const hour = Number(hourText); const minute = Number(minuteText); const second = Number(secondText)
-  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 60) return false
-  const days = month === 2 ? (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28) : [4, 6, 9, 11].includes(month) ? 30 : 31
-  if (day < 1 || day > days) return false
-  if (sign && (Number(offsetHourText) > 23 || Number(offsetMinuteText) > 59)) return false
-  return second !== 60 || value === '2016-12-31T23:59:60Z'
+  if (typeof value !== 'string') return false
+  const [dateText, timeText, ...extra] = value.split(/t|\s/i)
+  if (extra.length || !dateText || !timeText) return false
+  const date = /^(\d\d\d\d)-(\d\d)-(\d\d)$/.exec(dateText)
+  const time = /^(\d\d):(\d\d):(\d\d(?:\.\d+)?)(z|([+-])(\d\d)(?::?(\d\d))?)?$/i.exec(timeText)
+  if (!date || !time) return false
+  const year = +date[1]; const month = +date[2]; const day = +date[3]
+  const days = [0, 31, year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  if (month < 1 || month > 12 || day < 1 || day > days[month]) return false
+  const hour = +time[1]; const minute = +time[2]; const second = +time[3]; const timezone = time[4]; const sign = time[5] === '-' ? -1 : 1; const offsetHour = +(time[6] || 0); const offsetMinute = +(time[7] || 0)
+  if (!timezone || offsetHour > 23 || offsetMinute > 59) return false
+  if (hour <= 23 && minute <= 59 && second < 60) return true
+  const utcMinute = minute - offsetMinute * sign
+  const utcHour = hour - offsetHour * sign - (utcMinute < 0 ? 1 : 0)
+  return (utcHour === 23 || utcHour === -1) && (utcMinute === 59 || utcMinute === -1) && second < 61
 }

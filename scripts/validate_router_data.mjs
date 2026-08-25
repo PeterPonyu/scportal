@@ -100,6 +100,17 @@ function normalizeId(value) {
   return normalized
 }
 
+const outputNames = ['latent', 'graph', 'pseudotime', 'branch', 'metadata']
+
+function assertCanonicalOutputs(outputs, outputKeys) {
+  const expectedOutputs = outputNames.filter((output) => outputs.includes(output))
+  if (outputs.length !== expectedOutputs.length || outputs.some((output, index) => output !== expectedOutputs[index])) throw new Error('outputs must use canonical output order')
+  if (outputKeys !== undefined) {
+    const expectedKeys = outputNames.filter((output) => Object.hasOwn(outputKeys, output))
+    if (Object.keys(outputKeys).length !== expectedKeys.length || Object.keys(outputKeys).some((key, index) => key !== expectedKeys[index]) || outputs.length !== expectedKeys.length || outputs.some((output, index) => output !== expectedKeys[index])) throw new Error('template outputs and outputKeys must exactly match in canonical order')
+  }
+}
+
 function formatErrors(errors) {
   return errors?.map((error) => `${error.instancePath || '$'} ${error.message}`).join('; ') ?? 'unknown schema error'
 }
@@ -147,7 +158,7 @@ export async function createRouterDataValidator() {
 
   return {
     parseDataset: (value) => parse('dataset', value),
-    parseMethod: (value) => parse('method', value),
+    parseMethod: (value) => { const parsed = parse('method', value); assertCanonicalOutputs(parsed.outputs); return parsed },
     parseMetric: (value) => parse('metric', value),
     parseObservation: (value) => parse('observation', value),
     parseTaskProfile: (value) => {
@@ -156,7 +167,7 @@ export async function createRouterDataValidator() {
       return parsed
     },
     parseExecutableConfig: (value) => parse('executableConfig', value),
-    parseConfigTemplate: (value) => parse('configTemplate', value),
+    parseConfigTemplate: (value) => { const parsed = parse('configTemplate', value); assertCanonicalOutputs(parsed.template.outputs, parsed.template.outputKeys); return parsed },
     parseRelease: (value) => parse('release', value),
     assertUniqueEntityIds,
   }

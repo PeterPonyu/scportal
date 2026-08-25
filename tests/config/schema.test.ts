@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import Ajv2020 from 'ajv/dist/2020.js'
+import addFormats from 'ajv-formats'
 import { parse as parseYaml } from 'yaml'
 
 import { serializeConfig, validateExecutableConfig } from '../../app/core/config/serialize.ts'
 import { validateMethodConfigTemplate } from '../../app/core/config/templates.ts'
+import { rfc3339DateTime } from '../../app/core/router/validation.ts'
 
 const executable = {
   schemaVersion: '1.0', routerVersion: 'router-v1', evidenceVersion: 'evidence-v1',
@@ -39,9 +42,10 @@ test('rejects exact-schema violations, unsafe own keys, non-data fields, unsafe 
     [{ ...executable, method: { ...executable.method, install: 'pip install graph-contrastive==1.0.0; whoami' } }, /install/i],
     [{ ...executable, downstream: { scFocus: { latentKey: 'wrong', contributionOutput: 'x' } } }, /scFocus|latent/i],
     [{ ...executable, downstream: { scRL: { latentKey: 'X_graph', pseudotimeKey: 'pt', decisionOutput: 'x' } } }, /scRL|pseudotime/i],
-    [{ ...executable, outputs: { ...executable.outputs, graph: undefined } }, /graph|undefined/i],
-    [{ ...executable, outputs: { ...executable.outputs, pseudotime: undefined } }, /pseudotime|undefined/i],
-    [{ ...executable, outputs: { ...executable.outputs, branch: undefined } }, /branch|undefined/i],
+    [{ ...executable, outputs: { ...executable.outputs, graph: undefined } }, /graph|undefined|order/i],
+    [{ ...executable, outputs: { metadata: 'graph_metadata', latent: 'X_graph' } }, /output|order/i],
+    [{ ...executable, outputs: { ...executable.outputs, pseudotime: undefined } }, /pseudotime|undefined|order/i],
+    [{ ...executable, outputs: { ...executable.outputs, branch: undefined } }, /branch|undefined|order/i],
     [{ ...executable, downstream: { scFocus: { latentKey: 'X_graph', branchKey: undefined, contributionOutput: 'x' } } }, /branchKey|undefined/i],
     [{ ...executable, downstream: { scFocus: undefined } }, /handoff|undefined/i],
     [{ ...executable, downstream: { scRL: undefined } }, /handoff|undefined/i],
@@ -55,13 +59,32 @@ test('rejects exact-schema violations, unsafe own keys, non-data fields, unsafe 
   for (const [value, expected] of cases) assert.throws(() => validateExecutableConfig(value), expected)
 })
 
-test('accepts calendar-correct RFC3339 timestamps including the 2016 UTC leap second', () => {
-  const timestamps = ['2024-02-29T23:59:59+14:30', '2016-12-31T23:59:60Z']
+test('matches ajv-formats date-time acceptance for RFC3339 edge cases', () => {
+  const ajv = new Ajv2020({ strict: true })
+  addFormats(ajv)
+  const validate = ajv.compile({ type: 'string', format: 'date-time' })
+  const cases = [
+    ['2024-02-29T23:59:59+14:30', true],
+    ['2015-06-30T23:59:60Z', true],
+    ['2016-12-31T23:59:60+00:00', true],
+    ['2023-02-29T00:00:00Z', false],
+    ['2024-02-30T00:00:00Z', false],
+    ['2024-01-01T00:00:00+24:00', false],
+    ['2024-01-01T00:00:00+00:60', false],
+  ] as const
+  for (const [timestamp, expected] of cases) {
+    assert.equal(rfc3339DateTime(timestamp), expected, timestamp)
+    assert.equal(validate(timestamp), expected, timestamp)
+  }
+})
+
+test('accepts ajv-compatible RFC3339 timestamps including leap seconds', () => {
+  const timestamps = ['2024-02-29T23:59:59+14:30', '2015-06-30T23:59:60Z', '2016-12-31T23:59:60+00:00']
   for (const generatedAt of timestamps) {
     const parsed = validateExecutableConfig({ ...executable, provenance: { ...executable.provenance, generatedAt } })
     assert.equal(parsed.provenance.generatedAt, generatedAt)
   }
-  for (const generatedAt of ['2023-02-29T00:00:00Z', '2024-02-30T00:00:00Z', '2016-12-31T23:59:60+00:00', '2015-12-31T23:59:60Z', '2024-01-01T00:00:00+24:00']) {
+  for (const generatedAt of ['2023-02-29T00:00:00Z', '2024-02-30T00:00:00Z', '2024-01-01T00:00:00+24:00']) {
     assert.throws(() => validateExecutableConfig({ ...executable, provenance: { ...executable.provenance, generatedAt } }), /timestamp|date-time/i)
   }
 })
@@ -76,6 +99,7 @@ test('validates template defaults against constraints and rejects unsafe Python 
   const parsed = validateMethodConfigTemplate(candidate)
   assert.equal(Object.isFrozen(parsed), true)
   assert.equal(Object.isFrozen(parsed.allowedParameters), true)
+  assert.deepEqual(Object.keys(parsed.outputKeys), ['latent', 'metadata'])
   const cases = [
     { ...candidate, defaultParameters: { epochs: 0 } },
     { ...candidate, defaultParameters: { epochs: 1.5 } },
@@ -88,6 +112,8 @@ test('validates template defaults against constraints and rejects unsafe Python 
     { ...candidate, importName: 'not-valid' },
     { ...candidate, constructor: 'not-valid' },
     { ...candidate, downstream: { scFocus: { contributionOutput: 'x', extra: true } } },
+    { ...candidate, outputs: ['metadata', 'latent'] },
+    { ...candidate, outputKeys: { metadata: 'graph_metadata', latent: 'X_graph' } },
   ]
-  for (const value of cases) assert.throws(() => validateMethodConfigTemplate(value), /default|number|enum|identifier|unknown/i)
+  for (const value of cases) assert.throws(() => validateMethodConfigTemplate(value), /default|number|enum|identifier|unknown|order/i)
 })

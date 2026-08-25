@@ -126,13 +126,22 @@ test('rejects duplicate canonical IDs and aliases in the same entity kind', asyn
   )
 })
 
-test('rejects duplicate aliases, method outputs, profile goals, and profile candidates', async () => {
+test('rejects duplicate aliases and every set-like method/profile array', async () => {
   const validator = await createRouterDataValidator()
   assert.throws(() => validator.parseDataset({ ...validDataset, aliases: ['same', 'same'] }), /duplicate|alias/i)
   assert.throws(() => validator.parseMethod({ id: 'method', aliases: [], version: '1', modalities: ['scrna'], maxScale: '10k_50k', outputs: ['latent', 'latent'], requiredPriors: [], supportedGoals: ['latent_representation'], resourceTier: 1, installCommand: 'python -m pip install package==1', license: 'MIT', sourceUrl: 'https://example.test/source', docsUrl: 'https://example.test/docs', paperUrl: 'https://example.test/paper', executable: false }), /duplicate|outputs/i)
+  assert.throws(() => validator.parseMethod({ id: 'method', aliases: [], version: '1', modalities: ['scrna', 'scrna'], maxScale: '10k_50k', outputs: ['latent'], requiredPriors: [], supportedGoals: ['latent_representation'], resourceTier: 1, installCommand: 'python -m pip install package==1', license: 'MIT', sourceUrl: 'https://example.test/source', docsUrl: 'https://example.test/docs', paperUrl: 'https://example.test/paper', executable: false }), /duplicate|modalities/i)
+  assert.throws(() => validator.parseMethod({ id: 'method', aliases: [], version: '1', modalities: ['scrna'], maxScale: '10k_50k', outputs: ['latent'], requiredPriors: ['time', 'time'], supportedGoals: ['latent_representation'], resourceTier: 1, installCommand: 'python -m pip install package==1', license: 'MIT', sourceUrl: 'https://example.test/source', docsUrl: 'https://example.test/docs', paperUrl: 'https://example.test/paper', executable: false }), /duplicate|prior/i)
+  assert.throws(() => validator.parseMethod({ id: 'method', aliases: [], version: '1', modalities: ['scrna'], maxScale: '10k_50k', outputs: ['latent'], requiredPriors: [], supportedGoals: ['latent_representation', 'latent_representation'], resourceTier: 1, installCommand: 'python -m pip install package==1', license: 'MIT', sourceUrl: 'https://example.test/source', docsUrl: 'https://example.test/docs', paperUrl: 'https://example.test/paper', executable: false }), /duplicate|goal/i)
   assert.throws(() => validator.parseTaskProfile({ ...validProfile, goals: ['trajectory_reconstruction', 'trajectory_reconstruction'] }), /duplicate|goals/i)
   assert.throws(() => validator.parseTaskProfile({ ...validProfile, candidateMethodIds: ['geometry_vae', 'geometry_vae'] }), /duplicate|candidate/i)
   assert.throws(() => validator.parseObservation({ ...validObservation, provenance: { ...validObservation.provenance, locator: 'table\u0000one' } }), /provenance|control/i)
+})
+
+test('rejects noncanonical output ordering in methods and wrapper templates', async () => {
+  const validator = await createRouterDataValidator()
+  assert.throws(() => validator.parseMethod({ id: 'method', aliases: [], version: '1', modalities: ['scrna'], maxScale: '10k_50k', outputs: ['metadata', 'latent'], requiredPriors: [], supportedGoals: ['latent_representation'], resourceTier: 1, installCommand: 'python -m pip install package==1', license: 'MIT', sourceUrl: 'https://example.test/source', docsUrl: 'https://example.test/docs', paperUrl: 'https://example.test/paper', executable: false }), /canonical output order/i)
+  assert.throws(() => validator.parseConfigTemplate({ methodId: 'method', version: '1', synthetic: true, template: { outputs: ['latent', 'metadata'], packageName: 'package', importName: 'package', constructor: 'Package', defaultParameters: {}, allowedParameters: {}, outputKeys: { metadata: 'metadata', latent: 'latent' } } }), /canonical order/i)
 })
 
 test('resolves one GEO alias to its scoped canonical dataset ID', () => {

@@ -70,11 +70,15 @@ function parseDefinition(value: unknown, label: string): ParameterDefinition {
 
 function parseOutputs(value: unknown): MethodConfigTemplate['outputKeys'] {
   const record = ownRecord(value, 'template.outputKeys')
-  for (const key of Object.keys(record)) if (!['latent', 'graph', 'pseudotime', 'branch', 'metadata'].includes(key)) throw new Error(`template.outputKeys.${key} is unknown`)
+  const fields = ['latent', 'graph', 'pseudotime', 'branch', 'metadata'] as const
+  if (Object.keys(record).some((key) => !fields.includes(key as typeof fields[number]))) throw new Error('template.outputKeys contains unknown fields')
+  const expected = fields.filter((key) => Object.hasOwn(record, key))
+  if (Object.keys(record).length !== expected.length || Object.keys(record).some((key, index) => key !== expected[index])) throw new Error('template.outputKeys must use canonical output order')
   const latent = nonblank(required(record, 'latent', 'template.outputKeys'), 'template.outputKeys.latent')
   const metadata = nonblank(required(record, 'metadata', 'template.outputKeys'), 'template.outputKeys.metadata')
   const optional = (key: 'graph' | 'pseudotime' | 'branch') => !Object.hasOwn(record, key) ? undefined : record[key] === undefined ? (() => { throw new Error(`template.outputKeys.${key} must not be undefined`) })() : nonblank(record[key], `template.outputKeys.${key}`)
-  return frozen({ latent, metadata, ...(optional('graph') === undefined ? {} : { graph: optional('graph')! }), ...(optional('pseudotime') === undefined ? {} : { pseudotime: optional('pseudotime')! }), ...(optional('branch') === undefined ? {} : { branch: optional('branch')! }) })
+  const graph = optional('graph'); const pseudotime = optional('pseudotime'); const branch = optional('branch')
+  return frozen({ latent, ...(graph === undefined ? {} : { graph }), ...(pseudotime === undefined ? {} : { pseudotime }), ...(branch === undefined ? {} : { branch }), metadata })
 }
 
 function distinct(values: readonly string[], label: string): void {
@@ -93,6 +97,8 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
   const outputs = denseOwnDataArray(required(record, 'outputs', 'template'), 'template.outputs')
   if (!outputs.length || outputs.some((output) => typeof output !== 'string' || !['latent', 'graph', 'pseudotime', 'branch', 'metadata'].includes(output))) throw new Error('template.outputs must be non-empty known output names')
   distinct(outputs as string[], 'template.outputs')
+  const expectedOutputs = ['latent', 'graph', 'pseudotime', 'branch', 'metadata'].filter((output) => (outputs as string[]).includes(output))
+  if (outputs.length !== expectedOutputs.length || outputs.some((output, index) => output !== expectedOutputs[index])) throw new Error('template.outputs must use canonical output order')
   if (!pythonIdentifier.test(importName) || !pythonIdentifier.test(constructor)) throw new Error('template importName and constructor must be Python identifiers')
   const defaults = ownRecord(required(record, 'defaultParameters', 'template'), 'template.defaultParameters')
   const definitions = ownRecord(required(record, 'allowedParameters', 'template'), 'template.allowedParameters')
@@ -109,7 +115,7 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
   }
   for (const key of Object.keys(allowedParameters)) if (!Object.hasOwn(defaultParameters, key)) throw new Error(`template.allowedParameters.${key} lacks an exact default`)
   const outputKeys = parseOutputs(required(record, 'outputKeys', 'template'))
-  if (outputs.length !== Object.keys(outputKeys).length || outputs.some((output) => !Object.hasOwn(outputKeys, output as string))) throw new Error('template.outputs must exactly cover template.outputKeys')
+  if (outputs.length !== Object.keys(outputKeys).length || outputs.some((output, index) => output !== Object.keys(outputKeys)[index])) throw new Error('template.outputs must exactly match template.outputKeys in canonical order')
   distinct(Object.values(outputKeys), 'template.outputKeys values')
   let downstream: MethodConfigTemplate['downstream']
   if (Object.hasOwn(record, 'downstream') && record.downstream === undefined) throw new Error('template.downstream must not be undefined')
