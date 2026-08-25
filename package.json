@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:unit": "node --experimental-strip-types --test",
-    "typecheck:router": "tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext app/core/router/types.ts app/core/router/ids.ts app/core/router/normalize.ts app/core/router/gower.ts app/core/router/shrinkage.ts",
+    "typecheck:router": "tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext app/core/router/types.ts app/core/router/ids.ts app/core/router/normalize.ts app/core/router/gower.ts app/core/router/shrinkage.ts app/core/router/constraints.ts app/core/router/pareto.ts",
     "validate:router-data": "node scripts/validate_router_data.mjs",
     "validate:public-graph": "node scripts/validate_public_graph.mjs",
     "check:rendered-public-graph": "node scripts/check_rendered_public_graph.mjs",
