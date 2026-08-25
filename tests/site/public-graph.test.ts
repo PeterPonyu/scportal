@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
+import { scportalLink } from '../../app/utils/publicGraph.ts'
 
 const manifest = JSON.parse(readFileSync(new URL('../../public-graph.manifest.json', import.meta.url), 'utf8'))
 
@@ -26,5 +27,12 @@ describe('canonical public graph', () => {
     const site = manifest.sites.find((entry) => entry.id === 'scccvgben')
     assert.equal(site.source_repo, 'PeterPonyu/scCCVGBen')
     assert.equal(site.deploy_repo, 'PeterPonyu/scccvgben-next')
+  })
+})
+
+describe('moved publicGraph helper', () => {
+  it('still resolves the SCPortal hub', () => {
+    assert.equal(scportalLink.id, 'scportal')
+    assert.equal(scportalLink.canonical_url, 'https://peterponyu.github.io/scportal/')
   })
 })

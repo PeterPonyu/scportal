@@ -1,5 +1,5 @@
-import manifest from '../public-graph.manifest.json'
-import routeMap from '../public-graph.routes.json'
+import manifest from '../../public-graph.manifest.json' with { type: 'json' }
+import routeMap from '../../public-graph.routes.json' with { type: 'json' }
 
 type VisibilityMode = 'featured' | 'listed' | 'hidden'
 
