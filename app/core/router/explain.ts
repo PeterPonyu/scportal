@@ -4,7 +4,7 @@ import type { NormalizedObservation } from './normalize.ts'
 export interface ExplanationInput {
   methodId: string
   profile: TaskProfile
-  groupScores: Readonly<Record<MetricGroup, number>>
+  groupScores: Readonly<Partial<Record<MetricGroup, number>>>
   observations: readonly NormalizedObservation[]
   metricGroups: ReadonlyMap<string, MetricGroup>
   synthetic: boolean
@@ -19,7 +19,7 @@ export function explainRecommendation(input: ExplanationInput): {
   const rankedGroups = (Object.keys(input.groupScores) as MetricGroup[])
     .filter((group) => input.profile.weights[group] > 0)
     .sort((left, right) => (
-      input.profile.weights[right] * input.groupScores[right] - input.profile.weights[left] * input.groupScores[left]
+      input.profile.weights[right] * input.groupScores[right]! - input.profile.weights[left] * input.groupScores[left]!
       || (left < right ? -1 : left > right ? 1 : 0)
     ))
     .slice(0, 3)

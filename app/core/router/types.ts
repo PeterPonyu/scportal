@@ -87,6 +87,7 @@ export interface RouterInput {
   observations: BenchmarkObservation[]
   evidenceVersion: string
   routerVersion: string
+  releaseSynthetic: boolean
 }
 
 export interface RouterOptions {

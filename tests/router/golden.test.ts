@@ -16,6 +16,7 @@ function fixture() {
     observations: json<unknown[]>('observations.synthetic.json'),
     evidenceVersion: 'router-evidence-synthetic-v1',
     routerVersion: 'router-core-v1',
+    releaseSynthetic: true,
   }
 }
 
