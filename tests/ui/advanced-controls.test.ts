@@ -107,12 +107,25 @@ describe('AutoSelect Advanced controls', () => {
   it('candidate allowlist cannot include an unknown method id', () => {
     const knownIds = catalogMethodIds()
     assert.ok(knownIds.length > 0)
+    const knownId = knownIds[0]!
+    const base = withValidData(createInitialAutoSelectState('advanced'))
 
     const allowed = withValidData(createInitialAutoSelectState('advanced'), {
-      candidateMethodIds: knownIds,
+      candidateMethodIds: [knownId],
     })
-    assert.deepEqual(toTaskProfile(allowed).candidateMethodIds, knownIds)
+    assert.deepEqual(toTaskProfile(allowed).candidateMethodIds, [knownId])
     assert.ok((toTaskProfile(allowed).candidateMethodIds ?? []).every((id) => knownIds.includes(id)))
+
+    const unknown = { ...base, candidateMethodIds: ['unknown_method'] }
+    assert.match(validateStep('environment', unknown) ?? '', /unknown method id/)
+    assert.throws(() => toTaskProfile(unknown), /unknown method id/)
+
+    const proto = { ...base, candidateMethodIds: ['__proto__'] }
+    assert.match(validateStep('environment', proto) ?? '', /unknown method id|unsafe method id/)
+    assert.throws(() => toTaskProfile(proto), /unknown method id|unsafe method id/)
+
+    assert.equal(Object.hasOwn(toTaskProfile(base), 'candidateMethodIds'), false)
+    assert.equal(Object.hasOwn(toTaskProfile({ ...base, candidateMethodIds: [] }), 'candidateMethodIds'), false)
 
     const picker = readSource('app/components/autoselect/MethodCandidatePicker.vue')
     assert.match(picker, /data\/router\/methods\.json/)

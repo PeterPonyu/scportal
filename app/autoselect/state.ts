@@ -1,3 +1,4 @@
+import methodsJson from '../../data/router/methods.json' with { type: 'json' }
 import type {
   MetricGroup,
   Modality,
@@ -43,6 +44,10 @@ const GOALS: readonly TaskGoal[] = [
 ]
 const TOPOLOGIES: readonly Topology[] = ['linear', 'bifurcating', 'multibranch', 'cyclic', 'mixed', 'unknown']
 const PRIOR_KEYS: readonly PriorKey[] = ['time', 'root_state', 'terminal_states', 'labels', 'perturbation']
+const PROTO_UNSAFE_IDS = new Set(['__proto__', 'prototype', 'constructor'])
+const CATALOG_METHOD_IDS = new Set(
+  (methodsJson as Array<{ id: string }>).map((method) => method.id),
+)
 
 export interface AutoSelectState {
   mode: AutoSelectMode
@@ -141,6 +146,21 @@ function validatePriors(priors: Partial<Record<PriorKey, boolean | 'unknown'>>):
   return null
 }
 
+function validateCandidateMethodIds(ids: string[] | undefined): string | null {
+  if (ids === undefined || ids.length === 0) return null
+  for (const id of ids) {
+    if (typeof id !== 'string') return 'Candidate allowlist contains an unknown method id.'
+    const normalized = id.trim().toLowerCase()
+    if (PROTO_UNSAFE_IDS.has(id) || PROTO_UNSAFE_IDS.has(normalized)) {
+      return 'Candidate allowlist contains an unknown method id.'
+    }
+    if (!CATALOG_METHOD_IDS.has(id)) {
+      return 'Candidate allowlist contains an unknown method id.'
+    }
+  }
+  return null
+}
+
 function validateEnvironment(state: AutoSelectState): string | null {
   if (state.maxResourceTier !== 1 && state.maxResourceTier !== 2 && state.maxResourceTier !== 3) {
     return 'Resource tier must be 1, 2, or 3.'
@@ -154,7 +174,7 @@ function validateEnvironment(state: AutoSelectState): string | null {
   if (!Number.isInteger(state.seed) || state.seed < 0 || state.seed > 0xffffffff) {
     return 'Seed must be an integer in 0..0xffffffff.'
   }
-  return null
+  return validateCandidateMethodIds(state.candidateMethodIds)
 }
 
 export function createInitialAutoSelectState(mode: AutoSelectMode): AutoSelectState {
@@ -235,7 +255,7 @@ export function toTaskProfile(state: AutoSelectState): TaskProfile {
     minCriticalCoverage: state.minCriticalCoverage,
     seed: state.seed,
   }
-  if (state.candidateMethodIds !== undefined) {
+  if (state.candidateMethodIds !== undefined && state.candidateMethodIds.length > 0) {
     profile.candidateMethodIds = [...state.candidateMethodIds]
   }
   return profile
