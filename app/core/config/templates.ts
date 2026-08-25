@@ -2,6 +2,7 @@ import type { MethodConfigTemplate, ParameterDefinition, ParameterValue } from '
 
 type RecordValue = Record<string, unknown>
 const dangerousKeys = new Set(['__proto__', 'prototype', 'constructor'])
+const pythonIdentifier = /^[A-Za-z_][A-Za-z0-9_]*$/
 
 function ownRecord(value: unknown, label: string, allowedDangerous: readonly string[] = []): RecordValue {
   if (value === null || typeof value !== 'object' || Array.isArray(value) || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)) throw new Error(`${label} must be a plain own-data object`)
@@ -31,6 +32,18 @@ function cloneValue(value: unknown, label: string): ParameterValue {
   throw new Error(`${label} must be a finite string, number, or boolean`)
 }
 
+function validateParameterValue(value: unknown, definition: ParameterDefinition, label: string): ParameterValue {
+  const parsed = cloneValue(value, label)
+  if (typeof parsed !== definition.type) throw new Error(`${label} must match declared ${definition.type} type`)
+  if (typeof parsed === 'number') {
+    if (definition.minimum !== undefined && parsed < definition.minimum) throw new Error(`${label} is below minimum`)
+    if (definition.maximum !== undefined && parsed > definition.maximum) throw new Error(`${label} exceeds maximum`)
+    if (definition.integer && !Number.isInteger(parsed)) throw new Error(`${label} must be an integer`)
+  }
+  if (definition.enum !== undefined && !definition.enum.includes(parsed)) throw new Error(`${label} is outside enum`)
+  return parsed
+}
+
 function frozen<T>(value: T): T { return Object.freeze(value) }
 
 function parseDefinition(value: unknown, label: string): ParameterDefinition {
@@ -40,13 +53,15 @@ function parseDefinition(value: unknown, label: string): ParameterDefinition {
   for (const key of Object.keys(record)) if (!['type', 'minimum', 'maximum', 'integer', 'enum'].includes(key)) throw new Error(`${label}.${key} is unknown`)
   const minimum = record.minimum
   const maximum = record.maximum
+  if (type !== 'number' && (minimum !== undefined || maximum !== undefined || record.integer !== undefined)) throw new Error(`${label} numeric constraints require type number`)
   if (minimum !== undefined && (typeof minimum !== 'number' || !Number.isFinite(minimum))) throw new Error(`${label}.minimum must be finite`)
   if (maximum !== undefined && (typeof maximum !== 'number' || !Number.isFinite(maximum))) throw new Error(`${label}.maximum must be finite`)
   if (minimum !== undefined && maximum !== undefined && minimum > maximum) throw new Error(`${label} minimum exceeds maximum`)
   if (record.integer !== undefined && typeof record.integer !== 'boolean') throw new Error(`${label}.integer must be boolean`)
-  if (record.enum !== undefined && !Array.isArray(record.enum)) throw new Error(`${label}.enum must be an array`)
+  if (record.enum !== undefined && (!Array.isArray(record.enum) || record.enum.length === 0)) throw new Error(`${label}.enum must be a non-empty array`)
   const enumeration = record.enum === undefined ? undefined : frozen(record.enum.map((entry, index) => cloneValue(entry, `${label}.enum[${index}]`)))
   if (enumeration?.some((entry) => typeof entry !== type)) throw new Error(`${label}.enum values must match type`)
+  if (enumeration && new Set(enumeration.map((entry) => `${typeof entry}:${String(entry)}`)).size !== enumeration.length) throw new Error(`${label}.enum must not contain duplicates`)
   return frozen({ type, ...(minimum === undefined ? {} : { minimum }), ...(maximum === undefined ? {} : { maximum }), ...(record.integer === undefined ? {} : { integer: record.integer }), ...(enumeration === undefined ? {} : { enum: enumeration }) })
 }
 
@@ -72,10 +87,14 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
   const definitions = ownRecord(required(record, 'allowedParameters', 'template'), 'template.allowedParameters')
   const defaultParameters: Record<string, ParameterValue> = Object.create(null)
   const allowedParameters: Record<string, ParameterDefinition> = Object.create(null)
-  for (const key of Object.keys(definitions).sort()) allowedParameters[key] = parseDefinition(definitions[key], `template.allowedParameters.${key}`)
+  for (const key of Object.keys(definitions).sort()) {
+    if (!pythonIdentifier.test(key)) throw new Error(`template.allowedParameters.${key} must be a Python identifier`)
+    allowedParameters[key] = parseDefinition(definitions[key], `template.allowedParameters.${key}`)
+  }
   for (const key of Object.keys(defaults).sort()) {
     if (!Object.hasOwn(allowedParameters, key)) throw new Error(`template.defaultParameters.${key} is not allowed`)
-    defaultParameters[key] = cloneValue(defaults[key], `template.defaultParameters.${key}`)
+    if (!pythonIdentifier.test(key)) throw new Error(`template.defaultParameters.${key} must be a Python identifier`)
+    defaultParameters[key] = validateParameterValue(defaults[key], allowedParameters[key], `template.defaultParameters.${key}`)
   }
   for (const key of Object.keys(allowedParameters)) if (!Object.hasOwn(defaultParameters, key)) throw new Error(`template.allowedParameters.${key} lacks an exact default`)
   const outputKeys = parseOutputs(required(record, 'outputKeys', 'template'))
@@ -92,4 +111,19 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
     downstream = frozen(downstream)
   }
   return frozen({ methodId, version, packageName, importName, constructor, defaultParameters: frozen(defaultParameters), allowedParameters: frozen(allowedParameters), outputKeys, ...(downstream === undefined ? {} : { downstream }) })
+}
+
+export function validateConfigTemplateRegistryEntry(value: unknown): MethodConfigTemplate {
+  const record = ownRecord(value, 'template registry entry')
+  for (const key of Object.keys(record)) if (!['methodId', 'version', 'synthetic', 'template'].includes(key)) throw new Error(`template registry entry.${key} is unknown`)
+  const methodId = nonblank(required(record, 'methodId', 'template registry entry'), 'template registry entry.methodId')
+  const version = nonblank(required(record, 'version', 'template registry entry'), 'template registry entry.version')
+  if (typeof required(record, 'synthetic', 'template registry entry') !== 'boolean') throw new Error('template registry entry.synthetic must be boolean')
+  const nested = ownRecord(required(record, 'template', 'template registry entry'), 'template registry entry.template', ['constructor'])
+  const outputs = required(nested, 'outputs', 'template registry entry.template')
+  if (!Array.isArray(outputs) || outputs.some((output) => typeof output !== 'string')) throw new Error('template registry entry.template.outputs must be a string array')
+  const { outputs: _outputs, ...templateFields } = nested
+  const parsed = validateMethodConfigTemplate({ ...templateFields, methodId, version })
+  if (outputs.length !== Object.keys(parsed.outputKeys).length || outputs.some((output) => !Object.hasOwn(parsed.outputKeys, output))) throw new Error(`template registry entry outputs do not match outputKeys for ${methodId}`)
+  return parsed
 }

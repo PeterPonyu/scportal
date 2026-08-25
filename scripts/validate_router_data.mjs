@@ -234,6 +234,10 @@ function assertTemplateRegistry(configTemplates, methods, synthetic) {
     }
     for (const [key, definition] of Object.entries(allowedParameters)) {
       const defaultValue = defaultParameters[key]
+      if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) throw new Error(`template parameter name must be a Python identifier for ${method.id}.${key}`)
+      if (definition.type !== 'number' && (definition.minimum !== undefined || definition.maximum !== undefined || definition.integer !== undefined)) throw new Error(`numeric parameter constraints require number type for ${method.id}.${key}`)
+      if (definition.minimum !== undefined && definition.maximum !== undefined && definition.minimum > definition.maximum) throw new Error(`template minimum exceeds maximum for ${method.id}.${key}`)
+      if (definition.enum !== undefined && (!Array.isArray(definition.enum) || definition.enum.length === 0 || definition.enum.some((entry) => typeof entry !== definition.type) || new Set(definition.enum.map((entry) => `${typeof entry}:${String(entry)}`)).size !== definition.enum.length)) throw new Error(`invalid parameter enum metadata for ${method.id}.${key}`)
       if (typeof defaultValue !== definition.type || (typeof defaultValue === 'number' && !Number.isFinite(defaultValue))) throw new Error(`template default type mismatch for ${method.id}.${key}`)
       if (typeof defaultValue === 'number' && definition.minimum !== undefined && defaultValue < definition.minimum) throw new Error(`template default below minimum for ${method.id}.${key}`)
       if (typeof defaultValue === 'number' && definition.maximum !== undefined && defaultValue > definition.maximum) throw new Error(`template default above maximum for ${method.id}.${key}`)

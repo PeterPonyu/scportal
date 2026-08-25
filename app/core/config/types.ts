@@ -1,4 +1,4 @@
-import type { MethodCapability, Modality, RouterOutcome, TaskProfile } from '../router/types.ts'
+import type { Modality, RouterOutcome, TaskProfile } from '../router/types.ts'
 
 export type ParameterValue = string | number | boolean
 export type ParameterDefinition = { type: 'string' | 'number' | 'boolean'; minimum?: number; maximum?: number; integer?: boolean; enum?: ParameterValue[] }
@@ -38,8 +38,8 @@ export interface CompiledArtifacts {
 
 export interface CompileConfigInput {
   outcome: RouterOutcome
-  method: MethodCapability
   profile: TaskProfile
+  methods: readonly unknown[]
   templates: readonly unknown[]
   parameters?: Record<string, unknown>
   generatedAt: string

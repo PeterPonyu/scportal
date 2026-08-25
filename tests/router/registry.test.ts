@@ -259,6 +259,29 @@ test('rejects duplicate and noncanonical config-template outputs', async () => {
   }
 })
 
+test('rejects Python-injectable parameter names and constraint metadata that cannot describe their defaults', async () => {
+  const cases: Array<{ mutate: (template: Record<string, unknown>) => Record<string, unknown>, expected: RegExp }> = [
+    {
+      mutate: (template) => ({ ...template, template: { ...template.template as Record<string, unknown>, allowedParameters: { 'epochs;exec()': { type: 'number' } }, defaultParameters: { 'epochs;exec()': 1 } } }),
+      expected: /property name|pattern|identifier/i,
+    },
+    {
+      mutate: (template) => ({ ...template, template: { ...template.template as Record<string, unknown>, allowedParameters: { epochs: { type: 'string', minimum: 1 } }, defaultParameters: { epochs: 'one' } } }),
+      expected: /minimum|numeric|number/i,
+    },
+    {
+      mutate: (template) => ({ ...template, template: { ...template.template as Record<string, unknown>, allowedParameters: { epochs: { type: 'number', minimum: 2, integer: true, enum: [2] } }, defaultParameters: { epochs: 1 } } }),
+      expected: /default below minimum|outside enum/i,
+    },
+  ]
+  for (const { mutate, expected } of cases) {
+    await withRegistryCopy(async (directory) => {
+      await mutateJsonFile<Array<Record<string, unknown>>>(directory, 'config-templates.json', (templates) => [mutate(templates[0]), ...templates.slice(1)])
+      await assert.rejects(() => validateRouterDataDirectory(directory), expected)
+    })
+  }
+})
+
 test('requires exactly one config template for every synthetic fixture method', async () => {
   for (const { mutate, expected } of [
     {
