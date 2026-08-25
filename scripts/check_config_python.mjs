@@ -17,14 +17,14 @@ export async function checkPythonSnippets({ generator = defaultGenerator, python
       await execFileAsync(process.execPath, ['--experimental-strip-types', generator, output], { cwd: repositoryRoot, encoding: 'utf8' })
     } catch (error) {
       const failure = error && typeof error === 'object' ? error : {}
-      throw new Error(`Python snippet generator exited with status ${failure.code ?? 'unknown'}: ${failure.stderr?.trim?.() ?? (error instanceof Error ? error.message : String(error))}`)
+      throw new Error(`Python snippet generator exited with status ${failure.code ?? 'unknown'}: ${failure.stderr?.trim?.() ?? (error instanceof Error ? error.message : String(error))}`, { cause: error })
     }
     const generated = await readFile(output, 'utf8')
     try {
       await execFileAsync(python, ['-c', 'import ast, sys; ast.parse(sys.argv[1])', generated], { cwd: repositoryRoot, encoding: 'utf8' })
     } catch (error) {
       const failure = error && typeof error === 'object' ? error : {}
-      throw new Error(`Python parser exited with status ${failure.code ?? 'unknown'}: ${failure.stderr?.trim?.() ?? (error instanceof Error ? error.message : String(error))}`)
+      throw new Error(`Python parser exited with status ${failure.code ?? 'unknown'}: ${failure.stderr?.trim?.() ?? (error instanceof Error ? error.message : String(error))}`, { cause: error })
     }
   } finally {
     await rm(directory, { recursive: true, force: true })

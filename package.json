@@ -16,7 +16,7 @@
     "test:router-config": "node --experimental-strip-types --test tests/router/*.test.ts tests/config/*.test.ts tests/scripts/*.test.ts",
     "test:config-python": "node scripts/check_config_python.mjs",
     "typecheck:router": "tsc --noEmit --strict --allowImportingTsExtensions --target ES2022 --module NodeNext --moduleResolution NodeNext app/core/router/types.ts app/core/router/ids.ts app/core/router/normalize.ts app/core/router/gower.ts app/core/router/shrinkage.ts app/core/router/constraints.ts app/core/router/pareto.ts app/core/router/random.ts app/core/router/bootstrap.ts app/core/router/outranking.ts app/core/router/confidence.ts app/core/router/release-digest.ts app/core/router/recommend.ts app/core/router/explain.ts app/core/router/index.ts app/core/config/types.ts app/core/config/templates.ts app/core/config/schema.ts app/core/config/serialize.ts app/core/config/compiler.ts",
-    "typecheck": "npm run typecheck:router",
+    "typecheck": "npm run typecheck:router && nuxt typecheck",
     "validate:router-data": "node scripts/validate_router_data.mjs",
     "check:router-boundaries": "node scripts/check_router_boundaries.mjs",
     "check:router": "npm run validate:router-data && npm run check:router-boundaries && npm run test:router-config && npm run test:config-python && npm run typecheck",
@@ -30,21 +30,21 @@
   },
   "dependencies": {
     "ajv": "^8.20.0",
-    "nuxt": "^3.15.0",
+    "nuxt": "4.5.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^1.7.0",
-    "@nuxt/eslint": "^0.7.4",
-    "@nuxtjs/color-mode": "^3.5.2",
-    "@nuxtjs/tailwindcss": "^6.12.2",
-    "@vueuse/nuxt": "^12.4.0",
+    "@nuxt/devtools": "^3.4.2",
+    "@nuxt/eslint": "^1.17.0",
+    "@nuxtjs/color-mode": "^4.0.1",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@vueuse/nuxt": "^14.4.0",
     "ajv-formats": "^3.0.1",
     "eslint": "^9.17.0",
     "typescript": "^5.7.3",
-    "vue-tsc": "^2.2.12"
+    "vue-tsc": "^3.3.11"
   },
   "engines": {
     "node": "22.18.0"

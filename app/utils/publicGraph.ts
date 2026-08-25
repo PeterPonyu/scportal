@@ -15,6 +15,11 @@ type PublicGraphSite = {
   }
 }
 
+type PublicDestinationSite = PublicGraphSite & {
+  availability: 'public'
+  canonical_url: string
+}
+
 type PublicGraphManifest = {
   sites: PublicGraphSite[]
 }
@@ -42,7 +47,7 @@ const ensure: (condition: unknown, message: string) => asserts condition = (cond
   }
 }
 
-const isScportalVisible = (site: PublicGraphSite) =>
+const isScportalVisible = (site: PublicGraphSite): site is PublicDestinationSite =>
   site.id !== 'scportal' &&
   site.id !== HOMEPAGE_ID &&
   site.availability === 'public' &&
@@ -64,11 +69,11 @@ export const publicGraphSites = graph.sites
 const siteById = new Map(publicGraphSites.map((site) => [site.id, site]))
 
 export const featuredScportalSites = publicGraphSites.filter(
-  (site) => isScportalVisible(site) && site.visibility.scportal === 'featured'
+  (site): site is PublicDestinationSite => isScportalVisible(site) && site.visibility.scportal === 'featured'
 )
 
 export const listedScportalSites = publicGraphSites.filter(
-  (site) => isScportalVisible(site) && site.visibility.scportal === 'listed'
+  (site): site is PublicDestinationSite => isScportalVisible(site) && site.visibility.scportal === 'listed'
 )
 
 export const shellScportalSites = [...featuredScportalSites, ...listedScportalSites]
@@ -79,20 +84,25 @@ const resolveSite = (id: string): PublicGraphSite => {
   return site
 }
 
-export const homepageLink = resolveSite(HOMEPAGE_ID)
-export const scportalLink = resolveSite('scportal')
+const hasPublicCanonicalUrl = (site: PublicGraphSite): site is PublicDestinationSite =>
+  site.availability === 'public' && site.canonical_url !== null
 
-const resolvePublicDestinationSite = (id: string): PublicGraphSite => {
+const resolvePublicDestinationSite = (id: string): PublicDestinationSite => {
   const site = resolveSite(id)
-  ensure(site.availability === 'public' && site.canonical_url !== null, `Route destination ${id} must remain a publicly available site with a canonical URL.`)
+  ensure(hasPublicCanonicalUrl(site), `Route destination ${id} must remain a publicly available site with a canonical URL.`)
   return site
 }
+
+export const homepageLink = resolvePublicDestinationSite(HOMEPAGE_ID)
+export const scportalLink = resolveSite('scportal')
 
 export const lioraBenchmarkLink = resolvePublicDestinationSite('liora_benchmarks')
 export const lioraBenchmarksLink = lioraBenchmarkLink
 export const scccvgbenLink = resolvePublicDestinationSite('scccvgben')
 
-const routeDestinationTemplates: Record<string, RouteDestinationConfig[]> = {
+type RouteId = 'datasets' | 'benchmarks' | 'models' | 'explorer'
+
+const routeDestinationTemplates: Record<RouteId, RouteDestinationConfig[]> = {
   datasets: [
     {
       id: 'iaode_pages',
@@ -177,7 +187,7 @@ for (const [routeId, config] of Object.entries(scportalRouteMap)) {
   ensure(Array.isArray(config.related_site_ids), `Route ${routeId} must define related_site_ids.`)
 }
 
-export const getRouteDestinations = (routeId: keyof typeof routeDestinationTemplates): RouteDestination[] =>
+export const getRouteDestinations = (routeId: RouteId): RouteDestination[] =>
   routeDestinationTemplates[routeId].map((item) => {
     const site = resolvePublicDestinationSite(item.id)
     return {

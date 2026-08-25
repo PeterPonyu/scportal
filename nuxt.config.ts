@@ -3,9 +3,6 @@ import { defineNuxtConfig } from 'nuxt/config'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-30',
-  future: {
-    compatibilityVersion: 4
-  },
   devtools: { enabled: true },
   
   // Modules
@@ -37,7 +34,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap'
@@ -77,11 +74,7 @@ export default defineNuxtConfig({
   // TypeScript Configuration
   typescript: {
     strict: true,
-    typeCheck: false  // Disabled to avoid vite-plugin-checker compatibility issues
+    typeCheck: true
   },
 
-  // Experimental Features
-  experimental: {
-    payloadExtraction: false
-  }
 })
