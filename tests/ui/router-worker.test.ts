@@ -1,13 +1,17 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import { describe, it } from 'node:test'
+import { fileURLToPath } from 'node:url'
 
 import { requiredObservationGroups } from '../../app/autoselect/groups.ts'
+import { createRouterRunSession } from '../../app/autoselect/routerRunSession.ts'
 import { routeMethods } from '../../app/core/router/index.ts'
 import { withSyntheticRelease } from '../router/release.ts'
 import { handleRouterWorkerRequest } from '../../app/workers/router.worker.ts'
 import type { RouterInput } from '../../app/core/router/types.ts'
 
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const dataDirectory = new URL('../../data/router/', import.meta.url)
 const json = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, dataDirectory), 'utf8')) as T
 
@@ -84,5 +88,50 @@ describe('router worker handler', () => {
     assert.ok(groups.includes('continuity'))
     assert.ok(groups.includes('trajectory'))
     assert.ok(groups.includes('stability'))
+  })
+})
+
+describe('router run session', () => {
+  it('cancel during catalog load marks the generation stale and skips ROUTE', async () => {
+    const session = createRouterRunSession('load-1')
+    const posted: string[] = []
+
+    let finishLoad!: () => void
+    const load = new Promise<void>((resolve) => {
+      finishLoad = resolve
+    })
+
+    const run = (async () => {
+      await load
+      if (!session.shouldPostRoute()) return
+      session.markPosted()
+      posted.push('ROUTE')
+    })()
+
+    const cancel = session.cancel()
+    assert.equal(cancel.shouldPostCancel, false)
+    finishLoad()
+    await run
+
+    assert.equal(session.shouldPostRoute(), false)
+    assert.deepEqual(posted, [])
+  })
+
+  it('cancel after ROUTE was posted still uses the worker CANCEL path', () => {
+    const session = createRouterRunSession('posted-1')
+    assert.equal(session.shouldPostRoute(), true)
+    session.markPosted()
+    const cancel = session.cancel()
+    assert.equal(cancel.shouldPostCancel, true)
+    assert.equal(session.shouldPostRoute(), false)
+  })
+
+  it('useRouterWorker mints the run session before evidence loaders', () => {
+    const composable = readFileSync(resolve(root, 'app/composables/useRouterWorker.ts'), 'utf8')
+    const sessionIdx = composable.indexOf('createRouterRunSession')
+    const loadIdx = composable.indexOf('Promise.all')
+    assert.ok(sessionIdx >= 0, 'run() must mint a session')
+    assert.ok(loadIdx > sessionIdx, 'session must be minted before Promise.all')
+    assert.match(composable, /shouldPostRoute/)
   })
 })

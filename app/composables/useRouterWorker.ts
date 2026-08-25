@@ -1,4 +1,5 @@
 import { requiredObservationGroups } from '../autoselect/groups.ts'
+import { createRouterRunSession, type RouterRunSession } from '../autoselect/routerRunSession.ts'
 import type { RouterInput, RouterOutcome, TaskProfile } from '../core/router/types.ts'
 import { ROUTER_VERSION, loadObservationGroups, loadRouterCatalog, loadRouterRelease } from '../services/routerData.ts'
 import type { RouterWorkerRequest, RouterWorkerResponse } from '../workers/router-protocol.ts'
@@ -12,6 +13,7 @@ export interface RouterWorkerState {
 let worker: Worker | null = null
 const ignoredRequestIds = new Set<string>()
 let applyResponse: ((response: RouterWorkerResponse) => void) | null = null
+let currentSession: RouterRunSession | null = null
 
 function ensureWorker(): Worker {
   if (worker) return worker
@@ -48,7 +50,15 @@ export function useRouterWorker() {
   }
 
   async function run(profile: TaskProfile) {
-    if (activeRequestId.value) ignoredRequestIds.add(activeRequestId.value)
+    if (currentSession) {
+      ignoredRequestIds.add(currentSession.requestId)
+      currentSession.cancel()
+    } else if (activeRequestId.value) {
+      ignoredRequestIds.add(activeRequestId.value)
+    }
+    const session = createRouterRunSession(crypto.randomUUID())
+    currentSession = session
+    activeRequestId.value = session.requestId
     state.value = { status: 'loading', outcome: null, message: null }
     try {
       const groups = requiredObservationGroups(profile.goals, profile.weights)
@@ -57,6 +67,7 @@ export function useRouterWorker() {
         loadRouterRelease(),
         loadObservationGroups(groups),
       ])
+      if (!session.shouldPostRoute()) return
       const input: RouterInput = {
         profile,
         datasets: catalog.datasets,
@@ -66,15 +77,16 @@ export function useRouterWorker() {
         routerVersion: ROUTER_VERSION,
         release,
       }
-      const requestId = crypto.randomUUID()
-      activeRequestId.value = requestId
       if (!import.meta.client) {
+        if (!session.shouldPostRoute()) return
         state.value = { status: 'error', outcome: null, message: 'Router worker is only available in the browser.' }
         return
       }
-      const request: RouterWorkerRequest = { type: 'ROUTE', requestId, input }
+      if (!session.markPosted()) return
+      const request: RouterWorkerRequest = { type: 'ROUTE', requestId: session.requestId, input }
       ensureWorker().postMessage(request)
     } catch (error) {
+      if (!session.shouldPostRoute()) return
       state.value = {
         status: 'error',
         outcome: null,
@@ -84,13 +96,16 @@ export function useRouterWorker() {
   }
 
   function cancel() {
-    const requestId = activeRequestId.value
+    const session = currentSession
+    const requestId = session?.requestId ?? activeRequestId.value
     if (!requestId) return
     ignoredRequestIds.add(requestId)
-    if (worker) {
+    const { shouldPostCancel } = session?.cancel() ?? { shouldPostCancel: Boolean(worker) }
+    if (shouldPostCancel && worker) {
       const request: RouterWorkerRequest = { type: 'CANCEL', requestId }
       worker.postMessage(request)
     }
+    currentSession = null
     activeRequestId.value = null
     state.value = idleState()
   }
