@@ -14,10 +14,10 @@ describe('head and prerender contract', () => {
     assert.equal(SITE_URL, 'https://peterponyu.github.io/scportal/')
   })
 
-  it('drives prerender from the shared PUBLIC_ROUTES constant and excludes autoselect', () => {
+  it('drives prerender from the shared PUBLIC_ROUTES constant without a hardcoded autoselect route', () => {
     assert.match(config, /from '\.\/config\/site(?:\.ts)?'/)
+    assert.deepEqual([...PUBLIC_ROUTES], ['/', '/datasets', '/explorer', '/benchmarks', '/models', '/about', '/autoselect'])
     assert.match(config, /routes:\s*\[\s*\.\.\.PUBLIC_ROUTES\s*\]/)
-    assert.deepEqual([...PUBLIC_ROUTES], ['/', '/datasets', '/explorer', '/benchmarks', '/models', '/about'])
-    assert.equal(config.includes('/autoselect'), false)
+    assert.equal(/['"]\/autoselect['"]/.test(config), false)
   })
 })

@@ -179,6 +179,7 @@ const navItems = [
   { to: '/explorer', label: 'Continuity Explorer' },
   { to: '/benchmarks', label: 'Benchmarks' },
   { to: '/models', label: 'Models' },
+  { to: '/autoselect', label: 'AutoSelect' },
   { to: '/about', label: 'About' }
 ]
 

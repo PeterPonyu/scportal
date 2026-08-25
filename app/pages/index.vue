@@ -104,6 +104,14 @@
             </template>
           </FeatureCard>
 
+          <FeatureCard
+            title="AutoSelect"
+            description="Describe a lightweight task profile and get a transparent method recommendation or an evidence-aware refusal. No expression matrix is uploaded."
+            to="/autoselect"
+            link-text="Open AutoSelect"
+            variant="primary"
+          />
+
           <!-- Metrics Reference -->
           <FeatureCard
             title="Metrics Reference"

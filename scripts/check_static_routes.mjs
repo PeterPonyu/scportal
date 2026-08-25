@@ -11,6 +11,7 @@ const checks = [
   ['/benchmarks/', 'benchmarks/index.html', 'https://peterponyu.github.io/scportal/benchmarks/'],
   ['/models/', 'models/index.html', 'https://peterponyu.github.io/scportal/models/'],
   ['/about/', 'about/index.html', 'https://peterponyu.github.io/scportal/about/'],
+  ['/autoselect/', 'autoselect/index.html', 'https://peterponyu.github.io/scportal/autoselect/'],
 ]
 
 let failed = false
