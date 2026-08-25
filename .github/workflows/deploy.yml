@@ -30,11 +30,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run Router quality gate
+        run: npm run check:router
+
       - name: Validate public graph
         run: npm run validate:public-graph
-
-      - name: Typecheck
-        run: npm run typecheck
 
       - name: Generate static site
         run: npm run generate
