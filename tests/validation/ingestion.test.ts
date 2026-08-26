@@ -44,6 +44,15 @@ describe('author metric map', () => {
       assert.notEqual(row.metricId, 'laior_coupling')
     }
     assert.equal(bySource.SCRL_DELTA.admit, false)
+    const perEpoch = map.mappings.find((row: { sourceMetric: string }) => row.sourceMetric === 'CCVGAE_PER_EPOCH_S')
+    assert.equal(perEpoch.metricId, 'ccvgae_per_epoch_s')
+    assert.equal(perEpoch.group, 'resources')
+    assert.equal(perEpoch.direction, 'lower_is_better')
+    assert.equal(perEpoch.auxiliary, false)
+    assert.deepEqual(perEpoch.papers, ['CCVGAE'])
+    assert.notEqual(perEpoch.metricId, 'runtime_minutes')
+    assert.equal(bySource.CCVGAE_TOTAL_50EPOCH.admit, false)
+    assert.equal(bySource.CCVGAE_GPU_MB.admit, false)
   })
 })
 

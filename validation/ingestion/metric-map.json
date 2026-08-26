@@ -120,6 +120,14 @@
       "direction": "higher_is_better",
       "auxiliary": true,
       "papers": ["scRL"]
+    },
+    {
+      "sourceMetric": "CCVGAE_PER_EPOCH_S",
+      "metricId": "ccvgae_per_epoch_s",
+      "group": "resources",
+      "direction": "lower_is_better",
+      "auxiliary": false,
+      "papers": ["CCVGAE"]
     }
   ],
   "exclusions": [
@@ -152,6 +160,16 @@
       "sourceMetric": "SCRL_DELTA",
       "admit": false,
       "reason": "scRL Tables 1-5 are improvement deltas, not absolute scores."
+    },
+    {
+      "sourceMetric": "CCVGAE_TOTAL_50EPOCH",
+      "admit": false,
+      "reason": "Table 7 total is 50 times per-epoch seconds, not a second resource score. Do not admit as runtime_minutes."
+    },
+    {
+      "sourceMetric": "CCVGAE_GPU_MB",
+      "admit": false,
+      "reason": "Table 7 GPU MB is nearly flat (95-99) and is not admitted in this slice."
     }
   ]
 }

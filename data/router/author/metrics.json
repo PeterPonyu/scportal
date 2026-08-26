@@ -16,5 +16,6 @@
   {"id":"scrl_mas_pseudotime","aliases":["scrl-mas-pseudotime"],"group":"trajectory","direction":"higher_is_better","auxiliary":true,"description":"scRL self-defined MAS on pseudotime intensity vs UMAP axes. Not experimental ground truth. Do not pool with LAIOR or LiVAE COR."},
   {"id":"scrl_mas_fate","aliases":["scrl-mas-fate"],"group":"trajectory","direction":"higher_is_better","auxiliary":true,"description":"scRL self-defined MAS on fate-probability intensity vs UMAP axes. Not experimental ground truth. Do not pool with LAIOR or LiVAE COR."},
   {"id":"scrl_paac_pseudotime","aliases":["scrl-paac-pseudotime"],"group":"trajectory","direction":"higher_is_better","auxiliary":true,"description":"scRL self-defined PAAC on pseudotime intensity vs principal axes. Not experimental ground truth."},
-  {"id":"scrl_paac_fate","aliases":["scrl-paac-fate"],"group":"trajectory","direction":"higher_is_better","auxiliary":true,"description":"scRL self-defined PAAC on fate-probability intensity vs principal axes. Not experimental ground truth."}
+  {"id":"scrl_paac_fate","aliases":["scrl-paac-fate"],"group":"trajectory","direction":"higher_is_better","auxiliary":true,"description":"scRL self-defined PAAC on fate-probability intensity vs principal axes. Not experimental ground truth."},
+  {"id":"ccvgae_per_epoch_s","aliases":["ccvgae-per-epoch-s"],"group":"resources","direction":"lower_is_better","auxiliary":false,"description":"CCVGAE Table 7 per-epoch seconds on RTX 3090, 50-epoch profile. Do not pool with runtime_minutes."}
 ]
