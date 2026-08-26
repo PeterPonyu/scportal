@@ -10,3 +10,13 @@ scrl-fig6-s-subs8,scRL,S-SUBS8,s_subs8_cd34,scRL,SCRL_MAS_FATE,0.323,Fig. 6 S-SU
 scrl-fig6-s-subs8,scRL,S-SUBS8,s_subs8_cd34,scRL,SCRL_PAAC_FATE,0.373,Fig. 6 S-SUBS8 fate table,table,2026-08-26
 scrl-figa6-gse132188,scRL,GSE132188,gse132188_endo,scRL,SCRL_MAS_PSEUDOTIME,0.865,Fig. A6A endocrinogenesis MAS,table,2026-08-26
 scrl-figa6-gse117498,scRL,GSE117498,gse117498_pheno_hsc,scRL,SCRL_MAS_FATE,0.674,Fig. A6B phenotypical HSC MAS,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,endo,ccvgae_endo,CCVGAE,CCVGAE_PER_EPOCH_S,0.36,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,setty,ccvgae_setty,CCVGAE,CCVGAE_PER_EPOCH_S,0.66,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,hESC,ccvgae_hesc,CCVGAE,CCVGAE_PER_EPOCH_S,1.17,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,bloodAged,ccvgae_blood_aged,CCVGAE,CCVGAE_PER_EPOCH_S,1.57,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,hemato,ccvgae_hemato,CCVGAE,CCVGAE_PER_EPOCH_S,3.08,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,GSM5124061,gsm5124061,CCVGAE,CCVGAE_PER_EPOCH_S,0.44,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,GSE198730,gse198730,CCVGAE,CCVGAE_PER_EPOCH_S,0.60,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,GSM6638254,gsm6638254,CCVGAE,CCVGAE_PER_EPOCH_S,0.89,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,GSM7308367,gsm7308367,CCVGAE,CCVGAE_PER_EPOCH_S,1.27,Table 7 runtime,table,2026-08-26
+ccvgae-table7-runtime,CCVGAE,GSE206767,gse206767,CCVGAE,CCVGAE_PER_EPOCH_S,1.61,Table 7 runtime,table,2026-08-26

@@ -1,5 +1,75 @@
 [
   {
+    "datasetId": "ccvgae_blood_aged",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 1.57,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "bloodAged",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "ccvgae_endo",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 0.36,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "endo",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "ccvgae_hemato",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 3.08,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "hemato",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "ccvgae_hesc",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 1.17,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "hESC",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "ccvgae_setty",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 0.66,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "setty",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
     "datasetId": "gse117498_pheno_hsc",
     "methodId": "scRL",
     "metricId": "scrl_mas_fate",
@@ -24,6 +94,34 @@
       "datasetVersion": "GSE132188",
       "methodVersion": "0.0.0-author",
       "runConfigId": "scrl-figa6-gse132188",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gse198730",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 0.6,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "GSE198730",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gse206767",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 1.61,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "GSE206767",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
       "extractedAt": "2026-08-26T00:00:00Z"
     }
   },
@@ -94,6 +192,48 @@
       "datasetVersion": "GSE278673",
       "methodVersion": "0.0.0-author",
       "runConfigId": "laior-fig8-reserved-geo",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gsm5124061",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 0.44,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "GSM5124061",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gsm6638254",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 0.89,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "GSM6638254",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gsm7308367",
+    "methodId": "CCVGAE",
+    "metricId": "ccvgae_per_epoch_s",
+    "rawValue": 1.27,
+    "provenance": {
+      "paperId": "CCVGAE",
+      "locator": "Table 7 runtime",
+      "datasetVersion": "GSM7308367",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "ccvgae-table7-runtime",
       "extractedAt": "2026-08-26T00:00:00Z"
     }
   },

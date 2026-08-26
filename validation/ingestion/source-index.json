@@ -31,6 +31,14 @@
       "locator": "Fig. A6B; papers/evidence/rl_bench_family.md §1.5 phenotypical HSC MAS",
       "extraction": "table",
       "reviewerStatus": "transcribed-2026-08-26"
+    },
+    {
+      "sourceId": "ccvgae-table7-runtime",
+      "paperId": "CCVGAE",
+      "doi": "10.1016/j.array.2026.100808",
+      "locator": "Table 7; papers/evidence/new3_family.md",
+      "extraction": "table",
+      "reviewerStatus": "transcribed-2026-08-26"
     }
   ]
 }

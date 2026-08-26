@@ -1,11 +1,21 @@
 datasetId,methodId,metricId,rawValue,paperId,locator,datasetVersion,methodVersion,runConfigId,extractedAt
+ccvgae_blood_aged,CCVGAE,ccvgae_per_epoch_s,1.57,CCVGAE,Table 7 runtime,bloodAged,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+ccvgae_endo,CCVGAE,ccvgae_per_epoch_s,0.36,CCVGAE,Table 7 runtime,endo,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+ccvgae_hemato,CCVGAE,ccvgae_per_epoch_s,3.08,CCVGAE,Table 7 runtime,hemato,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+ccvgae_hesc,CCVGAE,ccvgae_per_epoch_s,1.17,CCVGAE,Table 7 runtime,hESC,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+ccvgae_setty,CCVGAE,ccvgae_per_epoch_s,0.66,CCVGAE,Table 7 runtime,setty,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
 gse117498_pheno_hsc,scRL,scrl_mas_fate,0.674,scRL,Fig. A6B phenotypical HSC MAS,GSE117498,0.0.0-author,scrl-figa6-gse117498,2026-08-26T00:00:00Z
 gse132188_endo,scRL,scrl_mas_pseudotime,0.865,scRL,Fig. A6A endocrinogenesis MAS,GSE132188,0.0.0-author,scrl-figa6-gse132188,2026-08-26T00:00:00Z
+gse198730,CCVGAE,ccvgae_per_epoch_s,0.6,CCVGAE,Table 7 runtime,GSE198730,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+gse206767,CCVGAE,ccvgae_per_epoch_s,1.61,CCVGAE,Table 7 runtime,GSE206767,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
 gse277292_dapp1,LAIOR,nmi,0.546,LAIOR,Fig. 8 WTKO table,GSE277292,0.0.0-author,laior-fig8-reserved-geo,2026-08-26T00:00:00Z
 gse278673_radiation,LAIOR,ari,0.691,LAIOR,Fig. 8 IRALL table,GSE278673,0.0.0-author,laior-fig8-reserved-geo,2026-08-26T00:00:00Z
 gse278673_radiation,LAIOR,calinski_harabasz,5125,LAIOR,Fig. 8 IRALL table,GSE278673,0.0.0-author,laior-fig8-reserved-geo,2026-08-26T00:00:00Z
 gse278673_radiation,LAIOR,laior_coupling,0.557,LAIOR,Fig. 8 IRALL table,GSE278673,0.0.0-author,laior-fig8-reserved-geo,2026-08-26T00:00:00Z
 gse278673_radiation,LAIOR,nmi,0.693,LAIOR,Fig. 8 IRALL table,GSE278673,0.0.0-author,laior-fig8-reserved-geo,2026-08-26T00:00:00Z
+gsm5124061,CCVGAE,ccvgae_per_epoch_s,0.44,CCVGAE,Table 7 runtime,GSM5124061,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+gsm6638254,CCVGAE,ccvgae_per_epoch_s,0.89,CCVGAE,Table 7 runtime,GSM6638254,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+gsm7308367,CCVGAE,ccvgae_per_epoch_s,1.27,CCVGAE,Table 7 runtime,GSM7308367,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
 s_subs8_cd34,scRL,scrl_mas_fate,0.323,scRL,Fig. 6 S-SUBS8 fate table,S-SUBS8,0.0.0-author,scrl-fig6-s-subs8,2026-08-26T00:00:00Z
 s_subs8_cd34,scRL,scrl_mas_pseudotime,0.773,scRL,Fig. 6 S-SUBS8 pseudotime table,S-SUBS8,0.0.0-author,scrl-fig6-s-subs8,2026-08-26T00:00:00Z
 s_subs8_cd34,scRL,scrl_paac_fate,0.373,scRL,Fig. 6 S-SUBS8 fate table,S-SUBS8,0.0.0-author,scrl-fig6-s-subs8,2026-08-26T00:00:00Z
