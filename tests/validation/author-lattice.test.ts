@@ -40,15 +40,26 @@ describe('author remaining lattice', () => {
     assert.equal(lattice.methods.find((row: { id: string }) => row.id === 'CODE').status, 'blocked_until')
     assert.equal(lattice.methods.find((row: { id: string }) => row.id === 'scFocus').status, 'blocked_until')
     assert.equal(lattice.methods.find((row: { id: string }) => row.id === 'iVAE').status, 'main_text_exhausted')
+    assert.equal(lattice.observationCount, 11)
+    assert.equal(lattice.observationCount, observations.length)
+    assert.equal(lattice.studyGroupCount, 5)
+    assert.equal(lattice.evaluableHoldouts, 0)
   })
 
   it('leaves production and reserved GEO cases on the synthetic path', async () => {
     const production = await readJson('data/router/release.json')
-    const cases = await readJson('validation/results/cases/gse280270_ucb_tpo.json')
-    const dapp1 = await readJson('validation/results/cases/gse277292_dapp1.json')
+    const reservedCases = [
+      await readJson('validation/results/cases/gse280270_ucb_tpo.json'),
+      await readJson('validation/results/cases/gse277292_dapp1.json'),
+      await readJson('validation/results/cases/gse278673_radiation.json'),
+      await readJson('validation/results/cases/gse280145_sleep_deprivation.json'),
+    ]
     assert.equal(production.id, 'router-evidence-synthetic-v1')
     assert.equal(production.synthetic, true)
-    assert.equal(cases.outcome.status, 'REFUSED')
-    assert.deepEqual(dapp1.outcome.evidenceGaps, ['reserved_identity_without_admitted_observations'])
+    for (const row of reservedCases) {
+      assert.equal(row.outcome.status, 'REFUSED')
+      assert.deepEqual(row.outcome.evidenceGaps, ['reserved_identity_without_admitted_observations'])
+      assert.equal(row.outcome.evidenceVersion, 'router-evidence-synthetic-v1')
+    }
   })
 })
