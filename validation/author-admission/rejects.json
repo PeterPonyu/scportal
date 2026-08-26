@@ -30,5 +30,33 @@
   "aggregate-means": {
     "admit": false,
     "reason": "Pooled paper means cannot be exploded into study groups."
+  },
+  "ccvgae-table-6-mean": {
+    "admit": false,
+    "reason": "CCVGAE Table 6 is a 55-dataset mean. Do not explode it into study groups."
+  },
+  "laior-fig3-mean": {
+    "admit": false,
+    "reason": "LAIOR Fig. 3 / Supp. A3 is a 53-dataset pool. Do not copy it as one study group."
+  },
+  "mccvae-a1-a16-mean": {
+    "admit": false,
+    "reason": "MCCVAE A.1-A.16 are 50-dataset means. Do not explode them. Do not fill ARI/NMI."
+  },
+  "gahib-tables-1-7-mean": {
+    "admit": false,
+    "reason": "GAHIB Tables 1-7 are means. ARI 0.564 is a Leiden-proxy mean."
+  },
+  "clop-table-3-pool": {
+    "admit": false,
+    "reason": "CLOP-DiT Table 3 is an 80-GEO pool. KNN/Steering have no MetricGroup."
+  },
+  "ivae-tables-1-10-delta": {
+    "admit": false,
+    "reason": "iVAE Tables 1-10 are deltas, not absolute scores."
+  },
+  "scrl-tables-1-5-delta": {
+    "admit": false,
+    "reason": "scRL Tables 1-5 are improvement deltas. Absolute MAS/PAAC are already admitted."
   }
 }
