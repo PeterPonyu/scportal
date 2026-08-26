@@ -38,9 +38,16 @@
         <dd class="mt-1 font-mono text-dark-900 dark:text-white">{{ maxResourceTier }}</dd>
       </div>
       <div class="rounded-2xl border border-dark-200 bg-white p-4 dark:border-dark-800 dark:bg-dark-900">
+        <dt class="font-medium text-dark-500 dark:text-dark-400">Candidate methods</dt>
+        <dd class="mt-1 font-mono text-dark-900 dark:text-white">{{ candidateMethodsLabel }}</dd>
+      </div>
+      <div class="rounded-2xl border border-dark-200 bg-white p-4 dark:border-dark-800 dark:bg-dark-900">
         <dt class="font-medium text-dark-500 dark:text-dark-400">Evidence thresholds</dt>
-        <dd class="mt-1 font-mono text-dark-900 dark:text-white">
+        <dd v-if="mode === 'advanced'" class="mt-1 font-mono text-dark-900 dark:text-white">
           minEffectiveDatasets={{ minEffectiveDatasets }}; minCriticalCoverage={{ minCriticalCoverage }}; seed={{ seed }}
+        </dd>
+        <dd v-else class="mt-1 font-mono text-dark-900 dark:text-white">
+          Locked Quick defaults: minEffectiveDatasets={{ minEffectiveDatasets }}; minCriticalCoverage={{ minCriticalCoverage }}; seed={{ seed }}
         </dd>
       </div>
     </dl>
@@ -48,9 +55,11 @@
 </template>
 
 <script setup lang="ts">
+import type { AutoSelectMode } from '../../../autoselect/state'
 import type { MetricGroup, Modality, PriorKey, ScaleBand, TaskGoal, Topology } from '../../../core/router/types'
 
 const props = defineProps<{
+  mode: AutoSelectMode
   modality: Modality | null
   scale: ScaleBand
   goals: TaskGoal[]
@@ -62,6 +71,7 @@ const props = defineProps<{
   minEffectiveDatasets: number
   minCriticalCoverage: number
   seed: number
+  candidateMethodIds?: string[]
 }>()
 
 const modalityLabel = computed(() => props.modality ?? 'not selected')
@@ -73,5 +83,11 @@ const priorsLabel = computed(() => {
 const weightsLabel = computed(() => {
   const keys: MetricGroup[] = ['latent_geometry', 'continuity', 'trajectory', 'stability', 'biology', 'resources']
   return keys.map((key) => `${key}=${props.weights[key]}`).join('; ')
+})
+const candidateMethodsLabel = computed(() => {
+  if (props.candidateMethodIds === undefined || props.candidateMethodIds.length === 0) {
+    return 'all catalog methods'
+  }
+  return props.candidateMethodIds.join(', ')
 })
 </script>

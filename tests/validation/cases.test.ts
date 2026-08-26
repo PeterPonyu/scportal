@@ -19,7 +19,6 @@ const BLOCKED = [
 const ALLOWED = [
   'workflow applicability',
   'method-selection recommendation',
-  'published case evidence',
   'hypothesis-generating biological concordance',
 ] as const
 
@@ -147,6 +146,7 @@ describe('bounded hematopoietic case identities', () => {
       assertAccessionIdentity(row)
       assert.equal(row.profile.seed, 20260823)
       assert.equal(/new causal experiment/i.test(`${row.biology} ${row.claimCeiling}`), false)
+      assert.equal(/published case evidence/i.test(row.claimCeiling), false)
     }
   })
 })
@@ -169,6 +169,7 @@ describe('nonclaim wording ceilings', () => {
       assert.equal(hit.ok, true)
       assert.deepEqual(hit.hits, [])
     }
+    assert.equal(allowed.has('published case evidence'), false)
   })
 })
 
@@ -192,7 +193,7 @@ describe('bounded case routing', () => {
     assert.equal(catalog.observations.some((row) => reservedIds.has(row.datasetId)), false)
   })
 
-  it('routes once on the scoring view and writes unchanged outcomes', async () => {
+  it('refuses reserved identities without admitted observations and writes unchanged outcomes', async () => {
     const { runCases } = await import('../../validation/run-cases.ts')
     const { loadRouterCatalog } = await import('../../validation/src/load-catalog.ts')
     const before = await loadRouterCatalog()
@@ -207,12 +208,21 @@ describe('bounded case routing', () => {
     assert.deepEqual(after.observations, before.observations)
     for (const row of result.rows) {
       assert.equal(row.seed, 20260823)
-      assert.ok(row.outcome.status === 'OK' || row.outcome.status === 'REFUSED')
+      assert.equal(row.outcome.status, 'REFUSED')
+      if (row.outcome.status !== 'REFUSED') throw new Error('expected REFUSED')
+      assert.equal(row.outcome.code, 'INSUFFICIENT_EVIDENCE')
+      assert.ok(row.outcome.evidenceGaps.includes('reserved_identity_without_admitted_observations'))
+      assert.equal(Object.hasOwn(row.outcome, 'recommendations'), false)
+      assert.equal(Object.hasOwn(row.outcome, 'methodId'), false)
       assert.equal(row.compiled, false)
       assert.equal(row.geoObservationsAdded, false)
       assert.equal(row.nonclaimScan.ok, true)
+      assert.equal(/published case evidence/i.test(row.claimCeiling), false)
       const written = await readJson(`validation/results/cases/${row.id}.json`)
       assert.deepEqual(written.outcome, row.outcome)
+      assert.equal(written.outcome.status, 'REFUSED')
+      assert.equal(Object.hasOwn(written.outcome, 'recommendations'), false)
+      assert.equal(Object.hasOwn(written.outcome, 'methodId'), false)
       assert.equal(written.seed, 20260823)
     }
     const committed = await readJson('data/router/methods.json') as Array<{ executable: boolean }>
@@ -223,6 +233,7 @@ describe('bounded case routing', () => {
     const runSource = await readFile(resolve(root, 'validation/run-cases.ts'), 'utf8')
     const profileSource = await readFile(resolve(root, 'validation/src/case-profiles.ts'), 'utf8')
     const source = `${runSource}\n${profileSource}`
+    assert.equal(runSource.includes('routeMethods'), false)
     assert.equal(/compileConfig/.test(source), false)
     assert.equal(/ncbi\.nlm\.nih\.gov|geo\/query|downloadGEO|h5ad|\bfetch\s*\(|https:\/\/|http:\/\//i.test(source), false)
     assert.equal(source.includes('GSE280270') && source.includes('GSE277292'), true)

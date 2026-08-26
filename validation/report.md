@@ -62,6 +62,8 @@ Context-free systems scored on the same held-out tasks:
 
 Router mean Top-3: non_evaluable; mean normalized regret: non_evaluable.
 
+Router evaluable holdout tasks are 0/6. Baseline Top-3=1 / regret=0 is a synthetic-fixture conditional mean, not a published result.
+
 ## Primary effects with confidence intervals
 
 Study-group bootstrap of paired normalized-regret improvement versus `global_average` (seed 20260823, replicates 5000):
@@ -134,16 +136,16 @@ GPU required: false. Executable failures: 0. Catalog `executable` flags were not
 
 ## Four bounded cases
 
-These rows are workflow-applicability demonstrations on reserved identities. They do not establish fate, radiation programs, Dapp1 causality, or sleep-deprivation trajectory validation. Hypothesis-generating biological concordance is the ceiling.
+These rows are workflow-applicability demonstrations on reserved identities. They do not establish fate, radiation programs, Dapp1 causality, or sleep-deprivation trajectory validation. Hypothesis-generating biological concordance is the ceiling. Reserved-case rows are identity-only and are not holdout scores.
 
 | accession | role | biology | outcome | recommended | compiled | geoObservationsAdded |
 | --- | --- | --- | --- | --- | --- | --- |
-| GSE277292 | application_case | mouse LSK Dapp1 knockout versus wild type | REFUSED / CONFLICTING_REQUIREMENTS | none | false | false |
-| GSE278673 | application_case | mouse LSK total-body radiation injury time course | OK | neural_ode | false | false |
-| GSE280145 | supplemental_case | sleep-deprivation stress, non-trajectory supplemental case | OK | graph_contrastive | false | false |
-| GSE280270 | external_holdout | human UCB TPO-induced megakaryocyte differentiation D0-D14 | OK | graph_contrastive | false | false |
+| GSE277292 | application_case | mouse LSK Dapp1 knockout versus wild type | REFUSED / INSUFFICIENT_EVIDENCE | none | false | false |
+| GSE278673 | application_case | mouse LSK total-body radiation injury time course | REFUSED / INSUFFICIENT_EVIDENCE | none | false | false |
+| GSE280145 | supplemental_case | sleep-deprivation stress, non-trajectory supplemental case | REFUSED / INSUFFICIENT_EVIDENCE | none | false | false |
+| GSE280270 | external_holdout | human UCB TPO-induced megakaryocyte differentiation D0-D14 | REFUSED / INSUFFICIENT_EVIDENCE | none | false | false |
 
-Allowed wording: workflow applicability; method-selection recommendation; published case evidence; hypothesis-generating biological concordance.
+Allowed wording: workflow applicability; method-selection recommendation; hypothesis-generating biological concordance.
 
 Blocked biological-overclaim sentences are listed in `validation/nonclaims.json` and must not appear in this report.
 
@@ -154,7 +156,7 @@ Blocked biological-overclaim sentences are listed in `validation/nonclaims.json`
 - Primary paired regret is `non_evaluable` on this catalog (0 evaluable holdout tasks in the sealed dry-run).
 - External UCB evidence is missing by design; the holdout was not used to tune the protocol.
 - Expressible ablation numeric deltas are `non_evaluable`; unsupported ablations contribute no delta.
-- Case outcomes use the synthetic scoring view. They are not published-evidence scores and not causal results.
+- Reserved-case rows are identity-only and are not holdout scores. They are not published-evidence scores and not causal results.
 - `software_resource` is the required claim until a later published-evidence plan meets the frozen gate.
 
 ## Claim status

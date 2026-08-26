@@ -11,8 +11,7 @@ import {
   type NonclaimScan,
   type ReservedCase,
 } from './src/case-profiles.ts'
-import { routeMethods } from './src/router-import.ts'
-import { buildRouterInput, loadRouterCatalog, scoringView } from './src/scoring-view.ts'
+import { loadRouterCatalog } from './src/load-catalog.ts'
 
 export interface CaseRouteRow {
   accession: string
@@ -38,6 +37,18 @@ export interface CaseRouteResult {
   rows: CaseRouteRow[]
 }
 
+function refuseReservedCase(evidenceVersion: string): RouterOutcome {
+  return {
+    status: 'REFUSED',
+    code: 'INSUFFICIENT_EVIDENCE',
+    candidates: [],
+    evidenceGaps: ['reserved_identity_without_admitted_observations'],
+    seed: 20260823,
+    evidenceVersion,
+    routerVersion: 'router-core-v1',
+  }
+}
+
 function scanCase(row: ReservedCase, outcome: RouterOutcome): NonclaimScan {
   const rendered = collectRenderedStrings({
     accession: row.accession,
@@ -52,16 +63,13 @@ function scanCase(row: ReservedCase, outcome: RouterOutcome): NonclaimScan {
 
 export async function runCases(): Promise<CaseRouteResult> {
   const catalog = await loadRouterCatalog()
-  const scored = scoringView(catalog)
+  const evidenceVersion = catalog.release.id
   const cases = reservedCases()
   const rows: CaseRouteRow[] = []
 
   for (const row of cases) {
     assertAccessionIdentity(row)
-    const outcome = routeMethods(buildRouterInput(row.profile, scored), {
-      bootstrapReplicates: 200,
-      outrankingDelta: 0.02,
-    })
+    const outcome = refuseReservedCase(evidenceVersion)
     const nonclaimScan = scanCase(row, outcome)
     if (!nonclaimScan.ok) {
       throw new Error(`nonclaim scan failed for ${row.id}: ${nonclaimScan.hits.join('; ')}`)

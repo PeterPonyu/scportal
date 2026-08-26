@@ -238,6 +238,22 @@ export function reset(state: AutoSelectState): AutoSelectState {
   return createInitialAutoSelectState(state.mode)
 }
 
+export function setMode(state: AutoSelectState, mode: AutoSelectMode): AutoSelectState {
+  if (mode === state.mode) return state
+  if (mode === 'advanced') return { ...state, mode }
+  const defaults = createInitialAutoSelectState('quick')
+  const next: AutoSelectState = {
+    ...state,
+    mode: 'quick',
+    weights: copyWeights(defaults.weights),
+    minEffectiveDatasets: defaults.minEffectiveDatasets,
+    minCriticalCoverage: defaults.minCriticalCoverage,
+    seed: defaults.seed,
+  }
+  delete next.candidateMethodIds
+  return next
+}
+
 export function toTaskProfile(state: AutoSelectState): TaskProfile {
   const invalid = validateStep('review', state)
   if (invalid !== null) throw new Error(invalid)

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import {
   createInitialAutoSelectState,
   reset,
+  setMode,
   toTaskProfile,
   validateStep,
   type AutoSelectState,
@@ -188,6 +189,41 @@ describe('AutoSelect Advanced controls', () => {
     assert.match(source, /auxiliar/i)
     assert.equal(/id="ari"|name="ari"|id="nmi"|name="nmi"/i.test(source), false)
     assert.equal(source.includes('routeMethods'), false)
+  })
+
+  it('does not duplicate weight sliders on PrioritiesStep in Advanced', () => {
+    const priorities = readSource('app/components/autoselect/steps/PrioritiesStep.vue')
+    const advanced = readSource('app/components/autoselect/AdvancedControls.vue')
+    assert.equal(priorities.includes('type="range"'), false, 'Advanced weight editing stays in WeightEditor')
+    assert.match(priorities, /edit weights in Advanced controls above/i)
+    assert.match(advanced, /WeightEditor/)
+  })
+
+  it('ReviewStep always surfaces candidateMethodIds and locks Quick evidence defaults', () => {
+    const review = readSource('app/components/autoselect/steps/ReviewStep.vue')
+    assert.match(review, /candidateMethodIds/)
+    assert.match(review, /all catalog methods/)
+    assert.match(review, /mode === 'advanced'|mode === "advanced"/)
+    assert.match(review, /locked/i)
+  })
+
+  it('switching back to Quick restores default weights and thresholds', () => {
+    const edited = withValidData(createInitialAutoSelectState('advanced'), {
+      weights: { ...QUICK_TRAJECTORY_WEIGHTS, biology: 0.5 },
+      minEffectiveDatasets: 5,
+      minCriticalCoverage: 0.8,
+      seed: 99,
+      maxResourceTier: 1,
+      candidateMethodIds: catalogMethodIds().slice(0, 1),
+    })
+    const restored = setMode(edited, 'quick')
+    assert.equal(restored.mode, 'quick')
+    assert.deepEqual(restored.weights, QUICK_TRAJECTORY_WEIGHTS)
+    assert.equal(restored.minEffectiveDatasets, 2)
+    assert.equal(restored.minCriticalCoverage, 0.6)
+    assert.equal(restored.seed, 20260823)
+    assert.equal(restored.maxResourceTier, 1)
+    assert.equal(Object.hasOwn(restored, 'candidateMethodIds'), false)
   })
 
   it('AutoSelectShell wires ModeToggle without erasing selections or ranking', () => {

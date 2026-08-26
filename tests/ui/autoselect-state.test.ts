@@ -8,6 +8,7 @@ import {
   createInitialAutoSelectState,
   reset,
   retreat,
+  setMode,
   toTaskProfile,
   validateStep,
   type AutoSelectState,
@@ -236,11 +237,36 @@ describe('AutoSelect wizard state', () => {
     assert.equal(profile.scale, 'unknown')
   })
 
+  it('switching back to Quick restores default weights and evidence thresholds', () => {
+    const edited = withValidData(createInitialAutoSelectState('advanced'), {
+      weights: { ...QUICK_TRAJECTORY_WEIGHTS, resources: 0.4, trajectory: 0.1 },
+      minEffectiveDatasets: 4,
+      minCriticalCoverage: 0.9,
+      seed: 7,
+      maxResourceTier: 3,
+      candidateMethodIds: ['geometry_vae'],
+    })
+    const advanced = setMode(edited, 'advanced')
+    assert.equal(advanced.mode, 'advanced')
+    assert.equal(advanced.minEffectiveDatasets, 4)
+    assert.deepEqual(advanced.weights.resources, 0.4)
+
+    const restored = setMode(edited, 'quick')
+    assert.equal(restored.mode, 'quick')
+    assert.deepEqual(restored.weights, QUICK_TRAJECTORY_WEIGHTS)
+    assert.equal(restored.minEffectiveDatasets, 2)
+    assert.equal(restored.minCriticalCoverage, 0.6)
+    assert.equal(restored.seed, 20260823)
+    assert.equal(restored.maxResourceTier, 3)
+    assert.equal(Object.hasOwn(restored, 'candidateMethodIds'), false)
+  })
+
   it('keeps wizard state and composable off the Router kernel', async () => {
     const stateSource = await readFile(new URL('../../app/autoselect/state.ts', import.meta.url), 'utf8')
     const composableSource = await readFile(new URL('../../app/composables/useAutoSelect.ts', import.meta.url), 'utf8')
     assert.equal(stateSource.includes('routeMethods'), false)
     assert.equal(composableSource.includes('routeMethods'), false)
     assert.match(composableSource, /useState(?:<[^>]+>)?\('autoselect-state'/)
+    assert.match(composableSource, /setMode/)
   })
 })

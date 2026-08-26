@@ -11,48 +11,52 @@
       :model-value="String(maxResourceTier)"
       @update:model-value="onTier"
     />
-    <label class="grid gap-2 rounded-2xl border border-dark-200 bg-white p-4 text-sm dark:border-dark-800 dark:bg-dark-900">
-      <span class="font-medium text-dark-900 dark:text-white">Minimum effective datasets</span>
-      <input
-        :value="minEffectiveDatasets"
-        type="number"
-        min="1"
-        step="1"
-        class="rounded-lg border border-dark-200 bg-white px-3 py-2 font-mono dark:border-dark-700 dark:bg-dark-950"
-        @input="onDatasets(Number(($event.target as HTMLInputElement).value))"
-      >
-    </label>
-    <label class="grid gap-2 rounded-2xl border border-dark-200 bg-white p-4 text-sm dark:border-dark-800 dark:bg-dark-900">
-      <span class="font-medium text-dark-900 dark:text-white">Minimum critical coverage</span>
-      <input
-        :value="minCriticalCoverage"
-        type="number"
-        min="0"
-        max="1"
-        step="0.05"
-        class="rounded-lg border border-dark-200 bg-white px-3 py-2 font-mono dark:border-dark-700 dark:bg-dark-950"
-        @input="onCoverage(Number(($event.target as HTMLInputElement).value))"
-      >
-    </label>
-    <label class="grid gap-2 rounded-2xl border border-dark-200 bg-white p-4 text-sm dark:border-dark-800 dark:bg-dark-900">
-      <span class="font-medium text-dark-900 dark:text-white">Deterministic seed</span>
-      <input
-        :value="seed"
-        type="number"
-        min="0"
-        max="4294967295"
-        step="1"
-        class="rounded-lg border border-dark-200 bg-white px-3 py-2 font-mono dark:border-dark-700 dark:bg-dark-950"
-        @input="onSeed(Number(($event.target as HTMLInputElement).value))"
-      >
-    </label>
+    <div v-if="mode === 'advanced'" class="grid gap-4">
+      <label class="grid gap-2 rounded-2xl border border-dark-200 bg-white p-4 text-sm dark:border-dark-800 dark:bg-dark-900">
+        <span class="font-medium text-dark-900 dark:text-white">Minimum effective datasets</span>
+        <input
+          :value="minEffectiveDatasets"
+          type="number"
+          min="1"
+          step="1"
+          class="rounded-lg border border-dark-200 bg-white px-3 py-2 font-mono dark:border-dark-700 dark:bg-dark-950"
+          @input="onDatasets(Number(($event.target as HTMLInputElement).value))"
+        >
+      </label>
+      <label class="grid gap-2 rounded-2xl border border-dark-200 bg-white p-4 text-sm dark:border-dark-800 dark:bg-dark-900">
+        <span class="font-medium text-dark-900 dark:text-white">Minimum critical coverage</span>
+        <input
+          :value="minCriticalCoverage"
+          type="number"
+          min="0"
+          max="1"
+          step="0.05"
+          class="rounded-lg border border-dark-200 bg-white px-3 py-2 font-mono dark:border-dark-700 dark:bg-dark-950"
+          @input="onCoverage(Number(($event.target as HTMLInputElement).value))"
+        >
+      </label>
+      <label class="grid gap-2 rounded-2xl border border-dark-200 bg-white p-4 text-sm dark:border-dark-800 dark:bg-dark-900">
+        <span class="font-medium text-dark-900 dark:text-white">Deterministic seed</span>
+        <input
+          :value="seed"
+          type="number"
+          min="0"
+          max="4294967295"
+          step="1"
+          class="rounded-lg border border-dark-200 bg-white px-3 py-2 font-mono dark:border-dark-700 dark:bg-dark-950"
+          @input="onSeed(Number(($event.target as HTMLInputElement).value))"
+        >
+      </label>
+    </div>
   </fieldset>
 </template>
 
 <script setup lang="ts">
+import type { AutoSelectMode } from '../../../autoselect/state'
 import ChoiceGroup from '../ChoiceGroup.vue'
 
 defineProps<{
+  mode: AutoSelectMode
   maxResourceTier: 1 | 2 | 3
   minEffectiveDatasets: number
   minCriticalCoverage: number

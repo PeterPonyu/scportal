@@ -73,8 +73,22 @@ function caseMethod(row: Record<string, unknown>): string {
   return typeof recommendations[0]?.methodId === 'string' ? recommendations[0].methodId : 'none'
 }
 
+function routerHoldoutCounts(primary: Record<string, unknown>): { evaluable: number; total: number } {
+  const rows = Array.isArray(primary.rows) ? primary.rows.filter(isRecord) : []
+  const routerRows = rows.filter((row) => row.system === 'router')
+  const paired = pairedAggregate(primary)
+  const fromPaired = paired.evaluableTaskCount
+  const evaluable = typeof fromPaired === 'number' && Number.isFinite(fromPaired)
+    ? fromPaired
+    : routerRows.filter((row) => row.status === 'OK').length
+  return { evaluable, total: routerRows.length }
+}
+
 export function renderValidationReport(artifacts: ReportArtifacts): string {
   const paired = pairedAggregate(artifacts.primary)
+  const holdoutCounts = routerHoldoutCounts(artifacts.primary)
+  const baselineTop3 = meanSystemMetric(artifacts.primary, 'global_average', 'top3')
+  const baselineRegret = meanSystemMetric(artifacts.primary, 'global_average', 'normalizedRegret')
   const groups = studyGroups(artifacts.datasets)
   const expressible = (artifacts.ablations.ablations ?? []).filter((row) => row.status === 'expressible')
   const unsupported = (artifacts.ablations.ablations ?? []).filter((row) => row.status === 'unsupported')
@@ -138,6 +152,8 @@ Context-free systems scored on the same held-out tasks:
 ${BASELINE_IDS.map((id) => `- \`${id}\` mean Top-3: ${meanSystemMetric(artifacts.primary, id, 'top3')}; mean normalized regret: ${meanSystemMetric(artifacts.primary, id, 'normalizedRegret')}`).join('\n')}
 
 Router mean Top-3: ${meanSystemMetric(artifacts.primary, 'router', 'top3')}; mean normalized regret: ${meanSystemMetric(artifacts.primary, 'router', 'normalizedRegret')}.
+
+Router evaluable holdout tasks are ${holdoutCounts.evaluable}/${holdoutCounts.total}. Baseline Top-3=${baselineTop3} / regret=${baselineRegret} is a synthetic-fixture conditional mean, not a published result.
 
 ## Primary effects with confidence intervals
 
@@ -204,13 +220,13 @@ ${smokeRows.map((row) => `| ${formatValue(row.methodId)} | ${formatValue(row.lev
 
 ## Four bounded cases
 
-These rows are workflow-applicability demonstrations on reserved identities. They do not establish fate, radiation programs, Dapp1 causality, or sleep-deprivation trajectory validation. Hypothesis-generating biological concordance is the ceiling.
+These rows are workflow-applicability demonstrations on reserved identities. They do not establish fate, radiation programs, Dapp1 causality, or sleep-deprivation trajectory validation. Hypothesis-generating biological concordance is the ceiling. Reserved-case rows are identity-only and are not holdout scores.
 
 | accession | role | biology | outcome | recommended | compiled | geoObservationsAdded |
 | --- | --- | --- | --- | --- | --- | --- |
 ${artifacts.cases.map((row) => `| ${formatValue(row.accession)} | ${formatValue(row.role)} | ${formatValue(row.biology)} | ${caseOutcome(row)} | ${caseMethod(row)} | ${formatValue(row.compiled)} | ${formatValue(row.geoObservationsAdded)} |`).join('\n')}
 
-Allowed wording: ${allowed.join('; ') || 'workflow applicability; method-selection recommendation; published case evidence; hypothesis-generating biological concordance'}.
+Allowed wording: ${allowed.join('; ') || 'workflow applicability; method-selection recommendation; hypothesis-generating biological concordance'}.
 
 Blocked biological-overclaim sentences are listed in \`validation/nonclaims.json\` and must not appear in this report.
 
@@ -221,7 +237,7 @@ Blocked biological-overclaim sentences are listed in \`validation/nonclaims.json
 - Primary paired regret is \`non_evaluable\` on this catalog (0 evaluable holdout tasks in the sealed dry-run).
 - External UCB evidence is missing by design; the holdout was not used to tune the protocol.
 - Expressible ablation numeric deltas are \`non_evaluable\`; unsupported ablations contribute no delta.
-- Case outcomes use the synthetic scoring view. They are not published-evidence scores and not causal results.
+- Reserved-case rows are identity-only and are not holdout scores. They are not published-evidence scores and not causal results.
 - \`software_resource\` is the required claim until a later published-evidence plan meets the frozen gate.
 
 ## Claim status

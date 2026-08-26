@@ -75,4 +75,39 @@ describe('AutoSelect Quick wizard source contract', () => {
       /\{\s*to:\s*'\/autoselect',\s*label:\s*'AutoSelect'\s*\}/,
     )
   })
+
+  it('keeps PrioritiesStep read-only with no range or number inputs', () => {
+    const source = readSource('app/components/autoselect/steps/PrioritiesStep.vue')
+    assert.equal(source.includes('type="range"'), false, 'PrioritiesStep must not use type="range"; WeightEditor is the only weight editor')
+    assert.equal(source.includes('type="number"'), false, 'PrioritiesStep must not use type="number"')
+    assert.match(source, /locked in Quick/)
+    assert.match(source, /switch to Advanced to edit weights/)
+    assert.match(source, /edit weights in Advanced controls above/i)
+    assert.equal(source.includes('update:weights'), false, 'PrioritiesStep must not emit weight changes')
+  })
+
+  it('hides EnvironmentStep evidence and seed inputs unless Advanced', () => {
+    const source = readSource('app/components/autoselect/steps/EnvironmentStep.vue')
+    assert.match(source, /v-if="mode === 'advanced'"/)
+    assert.match(source, /minEffectiveDatasets/)
+    assert.match(source, /minCriticalCoverage/)
+    assert.match(source, /seed/)
+    assert.match(source, /Maximum resource tier/)
+    const unguardedThreshold = source
+      .split(/v-if="mode === 'advanced'"/)
+      .at(0) ?? source
+    assert.equal(unguardedThreshold.includes('minEffectiveDatasets'), false)
+    assert.equal(unguardedThreshold.includes('minCriticalCoverage'), false)
+  })
+
+  it('passes mode into Priorities, Environment, and Review, and reviews candidate methods', () => {
+    const shell = readSource('app/components/autoselect/AutoSelectShell.vue')
+    const review = readSource('app/components/autoselect/steps/ReviewStep.vue')
+    assert.match(shell, /<PrioritiesStep[\s\S]*?:mode="state\.mode"/)
+    assert.match(shell, /<EnvironmentStep[\s\S]*?:mode="state\.mode"/)
+    assert.match(shell, /<ReviewStep[\s\S]*?:mode="state\.mode"/)
+    assert.match(shell, /:candidate-method-ids="state\.candidateMethodIds"/)
+    assert.match(review, /candidateMethodIds/)
+    assert.match(review, /all catalog methods/)
+  })
 })

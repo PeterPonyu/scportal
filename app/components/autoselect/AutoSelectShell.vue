@@ -36,11 +36,12 @@
     />
     <PrioritiesStep
       v-else-if="state.step === 'priorities'"
+      :mode="state.mode"
       :weights="state.weights"
-      @update:weights="state.weights = $event"
     />
     <EnvironmentStep
       v-else-if="state.step === 'environment'"
+      :mode="state.mode"
       :max-resource-tier="state.maxResourceTier"
       :min-effective-datasets="state.minEffectiveDatasets"
       :min-critical-coverage="state.minCriticalCoverage"
@@ -52,6 +53,7 @@
     />
     <ReviewStep
       v-else
+      :mode="state.mode"
       :modality="state.modality"
       :scale="state.scale"
       :goals="state.goals"
@@ -63,6 +65,7 @@
       :min-effective-datasets="state.minEffectiveDatasets"
       :min-critical-coverage="state.minCriticalCoverage"
       :seed="state.seed"
+      :candidate-method-ids="state.candidateMethodIds"
     />
 
     <p v-if="validationMessage" aria-live="polite" class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100" role="status">

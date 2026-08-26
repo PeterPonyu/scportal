@@ -4,6 +4,7 @@ import {
   createInitialAutoSelectState,
   reset as resetState,
   retreat,
+  setMode as applyMode,
   validateStep,
   type AutoSelectMode,
   type AutoSelectState,
@@ -31,7 +32,7 @@ export function useAutoSelect() {
   }
 
   function setMode(mode: AutoSelectMode) {
-    state.value = { ...state.value, mode }
+    state.value = applyMode(state.value, mode)
   }
 
   return {

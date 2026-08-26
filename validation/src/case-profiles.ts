@@ -36,7 +36,6 @@ export interface ReservedCase {
 const CLAIM_CEILING = [
   'workflow applicability',
   'method-selection recommendation',
-  'published case evidence',
   'hypothesis-generating biological concordance',
 ].join('; ')
 
