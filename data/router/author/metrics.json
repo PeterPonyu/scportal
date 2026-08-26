@@ -11,5 +11,6 @@
   {"id":"asw","aliases":["average-silhouette-width"],"group":"latent_geometry","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog average silhouette width; not biological evidence."},
   {"id":"q_local","aliases":["q-local"],"group":"continuity","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog local continuity score; not biological evidence."},
   {"id":"q_global","aliases":["q-global"],"group":"continuity","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog global continuity score; not biological evidence."},
-  {"id":"noise_resilience","aliases":["noise-resilience"],"group":"stability","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog noise-resilience score; not biological evidence."}
+  {"id":"noise_resilience","aliases":["noise-resilience"],"group":"stability","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog noise-resilience score; not biological evidence."},
+  {"id":"laior_coupling","aliases":["laior-cor","coupling-degree"],"group":"continuity","direction":"higher_is_better","auxiliary":false,"description":"LAIOR published coupling degree (COR). Do not pool with GNODEVAE or LiVAE COR."}
 ]

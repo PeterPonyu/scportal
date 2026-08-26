@@ -80,6 +80,14 @@
       "direction": "higher_is_better",
       "auxiliary": false,
       "papers": []
+    },
+    {
+      "sourceMetric": "LAIOR_COR",
+      "metricId": "laior_coupling",
+      "group": "continuity",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": ["LAIOR"]
     }
   ],
   "exclusions": [

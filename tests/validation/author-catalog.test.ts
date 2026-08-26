@@ -31,8 +31,16 @@ describe('author catalog bind', () => {
     })
     assert.equal(refused.status, 'REFUSED')
     assert.deepEqual(refused.status === 'REFUSED' ? refused.evidenceGaps : [], [
-      'invalid Router input: observation has invalid fields or provenance',
+      'invalid Router input: release evidence digest does not bind this bundle',
     ])
+    const bound = routeMethods(await import('../../validation/src/load-catalog.ts').then((module) => module.buildRouterInput(
+      author.profiles.find((profile) => profile.id === 'quick_trajectory') ?? author.profiles[0],
+      author,
+    )))
+    assert.equal(
+      bound.status === 'REFUSED' && bound.evidenceGaps.some((gap) => gap.startsWith('invalid Router input:')),
+      false,
+    )
     const { releaseEvidenceDigest } = await import('../../app/core/router/release-digest.ts')
     const swappedDigest = releaseEvidenceDigest(
       {
@@ -63,5 +71,7 @@ describe('author catalog bind', () => {
     assert.deepEqual(cases.outcome.evidenceGaps, ['reserved_identity_without_admitted_observations'])
     const dapp1 = await readJson('validation/results/cases/gse277292_dapp1.json')
     assert.equal(dapp1.outcome.status, 'REFUSED')
+    assert.deepEqual(dapp1.outcome.evidenceGaps, ['reserved_identity_without_admitted_observations'])
+    assert.equal(dapp1.outcome.evidenceVersion, 'router-evidence-synthetic-v1')
   })
 })

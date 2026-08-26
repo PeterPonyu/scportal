@@ -21,6 +21,15 @@ describe('author catalog identity', () => {
     assert.deepEqual(ids, [...protocolMethods].sort())
     assert.equal(methods.every((method: { executable: boolean }) => method.executable === false), true)
     assert.equal(methods.some((method: { id: string }) => method.id === 'geometry_vae'), false)
+    const seen = new Set<string>()
+    for (const method of methods as Array<{ id: string; aliases: string[] }>) {
+      for (const identity of [method.id, ...method.aliases]) {
+        const normalized = identity.toLowerCase()
+        assert.equal(seen.has(normalized), false, `duplicate canonical method identity: ${identity}`)
+        seen.add(normalized)
+      }
+    }
+    assert.equal('scFocus'.toLowerCase(), 'scfocus')
   })
 
   it('keeps reserved GEO identities correctly labeled and empty of UCB/sleep scores', async () => {

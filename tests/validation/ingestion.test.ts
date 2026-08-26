@@ -32,6 +32,10 @@ describe('author metric map', () => {
     assert.equal(bySource.Steering.admit, false)
     assert.equal(bySource.iVAE_delta.admit, false)
     assert.match(bySource.iVAE_Pearson_vs_LiVAE_COR.reason, /opposite direction/i)
+    const laiorCor = map.mappings.find((row: { sourceMetric: string }) => row.sourceMetric === 'LAIOR_COR')
+    assert.equal(laiorCor.metricId, 'laior_coupling')
+    assert.equal(laiorCor.group, 'continuity')
+    assert.deepEqual(laiorCor.papers, ['LAIOR'])
   })
 })
 
@@ -39,16 +43,19 @@ describe('author-benchmark import', () => {
   it('admits only the verified LAIOR per-dataset cells', async () => {
     const { importObservations } = await import('../../validation/ingestion/import-observations.ts')
     const rows = await importObservations(root)
-    assert.equal(rows.length, 4)
+    assert.equal(rows.length, 5)
     assert.deepEqual(rows.map((row) => [row.datasetId, row.methodId, row.metricId, row.rawValue]), [
       ['gse277292_dapp1', 'LAIOR', 'nmi', 0.546],
       ['gse278673_radiation', 'LAIOR', 'ari', 0.691],
       ['gse278673_radiation', 'LAIOR', 'calinski_harabasz', 5125],
+      ['gse278673_radiation', 'LAIOR', 'laior_coupling', 0.557],
       ['gse278673_radiation', 'LAIOR', 'nmi', 0.693],
     ])
     for (const row of rows) {
       assert.equal(row.provenance.paperId, 'LAIOR')
       assert.match(row.provenance.locator, /Fig\. 8/)
+      assert.equal(row.provenance.methodVersion, '0.0.0-author')
+      assert.match(row.provenance.extractedAt, /^2026-08-26T00:00:00Z$/)
     }
   })
 
@@ -59,9 +66,24 @@ describe('author-benchmark import', () => {
     assert.match(exclusions, /saelens-2019/)
     assert.match(exclusions, /GSE280270/)
     assert.match(exclusions, /GSE280145/)
-    const { importObservations } = await import('../../validation/ingestion/import-observations.ts')
+    const {
+      importObservations,
+      rowMatchesExclusion,
+      toRfc3339DateTime,
+      authorReleaseMeta,
+    } = await import('../../validation/ingestion/import-observations.ts')
     const rows = await importObservations(root)
     assert.equal(rows.some((row) => row.methodId === 'CODE'), false)
     assert.equal(rows.some((row) => row.datasetId === 'gse280270_ucb_tpo'), false)
+    assert.equal(rowMatchesExclusion({
+      sourceId: 'x', paperId: 'CODE', datasetAccession: 'GSE1', datasetId: 'gse1',
+      methodId: 'CODE', sourceMetric: 'NMI', rawValue: '1', locator: 't', extraction: 'table', extractedAt: '2026-08-26',
+    }, 'CODE'), true)
+    assert.equal(rowMatchesExclusion({
+      sourceId: 'x', paperId: 'LAIOR', datasetAccession: 'GSE280270', datasetId: 'other',
+      methodId: 'LAIOR', sourceMetric: 'NMI', rawValue: '1', locator: 't', extraction: 'table', extractedAt: '2026-08-26',
+    }, 'GSE280270'), true)
+    assert.equal(toRfc3339DateTime('2026-08-26'), '2026-08-26T00:00:00Z')
+    assert.equal(authorReleaseMeta({ id: 'router-evidence-v1', synthetic: false, description: 'x' }, []).synthetic, true)
   })
 })

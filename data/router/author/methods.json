@@ -1,7 +1,7 @@
 [
   {
     "id": "iVAE",
-    "aliases": ["ivae"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -18,7 +18,7 @@
   },
   {
     "id": "CCVGAE",
-    "aliases": ["ccvgae"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -35,7 +35,7 @@
   },
   {
     "id": "LiVAE",
-    "aliases": ["livae"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -52,7 +52,7 @@
   },
   {
     "id": "GAHIB",
-    "aliases": ["gahib"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -69,7 +69,7 @@
   },
   {
     "id": "MCCVAE",
-    "aliases": ["mccvae"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -86,7 +86,7 @@
   },
   {
     "id": "GNODEVAE",
-    "aliases": ["gnodevae"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -103,7 +103,7 @@
   },
   {
     "id": "CODE",
-    "aliases": ["code"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -120,7 +120,7 @@
   },
   {
     "id": "iAODE",
-    "aliases": ["iaode"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -137,7 +137,7 @@
   },
   {
     "id": "LAIOR",
-    "aliases": ["laior"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -154,7 +154,7 @@
   },
   {
     "id": "scRL",
-    "aliases": ["scrl"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -171,7 +171,7 @@
   },
   {
     "id": "scFocus",
-    "aliases": ["scfocus"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -188,7 +188,7 @@
   },
   {
     "id": "CLOP-DiT",
-    "aliases": ["clop-dit"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",
@@ -205,7 +205,7 @@
   },
   {
     "id": "scCCVGBen",
-    "aliases": ["scccvgben"],
+    "aliases": [],
     "version": "0.0.0-author",
     "modalities": ["scrna"],
     "maxScale": "gt_200k",

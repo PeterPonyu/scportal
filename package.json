@@ -24,7 +24,7 @@
     "validate:router-data": "node scripts/validate_router_data.mjs",
     "validate:protocol": "node scripts/validate_validation_protocol.mjs",
     "test:validation": "node --experimental-strip-types --test tests/validation/*.test.ts",
-    "validate:author-admission": "node --experimental-strip-types --test tests/validation/author-admission.test.ts tests/validation/ingestion.test.ts tests/validation/author-catalog.test.ts tests/validation/author-claim.test.ts",
+    "validate:author-admission": "node --experimental-strip-types --test tests/validation/author-admission.test.ts tests/validation/ingestion.test.ts tests/validation/author-identity.test.ts tests/validation/author-catalog.test.ts tests/validation/author-claim.test.ts",
     "validate:author-claim": "node --experimental-strip-types validation/evaluate-author-claim.ts",
     "validate:primary": "node --experimental-strip-types validation/run-primary.ts",
     "validate:claim": "node --experimental-strip-types validation/evaluate-claim.ts",

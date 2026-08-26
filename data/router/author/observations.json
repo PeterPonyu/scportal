@@ -8,9 +8,9 @@
       "paperId": "LAIOR",
       "locator": "Fig. 8 WTKO table",
       "datasetVersion": "GSE277292",
-      "methodVersion": "LAIOR",
+      "methodVersion": "0.0.0-author",
       "runConfigId": "laior-fig8-reserved-geo",
-      "extractedAt": "2026-08-26"
+      "extractedAt": "2026-08-26T00:00:00Z"
     }
   },
   {
@@ -22,9 +22,9 @@
       "paperId": "LAIOR",
       "locator": "Fig. 8 IRALL table",
       "datasetVersion": "GSE278673",
-      "methodVersion": "LAIOR",
+      "methodVersion": "0.0.0-author",
       "runConfigId": "laior-fig8-reserved-geo",
-      "extractedAt": "2026-08-26"
+      "extractedAt": "2026-08-26T00:00:00Z"
     }
   },
   {
@@ -36,9 +36,23 @@
       "paperId": "LAIOR",
       "locator": "Fig. 8 IRALL table",
       "datasetVersion": "GSE278673",
-      "methodVersion": "LAIOR",
+      "methodVersion": "0.0.0-author",
       "runConfigId": "laior-fig8-reserved-geo",
-      "extractedAt": "2026-08-26"
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gse278673_radiation",
+    "methodId": "LAIOR",
+    "metricId": "laior_coupling",
+    "rawValue": 0.557,
+    "provenance": {
+      "paperId": "LAIOR",
+      "locator": "Fig. 8 IRALL table",
+      "datasetVersion": "GSE278673",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "laior-fig8-reserved-geo",
+      "extractedAt": "2026-08-26T00:00:00Z"
     }
   },
   {
@@ -50,9 +64,9 @@
       "paperId": "LAIOR",
       "locator": "Fig. 8 IRALL table",
       "datasetVersion": "GSE278673",
-      "methodVersion": "LAIOR",
+      "methodVersion": "0.0.0-author",
       "runConfigId": "laior-fig8-reserved-geo",
-      "extractedAt": "2026-08-26"
+      "extractedAt": "2026-08-26T00:00:00Z"
     }
   }
 ]
