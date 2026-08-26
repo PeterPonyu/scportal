@@ -1,0 +1,29 @@
+{
+  "version": "router-author-lattice-v1",
+  "evidenceReleaseId": "router-evidence-v1",
+  "uiCatalog": "router-evidence-synthetic-v1",
+  "claimStatus": "software_resource",
+  "observationCount": 11,
+  "studyGroupCount": 5,
+  "evaluableHoldouts": 0,
+  "methodIds": [
+    "iVAE", "CCVGAE", "LiVAE", "GAHIB", "MCCVAE",
+    "GNODEVAE", "CODE", "iAODE", "LAIOR",
+    "scRL", "scFocus", "CLOP-DiT", "scCCVGBen"
+  ],
+  "methods": [
+    {"id":"iVAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Tables 1-10 and S1-S7 are deltas","unlock":"do-not-treat-delta-as-absolute"},
+    {"id":"CCVGAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Benchmarks are deltas; Table 6 is a 55-dataset mean; Table 7 runtimes are not transcribed","unlock":"transcribe-table-7-runtimes-into-evidence"},
+    {"id":"LiVAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Tables are deltas; accession list is not in the main text","unlock":"do-not-invent-accessions"},
+    {"id":"GAHIB","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Tables 1-7 are means; ARI 0.564 is a Leiden-proxy mean","unlock":"do-not-explode-means"},
+    {"id":"MCCVAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"A.1-A.16 are 50-dataset means; no published ARI/NMI","unlock":"do-not-explode-means"},
+    {"id":"GNODEVAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Main text is advantage scores; Fig. 7 ILISI/CLISI is figure-only","unlock":"transcribe-supplement-absolutes"},
+    {"id":"CODE","status":"blocked_until","admittedObservationCount":0,"blockedReason":"CODE.pdf and papers/text/CODE.txt are missing","unlock":"code-pdf-or-text-with-tables"},
+    {"id":"iAODE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Main text is deltas; absolutes live in Supplementary Tables 1-13 and are not transcribed","unlock":"transcribe-supplement-absolutes"},
+    {"id":"LAIOR","status":"admitted","admittedObservationCount":5,"blockedReason":"Fig. 8 leftover accessions have no per-dataset numbers; Fig. 3 / Table 2 are pooled","unlock":"transcribe-remaining-fig8-or-supplement-absolutes"},
+    {"id":"scRL","status":"admitted","admittedObservationCount":6,"blockedReason":"Tables 1-5 are deltas; reserved GEO and AML have no absolute MAS/PAAC","unlock":"new-transcribed-absolute-tables"},
+    {"id":"scFocus","status":"blocked_until","admittedObservationCount":0,"blockedReason":"Main text has no numeric table","unlock":"audited-supplement-table-not-digitized-figures"},
+    {"id":"CLOP-DiT","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Table 3 is an 80-GEO pool; KNN/Steering have no MetricGroup","unlock":"do-not-park-generation-in-geometry"},
+    {"id":"scCCVGBen","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Headline grids are deltas or stability means","unlock":"do-not-explode-means"}
+  ]
+}

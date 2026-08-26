@@ -38,6 +38,13 @@ describe('author admission ledger', () => {
       'results-formal-metrics',
       'code-pdf-missing',
       'scfocus-unaudited-digitization',
+      'ccvgae-table-6-mean',
+      'laior-fig3-mean',
+      'mccvae-a1-a16-mean',
+      'gahib-tables-1-7-mean',
+      'clop-table-3-pool',
+      'ivae-tables-1-10-delta',
+      'scrl-tables-1-5-delta',
     ]) {
       assert.equal(rejects[id].admit, false, id)
     }

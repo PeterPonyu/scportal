@@ -99,4 +99,24 @@ describe('author-benchmark import', () => {
     assert.equal(toRfc3339DateTime('2026-08-26'), '2026-08-26T00:00:00Z')
     assert.equal(authorReleaseMeta({ id: 'router-evidence-v1', synthetic: false, description: 'x' }, []).synthetic, true)
   })
+
+  it('rejects planted means, deltas, CODE scores, and scFocus digits', async () => {
+    const {
+      rowMatchesExclusion,
+    } = await import('../../validation/ingestion/import-observations.ts')
+    const map = await readJson('validation/ingestion/metric-map.json')
+    const excluded = new Set(map.exclusions.filter((row: { admit: boolean }) => row.admit === false).map((row: { sourceMetric: string }) => row.sourceMetric))
+    assert.equal(excluded.has('iVAE_delta'), true)
+    assert.equal(excluded.has('SCRL_DELTA'), true)
+    assert.equal(excluded.has('KNN_Top1'), true)
+    const plant = (overrides: Record<string, string>) => ({
+      sourceId: 'planted', paperId: 'MCCVAE', datasetAccession: 'GSE1', datasetId: 'gse1',
+      methodId: 'MCCVAE', sourceMetric: 'ASW', rawValue: '0.5', locator: 'MCCVAE A.1-A.16',
+      extraction: 'table', extractedAt: '2026-08-26',
+      ...overrides,
+    })
+    assert.equal(rowMatchesExclusion(plant({}), 'MCCVAE A.1-A.16'), true)
+    assert.equal(rowMatchesExclusion(plant({ methodId: 'CODE', paperId: 'CODE', locator: 'invented' }), 'CODE'), true)
+    assert.equal(rowMatchesExclusion(plant({ methodId: 'scFocus', paperId: 'scFocus', locator: 'Fig. 4' }), 'scFocus'), true)
+  })
 })
