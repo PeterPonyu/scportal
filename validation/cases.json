@@ -1,0 +1,6 @@
+[
+  { "id": "gse280270_ucb_tpo", "role": "external_holdout", "biology": "human UCB TPO-induced megakaryocyte differentiation D0-D14" },
+  { "id": "gse277292_dapp1", "role": "application_case", "biology": "mouse LSK Dapp1 knockout versus wild type" },
+  { "id": "gse278673_radiation", "role": "application_case", "biology": "mouse LSK total-body radiation injury time course" },
+  { "id": "gse280145_sleep_deprivation", "role": "supplemental_case", "biology": "sleep-deprivation stress, non-trajectory supplemental case" }
+]

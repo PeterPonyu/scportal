@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cases.schema.json",
+  "type": "array",
+  "minItems": 4,
+  "maxItems": 4,
+  "uniqueItems": true,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "role", "biology"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1, "pattern": "\\S" },
+      "role": { "enum": ["external_holdout", "application_case", "supplemental_case"] },
+      "biology": { "type": "string", "minLength": 1, "pattern": "\\S" }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "splits.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "strategy", "folds"],
+  "properties": {
+    "version": { "const": "router-validation-v1" },
+    "strategy": { "const": "leave_one_study_group_out" },
+    "folds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "heldOutStudyGroups", "fitStudyGroups"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "pattern": "\\S" },
+          "heldOutStudyGroups": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1, "pattern": "\\S" }
+          },
+          "fitStudyGroups": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1, "pattern": "\\S" }
+          }
+        }
+      }
+    }
+  }
+}

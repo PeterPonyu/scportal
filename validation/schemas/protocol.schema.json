@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "protocol.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "seed",
+    "bootstrapReplicates",
+    "routerReplicates",
+    "outrankingDelta",
+    "weightPerturbationFraction",
+    "primaryEndpoint",
+    "claimGate",
+    "confidenceCalibrationBins",
+    "externalHoldoutDatasetId",
+    "sourceEvidenceReleaseId",
+    "routerVersion"
+  ],
+  "properties": {
+    "version": { "const": "router-validation-v1" },
+    "seed": { "type": "integer" },
+    "bootstrapReplicates": { "type": "integer", "minimum": 1 },
+    "routerReplicates": { "type": "integer", "minimum": 1 },
+    "outrankingDelta": { "type": "number", "minimum": 0 },
+    "weightPerturbationFraction": { "type": "number", "minimum": 0, "maximum": 1 },
+    "primaryEndpoint": { "const": "paired_normalized_regret_improvement_vs_global_average" },
+    "claimGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "regretImprovementCiLowerBound",
+        "minimumEvaluableHoldoutTasks",
+        "minimumStudyGroups",
+        "top3NonInferiorityMargin"
+      ],
+      "properties": {
+        "regretImprovementCiLowerBound": { "type": "number" },
+        "minimumEvaluableHoldoutTasks": { "type": "integer", "minimum": 1 },
+        "minimumStudyGroups": { "type": "integer", "minimum": 1 },
+        "top3NonInferiorityMargin": { "type": "number", "minimum": 0 }
+      }
+    },
+    "confidenceCalibrationBins": { "type": "integer", "minimum": 1 },
+    "externalHoldoutDatasetId": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "sourceEvidenceReleaseId": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "routerVersion": { "type": "string", "minLength": 1, "pattern": "\\S" }
+  }
+}

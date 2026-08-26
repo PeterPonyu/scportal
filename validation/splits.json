@@ -1,0 +1,21 @@
+{
+  "version": "router-validation-v1",
+  "strategy": "leave_one_study_group_out",
+  "folds": [
+    {
+      "id": "logo-synthetic-contract-fixture-branch",
+      "heldOutStudyGroups": ["synthetic-contract-fixture-branch"],
+      "fitStudyGroups": ["synthetic-contract-fixture-sparse", "synthetic-contract-fixture-linear"]
+    },
+    {
+      "id": "logo-synthetic-contract-fixture-sparse",
+      "heldOutStudyGroups": ["synthetic-contract-fixture-sparse"],
+      "fitStudyGroups": ["synthetic-contract-fixture-branch", "synthetic-contract-fixture-linear"]
+    },
+    {
+      "id": "logo-synthetic-contract-fixture-linear",
+      "heldOutStudyGroups": ["synthetic-contract-fixture-linear"],
+      "fitStudyGroups": ["synthetic-contract-fixture-branch", "synthetic-contract-fixture-sparse"]
+    }
+  ]
+}

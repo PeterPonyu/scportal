@@ -1,0 +1,19 @@
+{
+  "version": "router-validation-v1",
+  "seed": 20260823,
+  "bootstrapReplicates": 5000,
+  "routerReplicates": 200,
+  "outrankingDelta": 0.02,
+  "weightPerturbationFraction": 0.1,
+  "primaryEndpoint": "paired_normalized_regret_improvement_vs_global_average",
+  "claimGate": {
+    "regretImprovementCiLowerBound": 0.0,
+    "minimumEvaluableHoldoutTasks": 20,
+    "minimumStudyGroups": 5,
+    "top3NonInferiorityMargin": 0.05
+  },
+  "confidenceCalibrationBins": 5,
+  "externalHoldoutDatasetId": "gse280270_ucb_tpo",
+  "sourceEvidenceReleaseId": "router-evidence-synthetic-v1",
+  "routerVersion": "router-core-v1"
+}

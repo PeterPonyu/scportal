@@ -22,6 +22,8 @@
     "typecheck:router": "tsc --noEmit --strict --allowImportingTsExtensions --target ES2022 --module NodeNext --moduleResolution NodeNext app/core/router/types.ts app/core/router/ids.ts app/core/router/normalize.ts app/core/router/gower.ts app/core/router/shrinkage.ts app/core/router/constraints.ts app/core/router/pareto.ts app/core/router/random.ts app/core/router/bootstrap.ts app/core/router/outranking.ts app/core/router/confidence.ts app/core/router/release-digest.ts app/core/router/recommend.ts app/core/router/explain.ts app/core/router/index.ts app/core/config/types.ts app/core/config/templates.ts app/core/config/schema.ts app/core/config/serialize.ts app/core/config/compiler.ts",
     "typecheck": "npm run typecheck:router && nuxt typecheck",
     "validate:router-data": "node scripts/validate_router_data.mjs",
+    "validate:protocol": "node scripts/validate_validation_protocol.mjs",
+    "test:validation": "node --experimental-strip-types --test tests/validation/*.test.ts",
     "check:router-boundaries": "node scripts/check_router_boundaries.mjs",
     "check:router": "npm run validate:router-data && npm run check:router-boundaries && npm run test:router-config && npm run test:config-python && npm run typecheck",
     "validate:public-graph": "node scripts/validate_public_graph.mjs",
