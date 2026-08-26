@@ -168,5 +168,35 @@
     "topology": "unknown",
     "priors": {},
     "perturbation": false
+  },
+  {
+    "id": "gahib_pansci_muscle",
+    "aliases": ["PanSci-muscle"],
+    "studyGroup": "gahib_pansci_muscle",
+    "modality": "scrna",
+    "scale": "unknown",
+    "topology": "unknown",
+    "priors": { "labels": true },
+    "perturbation": false
+  },
+  {
+    "id": "gse130148_lung",
+    "aliases": ["GSE130148", "Lung-Dev"],
+    "studyGroup": "gse130148_lung",
+    "modality": "scrna",
+    "scale": "unknown",
+    "topology": "unknown",
+    "priors": { "labels": true },
+    "perturbation": false
+  },
+  {
+    "id": "gahib_pansci_tcell",
+    "aliases": ["PanSci-T-cell"],
+    "studyGroup": "gahib_pansci_tcell",
+    "modality": "scrna",
+    "scale": "unknown",
+    "topology": "unknown",
+    "priors": { "labels": true },
+    "perturbation": false
   }
 ]

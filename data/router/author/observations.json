@@ -70,6 +70,90 @@
     }
   },
   {
+    "datasetId": "gahib_pansci_muscle",
+    "methodId": "GAHIB",
+    "metricId": "ari",
+    "rawValue": 0.549,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "PanSci-muscle",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gahib_pansci_muscle",
+    "methodId": "GAHIB",
+    "metricId": "asw",
+    "rawValue": 0.396,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "PanSci-muscle",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gahib_pansci_muscle",
+    "methodId": "GAHIB",
+    "metricId": "nmi",
+    "rawValue": 0.645,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "PanSci-muscle",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gahib_pansci_tcell",
+    "methodId": "GAHIB",
+    "metricId": "ari",
+    "rawValue": 0.14,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "PanSci-T-cell",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gahib_pansci_tcell",
+    "methodId": "GAHIB",
+    "metricId": "asw",
+    "rawValue": 0.094,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "PanSci-T-cell",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gahib_pansci_tcell",
+    "methodId": "GAHIB",
+    "metricId": "nmi",
+    "rawValue": 0.253,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "PanSci-T-cell",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
     "datasetId": "gse117498_pheno_hsc",
     "methodId": "scRL",
     "metricId": "scrl_mas_fate",
@@ -80,6 +164,48 @@
       "datasetVersion": "GSE117498",
       "methodVersion": "0.0.0-author",
       "runConfigId": "scrl-figa6-gse117498",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gse130148_lung",
+    "methodId": "GAHIB",
+    "metricId": "ari",
+    "rawValue": 0.438,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "Lung-Dev",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gse130148_lung",
+    "methodId": "GAHIB",
+    "metricId": "asw",
+    "rawValue": 0.325,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "Lung-Dev",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gse130148_lung",
+    "methodId": "GAHIB",
+    "metricId": "nmi",
+    "rawValue": 0.615,
+    "provenance": {
+      "paperId": "GAHIB",
+      "locator": "Table 8 curated-label",
+      "datasetVersion": "Lung-Dev",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "gahib-table8-curated-label",
       "extractedAt": "2026-08-26T00:00:00Z"
     }
   },

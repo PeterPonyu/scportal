@@ -47,6 +47,18 @@
     "admit": false,
     "reason": "GAHIB Tables 1-7 are means. ARI 0.564 is a Leiden-proxy mean."
   },
+  "gahib-table-8-scvi": {
+    "admit": false,
+    "reason": "GAHIB Table 8 scVI columns are contrast only. Do not admit them as author-catalog cells."
+  },
+  "gahib-table-9-marker": {
+    "admit": false,
+    "reason": "GAHIB Table 9 is marker hypergeometric p/q. Do not admit it."
+  },
+  "gahib-table-10-hierarchy": {
+    "admit": false,
+    "reason": "GAHIB Table 10 is Hom / rL / rho_s / MO / GO. Do not invent a hierarchy metric."
+  },
   "clop-table-3-pool": {
     "admit": false,
     "reason": "CLOP-DiT Table 3 is an 80-GEO pool. KNN/Steering have no MetricGroup."
