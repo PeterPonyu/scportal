@@ -4,7 +4,16 @@ ccvgae_endo,CCVGAE,ccvgae_per_epoch_s,0.36,CCVGAE,Table 7 runtime,endo,0.0.0-aut
 ccvgae_hemato,CCVGAE,ccvgae_per_epoch_s,3.08,CCVGAE,Table 7 runtime,hemato,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
 ccvgae_hesc,CCVGAE,ccvgae_per_epoch_s,1.17,CCVGAE,Table 7 runtime,hESC,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
 ccvgae_setty,CCVGAE,ccvgae_per_epoch_s,0.66,CCVGAE,Table 7 runtime,setty,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
+gahib_pansci_muscle,GAHIB,ari,0.549,GAHIB,Table 8 curated-label,PanSci-muscle,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
+gahib_pansci_muscle,GAHIB,asw,0.396,GAHIB,Table 8 curated-label,PanSci-muscle,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
+gahib_pansci_muscle,GAHIB,nmi,0.645,GAHIB,Table 8 curated-label,PanSci-muscle,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
+gahib_pansci_tcell,GAHIB,ari,0.14,GAHIB,Table 8 curated-label,PanSci-T-cell,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
+gahib_pansci_tcell,GAHIB,asw,0.094,GAHIB,Table 8 curated-label,PanSci-T-cell,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
+gahib_pansci_tcell,GAHIB,nmi,0.253,GAHIB,Table 8 curated-label,PanSci-T-cell,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
 gse117498_pheno_hsc,scRL,scrl_mas_fate,0.674,scRL,Fig. A6B phenotypical HSC MAS,GSE117498,0.0.0-author,scrl-figa6-gse117498,2026-08-26T00:00:00Z
+gse130148_lung,GAHIB,ari,0.438,GAHIB,Table 8 curated-label,Lung-Dev,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
+gse130148_lung,GAHIB,asw,0.325,GAHIB,Table 8 curated-label,Lung-Dev,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
+gse130148_lung,GAHIB,nmi,0.615,GAHIB,Table 8 curated-label,Lung-Dev,0.0.0-author,gahib-table8-curated-label,2026-08-26T00:00:00Z
 gse132188_endo,scRL,scrl_mas_pseudotime,0.865,scRL,Fig. A6A endocrinogenesis MAS,GSE132188,0.0.0-author,scrl-figa6-gse132188,2026-08-26T00:00:00Z
 gse198730,CCVGAE,ccvgae_per_epoch_s,0.6,CCVGAE,Table 7 runtime,GSE198730,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z
 gse206767,CCVGAE,ccvgae_per_epoch_s,1.61,CCVGAE,Table 7 runtime,GSE206767,0.0.0-author,ccvgae-table7-runtime,2026-08-26T00:00:00Z

@@ -20,3 +20,12 @@ ccvgae-table7-runtime,CCVGAE,GSE198730,gse198730,CCVGAE,CCVGAE_PER_EPOCH_S,0.60,
 ccvgae-table7-runtime,CCVGAE,GSM6638254,gsm6638254,CCVGAE,CCVGAE_PER_EPOCH_S,0.89,Table 7 runtime,table,2026-08-26
 ccvgae-table7-runtime,CCVGAE,GSM7308367,gsm7308367,CCVGAE,CCVGAE_PER_EPOCH_S,1.27,Table 7 runtime,table,2026-08-26
 ccvgae-table7-runtime,CCVGAE,GSE206767,gse206767,CCVGAE,CCVGAE_PER_EPOCH_S,1.61,Table 7 runtime,table,2026-08-26
+gahib-table8-curated-label,GAHIB,PanSci-muscle,gahib_pansci_muscle,GAHIB,NMI,0.645,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,PanSci-muscle,gahib_pansci_muscle,GAHIB,ARI,0.549,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,PanSci-muscle,gahib_pansci_muscle,GAHIB,ASW,0.396,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,Lung-Dev,gse130148_lung,GAHIB,NMI,0.615,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,Lung-Dev,gse130148_lung,GAHIB,ARI,0.438,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,Lung-Dev,gse130148_lung,GAHIB,ASW,0.325,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,PanSci-T-cell,gahib_pansci_tcell,GAHIB,NMI,0.253,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,PanSci-T-cell,gahib_pansci_tcell,GAHIB,ARI,0.140,Table 8 curated-label,table,2026-08-26
+gahib-table8-curated-label,GAHIB,PanSci-T-cell,gahib_pansci_tcell,GAHIB,ASW,0.094,Table 8 curated-label,table,2026-08-26

@@ -39,6 +39,14 @@
       "locator": "Table 7; papers/evidence/new3_family.md",
       "extraction": "table",
       "reviewerStatus": "transcribed-2026-08-26"
+    },
+    {
+      "sourceId": "gahib-table8-curated-label",
+      "paperId": "GAHIB",
+      "doi": "10.3389/fgene.2026.1863100",
+      "locator": "Table 8; papers/evidence/new3_family.md §2",
+      "extraction": "table",
+      "reviewerStatus": "transcribed-2026-08-26"
     }
   ]
 }
