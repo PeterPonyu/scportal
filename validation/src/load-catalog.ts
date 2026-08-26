@@ -48,10 +48,6 @@ function sortObservations(values: readonly BenchmarkObservation[]): BenchmarkObs
         : left.metricId < right.metricId ? -1 : left.metricId > right.metricId ? 1 : 0)
 }
 
-async function readJson<T>(name: string): Promise<T> {
-  return JSON.parse(await readFile(resolve(routerDataDirectory, name), 'utf8')) as T
-}
-
 export function bindRelease(bundle: ReleaseBundle, meta: ReleaseMeta): EvidenceRelease {
   const releaseMeta = { id: meta.id, synthetic: meta.synthetic, description: meta.description }
   const configDigest = sha256Hex(canonicalJson({ methods: bundle.methods, templates: bundle.templates }))
@@ -68,13 +64,18 @@ export function bindRelease(bundle: ReleaseBundle, meta: ReleaseMeta): EvidenceR
   return { ...releaseMeta, configDigest, evidenceDigest }
 }
 
-export async function loadRouterCatalog(): Promise<RouterCatalog> {
+export async function loadRouterCatalogFrom(
+  directory: string,
+  observationsFile: string,
+): Promise<RouterCatalog> {
+  const readJson = async <T>(name: string): Promise<T> =>
+    JSON.parse(await readFile(resolve(directory, name), 'utf8')) as T
   const datasets = sortById(await readJson<DatasetContext[]>('datasets.json'))
   const methods = sortById(await readJson<MethodCapability[]>('methods.json'))
   const metrics = sortById(await readJson<MetricDefinition[]>('metrics.json'))
   const templates = sortById(await readJson<Array<{ methodId: string }>>('config-templates.json'), 'methodId')
   const profiles = sortById(await readJson<TaskProfile[]>('task-profiles.json'))
-  const observations = sortObservations(await readJson<BenchmarkObservation[]>('observations.synthetic.json'))
+  const observations = sortObservations(await readJson<BenchmarkObservation[]>(observationsFile))
   const meta = await readJson<ReleaseMeta>('release.json')
   return {
     datasets,
@@ -85,6 +86,10 @@ export async function loadRouterCatalog(): Promise<RouterCatalog> {
     observations,
     release: bindRelease({ datasets, methods, metrics, observations, templates }, meta),
   }
+}
+
+export async function loadRouterCatalog(): Promise<RouterCatalog> {
+  return loadRouterCatalogFrom(routerDataDirectory, 'observations.synthetic.json')
 }
 
 export function buildRouterInput(profile: TaskProfile, catalog: RouterCatalog): RouterInput {
