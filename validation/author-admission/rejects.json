@@ -1,0 +1,34 @@
+{
+  "saelens-2019-dynbenchmark": {
+    "admit": false,
+    "reason": "Literature precedent in living spec §14 only. Not an evidence warehouse. Do not import slingshot/paga/monocle3 cells."
+  },
+  "scib": {
+    "admit": false,
+    "reason": "Foreign integration board. Method IDs and metric ontology do not match 13×A."
+  },
+  "openproblems": {
+    "admit": false,
+    "reason": "Foreign board. Not a 13×A published table."
+  },
+  "results-en-panel-representation": {
+    "admit": false,
+    "reason": "Locked C-panel local ARI/NMI. Not published table cells."
+  },
+  "results-formal-metrics": {
+    "admit": false,
+    "reason": "Local/D-contextual rho including CODE setty seed 99. Not CODE.pdf."
+  },
+  "code-pdf-missing": {
+    "admit": false,
+    "reason": "CODE.pdf and papers/text/CODE.txt are missing. Do not invent CODE numbers."
+  },
+  "scfocus-unaudited-digitization": {
+    "admit": false,
+    "reason": "scFocus main text has no transcribed numeric table. Do not digitize Fig. 4/5/6 in this slice."
+  },
+  "aggregate-means": {
+    "admit": false,
+    "reason": "Pooled paper means cannot be exploded into study groups."
+  }
+}

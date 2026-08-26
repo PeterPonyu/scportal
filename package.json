@@ -24,6 +24,7 @@
     "validate:router-data": "node scripts/validate_router_data.mjs",
     "validate:protocol": "node scripts/validate_validation_protocol.mjs",
     "test:validation": "node --experimental-strip-types --test tests/validation/*.test.ts",
+    "validate:author-admission": "node --experimental-strip-types --test tests/validation/author-admission.test.ts",
     "validate:primary": "node --experimental-strip-types validation/run-primary.ts",
     "validate:claim": "node --experimental-strip-types validation/evaluate-claim.ts",
     "report:validation": "node --experimental-strip-types validation/render-report.ts",

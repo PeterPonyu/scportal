@@ -1,0 +1,33 @@
+{
+  "version": "router-author-admission-v1",
+  "seed": 20260826,
+  "evidenceReleaseId": "router-evidence-v1",
+  "validationProtocolVersion": "router-validation-v1",
+  "routerVersion": "router-core-v1",
+  "uiCatalog": "router-evidence-synthetic-v1",
+  "authorCatalogDirectory": "data/router/author",
+  "methodIds": [
+    "iVAE", "CCVGAE", "LiVAE", "GAHIB", "MCCVAE",
+    "GNODEVAE", "CODE", "iAODE", "LAIOR",
+    "scRL", "scFocus", "CLOP-DiT", "scCCVGBen"
+  ],
+  "reservedAccessions": {
+    "GSE280270": "gse280270_ucb_tpo",
+    "GSE277292": "gse277292_dapp1",
+    "GSE278673": "gse278673_radiation",
+    "GSE280145": "gse280145_sleep_deprivation"
+  },
+  "claimGate": {
+    "regretImprovementCiLowerBound": 0.0,
+    "minimumEvaluableHoldoutTasks": 20,
+    "minimumStudyGroups": 5,
+    "top3NonInferiorityMargin": 0.05,
+    "requiredEvaluableTaskGoals": [
+      "latent_representation",
+      "trajectory_reconstruction",
+      "fate_decision"
+    ]
+  },
+  "extractionAllowlist": ["table", "supplement"],
+  "extractionDenylist": ["figure_digitized", "local_rerun", "c_panel", "leftover"]
+}
