@@ -36,24 +36,37 @@ describe('author metric map', () => {
     assert.equal(laiorCor.metricId, 'laior_coupling')
     assert.equal(laiorCor.group, 'continuity')
     assert.deepEqual(laiorCor.papers, ['LAIOR'])
+    for (const sourceMetric of ['SCRL_MAS_PSEUDOTIME', 'SCRL_MAS_FATE', 'SCRL_PAAC_PSEUDOTIME', 'SCRL_PAAC_FATE']) {
+      const row = map.mappings.find((item: { sourceMetric: string }) => item.sourceMetric === sourceMetric)
+      assert.equal(row.group, 'trajectory')
+      assert.equal(row.auxiliary, true)
+      assert.deepEqual(row.papers, ['scRL'])
+      assert.notEqual(row.metricId, 'laior_coupling')
+    }
+    assert.equal(bySource.SCRL_DELTA.admit, false)
   })
 })
 
 describe('author-benchmark import', () => {
-  it('admits only the verified LAIOR per-dataset cells', async () => {
+  it('admits only verified LAIOR Fig. 8 and scRL absolute MAS/PAAC cells', async () => {
     const { importObservations } = await import('../../validation/ingestion/import-observations.ts')
     const rows = await importObservations(root)
-    assert.equal(rows.length, 5)
+    assert.equal(rows.length, 11)
     assert.deepEqual(rows.map((row) => [row.datasetId, row.methodId, row.metricId, row.rawValue]), [
+      ['gse117498_pheno_hsc', 'scRL', 'scrl_mas_fate', 0.674],
+      ['gse132188_endo', 'scRL', 'scrl_mas_pseudotime', 0.865],
       ['gse277292_dapp1', 'LAIOR', 'nmi', 0.546],
       ['gse278673_radiation', 'LAIOR', 'ari', 0.691],
       ['gse278673_radiation', 'LAIOR', 'calinski_harabasz', 5125],
       ['gse278673_radiation', 'LAIOR', 'laior_coupling', 0.557],
       ['gse278673_radiation', 'LAIOR', 'nmi', 0.693],
+      ['s_subs8_cd34', 'scRL', 'scrl_mas_fate', 0.323],
+      ['s_subs8_cd34', 'scRL', 'scrl_mas_pseudotime', 0.773],
+      ['s_subs8_cd34', 'scRL', 'scrl_paac_fate', 0.373],
+      ['s_subs8_cd34', 'scRL', 'scrl_paac_pseudotime', 0.848],
     ])
     for (const row of rows) {
-      assert.equal(row.provenance.paperId, 'LAIOR')
-      assert.match(row.provenance.locator, /Fig\. 8/)
+      assert.ok(['LAIOR', 'scRL'].includes(row.provenance.paperId))
       assert.equal(row.provenance.methodVersion, '0.0.0-author')
       assert.match(row.provenance.extractedAt, /^2026-08-26T00:00:00Z$/)
     }

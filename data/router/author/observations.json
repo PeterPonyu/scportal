@@ -1,5 +1,33 @@
 [
   {
+    "datasetId": "gse117498_pheno_hsc",
+    "methodId": "scRL",
+    "metricId": "scrl_mas_fate",
+    "rawValue": 0.674,
+    "provenance": {
+      "paperId": "scRL",
+      "locator": "Fig. A6B phenotypical HSC MAS",
+      "datasetVersion": "GSE117498",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "scrl-figa6-gse117498",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "gse132188_endo",
+    "methodId": "scRL",
+    "metricId": "scrl_mas_pseudotime",
+    "rawValue": 0.865,
+    "provenance": {
+      "paperId": "scRL",
+      "locator": "Fig. A6A endocrinogenesis MAS",
+      "datasetVersion": "GSE132188",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "scrl-figa6-gse132188",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
     "datasetId": "gse277292_dapp1",
     "methodId": "LAIOR",
     "metricId": "nmi",
@@ -66,6 +94,62 @@
       "datasetVersion": "GSE278673",
       "methodVersion": "0.0.0-author",
       "runConfigId": "laior-fig8-reserved-geo",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "s_subs8_cd34",
+    "methodId": "scRL",
+    "metricId": "scrl_mas_fate",
+    "rawValue": 0.323,
+    "provenance": {
+      "paperId": "scRL",
+      "locator": "Fig. 6 S-SUBS8 fate table",
+      "datasetVersion": "S-SUBS8",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "scrl-fig6-s-subs8",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "s_subs8_cd34",
+    "methodId": "scRL",
+    "metricId": "scrl_mas_pseudotime",
+    "rawValue": 0.773,
+    "provenance": {
+      "paperId": "scRL",
+      "locator": "Fig. 6 S-SUBS8 pseudotime table",
+      "datasetVersion": "S-SUBS8",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "scrl-fig6-s-subs8",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "s_subs8_cd34",
+    "methodId": "scRL",
+    "metricId": "scrl_paac_fate",
+    "rawValue": 0.373,
+    "provenance": {
+      "paperId": "scRL",
+      "locator": "Fig. 6 S-SUBS8 fate table",
+      "datasetVersion": "S-SUBS8",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "scrl-fig6-s-subs8",
+      "extractedAt": "2026-08-26T00:00:00Z"
+    }
+  },
+  {
+    "datasetId": "s_subs8_cd34",
+    "methodId": "scRL",
+    "metricId": "scrl_paac_pseudotime",
+    "rawValue": 0.848,
+    "provenance": {
+      "paperId": "scRL",
+      "locator": "Fig. 6 S-SUBS8 pseudotime table",
+      "datasetVersion": "S-SUBS8",
+      "methodVersion": "0.0.0-author",
+      "runConfigId": "scrl-fig6-s-subs8",
       "extractedAt": "2026-08-26T00:00:00Z"
     }
   }

@@ -3,7 +3,6 @@
   "passed": false,
   "reasons": [
     "insufficient evaluable holdout tasks: 0 < 20",
-    "insufficient study groups: 2 < 5",
     "author catalog has no leakage-safe holdout protocol in this slice",
     "external holdout is missing or not evaluable"
   ],
@@ -19,9 +18,12 @@
     "top3NonInferiorityMargin": 0.05
   },
   "studyGroups": [
+    "pheno_hsc",
+    "pancreas_endo",
     "dapp1_lsk",
-    "radiation_lsk"
+    "radiation_lsk",
+    "cd34_hspc"
   ],
-  "observationCount": 5,
-  "evaluatedAt": "2026-08-26T12:35:51.502Z"
+  "observationCount": 11,
+  "evaluatedAt": "2026-08-26T12:40:19.896Z"
 }

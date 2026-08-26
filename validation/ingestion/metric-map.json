@@ -88,6 +88,38 @@
       "direction": "higher_is_better",
       "auxiliary": false,
       "papers": ["LAIOR"]
+    },
+    {
+      "sourceMetric": "SCRL_MAS_PSEUDOTIME",
+      "metricId": "scrl_mas_pseudotime",
+      "group": "trajectory",
+      "direction": "higher_is_better",
+      "auxiliary": true,
+      "papers": ["scRL"]
+    },
+    {
+      "sourceMetric": "SCRL_MAS_FATE",
+      "metricId": "scrl_mas_fate",
+      "group": "trajectory",
+      "direction": "higher_is_better",
+      "auxiliary": true,
+      "papers": ["scRL"]
+    },
+    {
+      "sourceMetric": "SCRL_PAAC_PSEUDOTIME",
+      "metricId": "scrl_paac_pseudotime",
+      "group": "trajectory",
+      "direction": "higher_is_better",
+      "auxiliary": true,
+      "papers": ["scRL"]
+    },
+    {
+      "sourceMetric": "SCRL_PAAC_FATE",
+      "metricId": "scrl_paac_fate",
+      "group": "trajectory",
+      "direction": "higher_is_better",
+      "auxiliary": true,
+      "papers": ["scRL"]
     }
   ],
   "exclusions": [
@@ -115,6 +147,11 @@
       "sourceMetric": "MCCVAE_ARI",
       "admit": false,
       "reason": "MCCVAE published tables contain no ARI/NMI. Do not fill from C-panel."
+    },
+    {
+      "sourceMetric": "SCRL_DELTA",
+      "admit": false,
+      "reason": "scRL Tables 1-5 are improvement deltas, not absolute scores."
     }
   ]
 }

@@ -38,5 +38,35 @@
     "topology": "unknown",
     "priors": { "perturbation": true },
     "perturbation": true
+  },
+  {
+    "id": "s_subs8_cd34",
+    "aliases": ["S-SUBS8"],
+    "studyGroup": "cd34_hspc",
+    "modality": "scrna",
+    "scale": "lt_10k",
+    "topology": "multibranch",
+    "priors": { "labels": true, "root_state": true },
+    "perturbation": false
+  },
+  {
+    "id": "gse132188_endo",
+    "aliases": ["GSE132188"],
+    "studyGroup": "pancreas_endo",
+    "modality": "scrna",
+    "scale": "lt_10k",
+    "topology": "multibranch",
+    "priors": { "labels": true, "root_state": true },
+    "perturbation": false
+  },
+  {
+    "id": "gse117498_pheno_hsc",
+    "aliases": ["GSE117498"],
+    "studyGroup": "pheno_hsc",
+    "modality": "scrna",
+    "scale": "unknown",
+    "topology": "unknown",
+    "priors": { "labels": true },
+    "perturbation": false
   }
 ]

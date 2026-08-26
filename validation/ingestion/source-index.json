@@ -7,6 +7,30 @@
       "locator": "Fig. 8; papers/evidence/ode_family.md IRALL/WTKO tables",
       "extraction": "table",
       "reviewerStatus": "transcribed-2026-08-26"
+    },
+    {
+      "sourceId": "scrl-fig6-s-subs8",
+      "paperId": "scRL",
+      "doi": "10.3390/biology14060679",
+      "locator": "Fig. 6; papers/evidence/rl_bench_family.md §1.5 S-SUBS8 absolute MAS/PAAC",
+      "extraction": "table",
+      "reviewerStatus": "transcribed-2026-08-26"
+    },
+    {
+      "sourceId": "scrl-figa6-gse132188",
+      "paperId": "scRL",
+      "doi": "10.3390/biology14060679",
+      "locator": "Fig. A6A; papers/evidence/rl_bench_family.md §1.5 endocrinogenesis MAS",
+      "extraction": "table",
+      "reviewerStatus": "transcribed-2026-08-26"
+    },
+    {
+      "sourceId": "scrl-figa6-gse117498",
+      "paperId": "scRL",
+      "doi": "10.3390/biology14060679",
+      "locator": "Fig. A6B; papers/evidence/rl_bench_family.md §1.5 phenotypical HSC MAS",
+      "extraction": "table",
+      "reviewerStatus": "transcribed-2026-08-26"
     }
   ]
 }

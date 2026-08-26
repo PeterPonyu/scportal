@@ -16,3 +16,4 @@ c-panel,results/en_panel/scib_panel.csv
 c-panel,results/cpu_baseline_metrics.csv
 leftover,results/en_panel/scccvgben_status.json
 figure-only,GNODEVAE Fig. 7 ILISI/CLISI
+delta-only,scRL Tables 1-5

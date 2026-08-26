@@ -4,3 +4,9 @@ laior-fig8-reserved-geo,LAIOR,GSE278673,gse278673_radiation,LAIOR,NMI,0.693,Fig.
 laior-fig8-reserved-geo,LAIOR,GSE278673,gse278673_radiation,LAIOR,ARI,0.691,Fig. 8 IRALL table,table,2026-08-26
 laior-fig8-reserved-geo,LAIOR,GSE278673,gse278673_radiation,LAIOR,CAL,5125,Fig. 8 IRALL table,table,2026-08-26
 laior-fig8-reserved-geo,LAIOR,GSE278673,gse278673_radiation,LAIOR,LAIOR_COR,0.557,Fig. 8 IRALL table,table,2026-08-26
+scrl-fig6-s-subs8,scRL,S-SUBS8,s_subs8_cd34,scRL,SCRL_MAS_PSEUDOTIME,0.773,Fig. 6 S-SUBS8 pseudotime table,table,2026-08-26
+scrl-fig6-s-subs8,scRL,S-SUBS8,s_subs8_cd34,scRL,SCRL_PAAC_PSEUDOTIME,0.848,Fig. 6 S-SUBS8 pseudotime table,table,2026-08-26
+scrl-fig6-s-subs8,scRL,S-SUBS8,s_subs8_cd34,scRL,SCRL_MAS_FATE,0.323,Fig. 6 S-SUBS8 fate table,table,2026-08-26
+scrl-fig6-s-subs8,scRL,S-SUBS8,s_subs8_cd34,scRL,SCRL_PAAC_FATE,0.373,Fig. 6 S-SUBS8 fate table,table,2026-08-26
+scrl-figa6-gse132188,scRL,GSE132188,gse132188_endo,scRL,SCRL_MAS_PSEUDOTIME,0.865,Fig. A6A endocrinogenesis MAS,table,2026-08-26
+scrl-figa6-gse117498,scRL,GSE117498,gse117498_pheno_hsc,scRL,SCRL_MAS_FATE,0.674,Fig. A6B phenotypical HSC MAS,table,2026-08-26
