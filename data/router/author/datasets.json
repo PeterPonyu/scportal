@@ -68,5 +68,105 @@
     "topology": "unknown",
     "priors": { "labels": true },
     "perturbation": false
+  },
+  {
+    "id": "ccvgae_endo",
+    "aliases": ["endo"],
+    "studyGroup": "ccvgae_endo",
+    "modality": "scrna",
+    "scale": "lt_10k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "ccvgae_setty",
+    "aliases": ["setty"],
+    "studyGroup": "ccvgae_setty",
+    "modality": "scrna",
+    "scale": "lt_10k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "ccvgae_hesc",
+    "aliases": ["hESC"],
+    "studyGroup": "ccvgae_hesc",
+    "modality": "scrna",
+    "scale": "lt_10k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "ccvgae_blood_aged",
+    "aliases": ["bloodAged"],
+    "studyGroup": "ccvgae_blood_aged",
+    "modality": "scrna",
+    "scale": "10k_50k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "ccvgae_hemato",
+    "aliases": ["hemato"],
+    "studyGroup": "ccvgae_hemato",
+    "modality": "scrna",
+    "scale": "10k_50k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "gsm5124061",
+    "aliases": ["GSM5124061"],
+    "studyGroup": "gsm5124061",
+    "modality": "scatac",
+    "scale": "lt_10k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "gse198730",
+    "aliases": ["GSE198730"],
+    "studyGroup": "gse198730",
+    "modality": "scatac",
+    "scale": "lt_10k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "gsm6638254",
+    "aliases": ["GSM6638254"],
+    "studyGroup": "gsm6638254",
+    "modality": "scatac",
+    "scale": "lt_10k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "gsm7308367",
+    "aliases": ["GSM7308367"],
+    "studyGroup": "gsm7308367",
+    "modality": "scatac",
+    "scale": "10k_50k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
+  },
+  {
+    "id": "gse206767",
+    "aliases": ["GSE206767"],
+    "studyGroup": "gse206767",
+    "modality": "scatac",
+    "scale": "10k_50k",
+    "topology": "unknown",
+    "priors": {},
+    "perturbation": false
   }
 ]

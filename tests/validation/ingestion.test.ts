@@ -48,25 +48,42 @@ describe('author metric map', () => {
 })
 
 describe('author-benchmark import', () => {
-  it('admits only verified LAIOR Fig. 8 and scRL absolute MAS/PAAC cells', async () => {
+  it('admits verified LAIOR Fig. 8, scRL absolute MAS/PAAC, and CCVGAE Table 7 per-epoch cells', async () => {
     const { importObservations } = await import('../../validation/ingestion/import-observations.ts')
     const rows = await importObservations(root)
-    assert.equal(rows.length, 11)
+    assert.equal(rows.length, 21)
     assert.deepEqual(rows.map((row) => [row.datasetId, row.methodId, row.metricId, row.rawValue]), [
+      ['ccvgae_blood_aged', 'CCVGAE', 'ccvgae_per_epoch_s', 1.57],
+      ['ccvgae_endo', 'CCVGAE', 'ccvgae_per_epoch_s', 0.36],
+      ['ccvgae_hemato', 'CCVGAE', 'ccvgae_per_epoch_s', 3.08],
+      ['ccvgae_hesc', 'CCVGAE', 'ccvgae_per_epoch_s', 1.17],
+      ['ccvgae_setty', 'CCVGAE', 'ccvgae_per_epoch_s', 0.66],
       ['gse117498_pheno_hsc', 'scRL', 'scrl_mas_fate', 0.674],
       ['gse132188_endo', 'scRL', 'scrl_mas_pseudotime', 0.865],
+      ['gse198730', 'CCVGAE', 'ccvgae_per_epoch_s', 0.60],
+      ['gse206767', 'CCVGAE', 'ccvgae_per_epoch_s', 1.61],
       ['gse277292_dapp1', 'LAIOR', 'nmi', 0.546],
       ['gse278673_radiation', 'LAIOR', 'ari', 0.691],
       ['gse278673_radiation', 'LAIOR', 'calinski_harabasz', 5125],
       ['gse278673_radiation', 'LAIOR', 'laior_coupling', 0.557],
       ['gse278673_radiation', 'LAIOR', 'nmi', 0.693],
+      ['gsm5124061', 'CCVGAE', 'ccvgae_per_epoch_s', 0.44],
+      ['gsm6638254', 'CCVGAE', 'ccvgae_per_epoch_s', 0.89],
+      ['gsm7308367', 'CCVGAE', 'ccvgae_per_epoch_s', 1.27],
       ['s_subs8_cd34', 'scRL', 'scrl_mas_fate', 0.323],
       ['s_subs8_cd34', 'scRL', 'scrl_mas_pseudotime', 0.773],
       ['s_subs8_cd34', 'scRL', 'scrl_paac_fate', 0.373],
       ['s_subs8_cd34', 'scRL', 'scrl_paac_pseudotime', 0.848],
     ])
+    assert.equal(rows.filter((row) => row.methodId === 'CCVGAE').length, 10)
+    assert.equal(rows.some((row) => row.datasetId === 'gse132188_endo' && row.methodId === 'CCVGAE'), false)
+    for (const row of rows.filter((item) => item.methodId === 'CCVGAE')) {
+      assert.equal(row.metricId, 'ccvgae_per_epoch_s')
+      assert.equal(row.provenance.paperId, 'CCVGAE')
+      assert.equal(row.provenance.locator, 'Table 7 runtime')
+    }
     for (const row of rows) {
-      assert.ok(['LAIOR', 'scRL'].includes(row.provenance.paperId))
+      assert.ok(['LAIOR', 'scRL', 'CCVGAE'].includes(row.provenance.paperId))
       assert.equal(row.provenance.methodVersion, '0.0.0-author')
       assert.match(row.provenance.extractedAt, /^2026-08-26T00:00:00Z$/)
     }
