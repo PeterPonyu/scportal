@@ -38,4 +38,15 @@ describe('author catalog bind', () => {
     assert.equal(productionRelease.id, 'router-evidence-synthetic-v1')
     assert.equal(productionObservations.length, 63)
   })
+
+  it('does not point AutoSelect assets or reserved cases at the author catalog', async () => {
+    const assets = await readFile(resolve(root, 'scripts/build_router_assets.mjs'), 'utf8')
+    assert.match(assets, /observations\.synthetic\.json/)
+    assert.doesNotMatch(assets, /data\/router\/author/)
+    const cases = await readJson('validation/results/cases/gse280270_ucb_tpo.json')
+    assert.equal(cases.outcome.status, 'REFUSED')
+    assert.deepEqual(cases.outcome.evidenceGaps, ['reserved_identity_without_admitted_observations'])
+    const dapp1 = await readJson('validation/results/cases/gse277292_dapp1.json')
+    assert.equal(dapp1.outcome.status, 'REFUSED')
+  })
 })
