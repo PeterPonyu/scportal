@@ -1,0 +1,27 @@
+{
+  "status": "software_resource",
+  "passed": false,
+  "reasons": [
+    "insufficient evaluable holdout tasks: 0 < 20",
+    "insufficient study groups: 2 < 5",
+    "author catalog has no leakage-safe holdout protocol in this slice",
+    "external holdout is missing or not evaluable"
+  ],
+  "protocolVersion": "router-validation-v1",
+  "admissionVersion": "router-author-admission-v1",
+  "routerVersion": "router-core-v1",
+  "evidenceVersion": "router-evidence-v1",
+  "syntheticUiCatalog": "router-evidence-synthetic-v1",
+  "claimGate": {
+    "regretImprovementCiLowerBound": 0,
+    "minimumEvaluableHoldoutTasks": 20,
+    "minimumStudyGroups": 5,
+    "top3NonInferiorityMargin": 0.05
+  },
+  "studyGroups": [
+    "dapp1_lsk",
+    "radiation_lsk"
+  ],
+  "observationCount": 4,
+  "evaluatedAt": "2026-08-26T12:17:26.083Z"
+}
