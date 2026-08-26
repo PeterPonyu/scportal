@@ -21,4 +21,4 @@ npm run validate:author-admission
 
 ## Remaining lattice
 
-`remaining-lattice.json` (`router-author-lattice-v1`) freezes main-text admission at 11 cells / 5 study groups / 0 holdouts. Do not add observations until an unlock object listed in that file exists in `papers/evidence`.
+`remaining-lattice.json` (`router-author-lattice-v1`) freezes main-text admission at 21 cells / 15 study groups / 0 holdouts. Do not add observations until an unlock object listed in that file exists in `papers/evidence`.
