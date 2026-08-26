@@ -29,5 +29,6 @@
     ]
   },
   "extractionAllowlist": ["table", "supplement"],
-  "extractionDenylist": ["figure_digitized", "local_rerun", "c_panel", "leftover"]
+  "extractionDenylist": ["figure_digitized", "local_rerun", "c_panel", "leftover"],
+  "remainingLattice": "validation/author-admission/remaining-lattice.json"
 }
