@@ -24,6 +24,7 @@
     "validate:router-data": "node scripts/validate_router_data.mjs",
     "validate:protocol": "node scripts/validate_validation_protocol.mjs",
     "test:validation": "node --experimental-strip-types --test tests/validation/*.test.ts",
+    "validate:primary": "node --experimental-strip-types validation/run-primary.ts",
     "check:router-boundaries": "node scripts/check_router_boundaries.mjs",
     "check:router": "npm run validate:router-data && npm run check:router-boundaries && npm run test:router-config && npm run test:config-python && npm run typecheck",
     "validate:public-graph": "node scripts/validate_public_graph.mjs",
