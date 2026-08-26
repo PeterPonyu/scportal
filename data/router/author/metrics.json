@@ -1,0 +1,15 @@
+[
+  {"id":"ari","aliases":["adjusted-rand-index"],"group":"biology","direction":"higher_is_better","auxiliary":true,"description":"Author-catalog auxiliary label-agreement score; not biological evidence."},
+  {"id":"continuity_preservation","aliases":["continuity"],"group":"continuity","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog continuity score; not biological evidence."},
+  {"id":"intrinsic_geometry","aliases":["geometry"],"group":"latent_geometry","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog intrinsic-geometry score; not biological evidence."},
+  {"id":"marker_consistency","aliases":["marker-consistency"],"group":"biology","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog marker-consistency score; not biological evidence."},
+  {"id":"runtime_minutes","aliases":["runtime"],"group":"resources","direction":"lower_is_better","auxiliary":false,"description":"Author-catalog runtime score in minutes; not biological evidence."},
+  {"id":"seed_stability","aliases":["stability"],"group":"stability","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog seed-stability score; not biological evidence."},
+  {"id":"trajectory_directionality","aliases":["directionality"],"group":"trajectory","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog trajectory-direction score; not biological evidence."},
+  {"id":"nmi","aliases":["normalized-mutual-information"],"group":"biology","direction":"higher_is_better","auxiliary":true,"description":"Author-catalog auxiliary label-agreement score; not biological evidence."},
+  {"id":"calinski_harabasz","aliases":["calinski-harabasz","cal"],"group":"latent_geometry","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog Calinski-Harabasz geometry score; not biological evidence."},
+  {"id":"asw","aliases":["average-silhouette-width"],"group":"latent_geometry","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog average silhouette width; not biological evidence."},
+  {"id":"q_local","aliases":["q-local"],"group":"continuity","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog local continuity score; not biological evidence."},
+  {"id":"q_global","aliases":["q-global"],"group":"continuity","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog global continuity score; not biological evidence."},
+  {"id":"noise_resilience","aliases":["noise-resilience"],"group":"stability","direction":"higher_is_better","auxiliary":false,"description":"Author-catalog noise-resilience score; not biological evidence."}
+]

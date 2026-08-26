@@ -1,0 +1,42 @@
+[
+  {
+    "id": "gse277292_dapp1",
+    "aliases": ["GSE277292", "WTKO"],
+    "studyGroup": "dapp1_lsk",
+    "modality": "scrna",
+    "scale": "10k_50k",
+    "topology": "unknown",
+    "priors": { "labels": true, "perturbation": true },
+    "perturbation": true
+  },
+  {
+    "id": "gse278673_radiation",
+    "aliases": ["GSE278673", "IRALL"],
+    "studyGroup": "radiation_lsk",
+    "modality": "scrna",
+    "scale": "10k_50k",
+    "topology": "unknown",
+    "priors": { "labels": false, "perturbation": true },
+    "perturbation": true
+  },
+  {
+    "id": "gse280270_ucb_tpo",
+    "aliases": ["GSE280270"],
+    "studyGroup": "ucb_tpo_holdout",
+    "modality": "scrna",
+    "scale": "unknown",
+    "topology": "linear",
+    "priors": { "time": true },
+    "perturbation": true
+  },
+  {
+    "id": "gse280145_sleep_deprivation",
+    "aliases": ["GSE280145"],
+    "studyGroup": "sleep_deprivation",
+    "modality": "scrna",
+    "scale": "unknown",
+    "topology": "unknown",
+    "priors": { "perturbation": true },
+    "perturbation": true
+  }
+]
