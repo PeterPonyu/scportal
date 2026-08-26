@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "sourceId": "laior-fig8-reserved-geo",
+      "paperId": "LAIOR",
+      "doi": "10.3389/fgene.2026.1838613",
+      "locator": "Fig. 8; papers/evidence/ode_family.md IRALL/WTKO tables",
+      "extraction": "table",
+      "reviewerStatus": "transcribed-2026-08-26"
+    }
+  ]
+}

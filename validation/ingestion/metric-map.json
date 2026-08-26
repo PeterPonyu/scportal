@@ -1,0 +1,112 @@
+{
+  "version": "router-author-admission-v1",
+  "mappings": [
+    {
+      "sourceMetric": "NMI",
+      "metricId": "nmi",
+      "group": "biology",
+      "direction": "higher_is_better",
+      "auxiliary": true,
+      "papers": ["LAIOR", "GAHIB", "GNODEVAE", "iVAE", "CCVGAE", "scRL"]
+    },
+    {
+      "sourceMetric": "ARI",
+      "metricId": "ari",
+      "group": "biology",
+      "direction": "higher_is_better",
+      "auxiliary": true,
+      "papers": ["LAIOR", "GAHIB", "GNODEVAE", "iVAE", "CCVGAE", "scRL"]
+    },
+    {
+      "sourceMetric": "CAL",
+      "metricId": "calinski_harabasz",
+      "group": "latent_geometry",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": ["LAIOR", "MCCVAE", "GAHIB", "iAODE", "scCCVGBen"]
+    },
+    {
+      "sourceMetric": "ASW",
+      "metricId": "asw",
+      "group": "latent_geometry",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": ["MCCVAE", "GAHIB", "iAODE", "scCCVGBen"]
+    },
+    {
+      "sourceMetric": "Q_local",
+      "metricId": "q_local",
+      "group": "continuity",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": ["MCCVAE", "iAODE", "scCCVGBen", "LAIOR"]
+    },
+    {
+      "sourceMetric": "Q_global",
+      "metricId": "q_global",
+      "group": "continuity",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": ["MCCVAE", "iAODE", "scCCVGBen", "LAIOR"]
+    },
+    {
+      "sourceMetric": "trajectory_directionality",
+      "metricId": "trajectory_directionality",
+      "group": "trajectory",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": ["MCCVAE", "iAODE", "LAIOR", "scCCVGBen"]
+    },
+    {
+      "sourceMetric": "noise_resilience",
+      "metricId": "noise_resilience",
+      "group": "stability",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": ["MCCVAE", "iAODE", "LAIOR", "scCCVGBen"]
+    },
+    {
+      "sourceMetric": "runtime_minutes",
+      "metricId": "runtime_minutes",
+      "group": "resources",
+      "direction": "lower_is_better",
+      "auxiliary": false,
+      "papers": ["CCVGAE", "LAIOR"]
+    },
+    {
+      "sourceMetric": "marker_consistency",
+      "metricId": "marker_consistency",
+      "group": "biology",
+      "direction": "higher_is_better",
+      "auxiliary": false,
+      "papers": []
+    }
+  ],
+  "exclusions": [
+    {
+      "sourceMetric": "KNN_Top1",
+      "admit": false,
+      "reason": "CLOP-DiT generation construct. No MetricGroup match. Do not park it in geometry."
+    },
+    {
+      "sourceMetric": "Steering",
+      "admit": false,
+      "reason": "CLOP-DiT generation construct. No MetricGroup match."
+    },
+    {
+      "sourceMetric": "iVAE_delta",
+      "admit": false,
+      "reason": "iVAE Tables 1–10 are deltas, not absolute scores."
+    },
+    {
+      "sourceMetric": "iVAE_Pearson_vs_LiVAE_COR",
+      "admit": false,
+      "reason": "Opposite direction. Do not merge iVAE |Pearson r| with LiVAE COR."
+    },
+    {
+      "sourceMetric": "MCCVAE_ARI",
+      "admit": false,
+      "reason": "MCCVAE published tables contain no ARI/NMI. Do not fill from C-panel."
+    }
+  ]
+}
