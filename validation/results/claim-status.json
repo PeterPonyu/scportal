@@ -1,0 +1,16 @@
+{
+  "status": "software_resource",
+  "passed": false,
+  "reasons": [
+    "insufficient evaluable holdout tasks: 0 < 20",
+    "insufficient study groups: 3 < 5",
+    "95% CI lower bound p2_5 is not greater than 0",
+    "Top-3 hit rate is non-evaluable against context-free baselines",
+    "external holdout is missing or not evaluable",
+    "synthetic source release cannot support an algorithmic_router claim"
+  ],
+  "protocolVersion": "router-validation-v1",
+  "routerVersion": "router-core-v1",
+  "evidenceVersion": "router-evidence-synthetic-v1",
+  "evaluatedAt": "2026-08-26T01:26:33.664Z"
+}

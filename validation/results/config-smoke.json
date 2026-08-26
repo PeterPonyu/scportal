@@ -1,0 +1,21 @@
+{
+  "gpuRequired": false,
+  "executableFailures": 0,
+  "rows": [
+    {
+      "methodId": "geometry_vae",
+      "level": "not_executable",
+      "ran": false
+    },
+    {
+      "methodId": "graph_contrastive",
+      "level": "not_executable",
+      "ran": false
+    },
+    {
+      "methodId": "neural_ode",
+      "level": "not_executable",
+      "ran": false
+    }
+  ]
+}

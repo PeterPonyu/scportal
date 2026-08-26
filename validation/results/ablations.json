@@ -1,0 +1,986 @@
+{
+  "synthetic": true,
+  "protocolVersion": "router-validation-v1",
+  "routerVersion": "router-core-v1",
+  "seed": 20260823,
+  "generatedAt": "2026-08-26T01:26:33.233Z",
+  "splitVersion": "router-validation-v1",
+  "foldIds": [
+    "logo-synthetic-contract-fixture-branch",
+    "logo-synthetic-contract-fixture-sparse",
+    "logo-synthetic-contract-fixture-linear"
+  ],
+  "ablations": [
+    {
+      "id": "without_context_similarity",
+      "status": "expressible",
+      "rows": [
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "quick_trajectory",
+          "system": "without_context_similarity",
+          "status": "OK",
+          "methodId": "graph_contrastive",
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "53ddfdba0a38817de2d3d6572ecdd38c55a2d614fc09ecf09d18cd65e80762dd",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": 0,
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "advanced_trajectory",
+          "system": "without_context_similarity",
+          "status": "OK",
+          "methodId": "neural_ode",
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "53ddfdba0a38817de2d3d6572ecdd38c55a2d614fc09ecf09d18cd65e80762dd",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": 0,
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "quick_trajectory",
+          "system": "without_context_similarity",
+          "status": "OK",
+          "methodId": "graph_contrastive",
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "92622da49102f6613fd335c96e0428f905af287b635172de616cb5aeaf98a7e9",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": 0,
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "advanced_trajectory",
+          "system": "without_context_similarity",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "92622da49102f6613fd335c96e0428f905af287b635172de616cb5aeaf98a7e9",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "quick_trajectory",
+          "system": "without_context_similarity",
+          "status": "OK",
+          "methodId": "graph_contrastive",
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "64dd51d6a131307733bfda0171af5b6fc1250aea4985bc9e0c5e6c9eac186e08",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": 0,
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "advanced_trajectory",
+          "system": "without_context_similarity",
+          "status": "OK",
+          "methodId": "neural_ode",
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "64dd51d6a131307733bfda0171af5b6fc1250aea4985bc9e0c5e6c9eac186e08",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": 0,
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        }
+      ],
+      "regretDelta": "non_evaluable"
+    },
+    {
+      "id": "without_latent_geometry",
+      "status": "expressible",
+      "rows": [
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "quick_trajectory",
+          "system": "without_latent_geometry",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "90b04595d406c0d3ac761a9e350160f01acb36644342036e2151ae5e1bcbc27c",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "advanced_trajectory",
+          "system": "without_latent_geometry",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "90b04595d406c0d3ac761a9e350160f01acb36644342036e2151ae5e1bcbc27c",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "quick_trajectory",
+          "system": "without_latent_geometry",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "8afe5e88f4d754e793cbc63ffa4e12321bc5f3538f7c2f5a5107cca6295dc2ad",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "advanced_trajectory",
+          "system": "without_latent_geometry",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "8afe5e88f4d754e793cbc63ffa4e12321bc5f3538f7c2f5a5107cca6295dc2ad",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "quick_trajectory",
+          "system": "without_latent_geometry",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "c99dc9c96a131bc39dbe62bea00cf34efb7a9369f8beae49fef565a9c6525de2",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "advanced_trajectory",
+          "system": "without_latent_geometry",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "c99dc9c96a131bc39dbe62bea00cf34efb7a9369f8beae49fef565a9c6525de2",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        }
+      ],
+      "regretDelta": "non_evaluable"
+    },
+    {
+      "id": "without_continuity_trajectory",
+      "status": "expressible",
+      "rows": [
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "quick_trajectory",
+          "system": "without_continuity_trajectory",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "aca7d8f80518cab4714fc0e3645f140159b3e1e623cd73cd480b68f5a0a7a0ad",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "advanced_trajectory",
+          "system": "without_continuity_trajectory",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "aca7d8f80518cab4714fc0e3645f140159b3e1e623cd73cd480b68f5a0a7a0ad",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "quick_trajectory",
+          "system": "without_continuity_trajectory",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "6f60d389208b4fab53b554eb74462f5c64a343d068f0c940ab633bd6cac5da0e",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "advanced_trajectory",
+          "system": "without_continuity_trajectory",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "6f60d389208b4fab53b554eb74462f5c64a343d068f0c940ab633bd6cac5da0e",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "quick_trajectory",
+          "system": "without_continuity_trajectory",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "8b927776e6597ab267c34d41bce06982ee3dee65063a7c71e3f08c3e9339de1a",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "advanced_trajectory",
+          "system": "without_continuity_trajectory",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "8b927776e6597ab267c34d41bce06982ee3dee65063a7c71e3f08c3e9339de1a",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        }
+      ],
+      "regretDelta": "non_evaluable"
+    },
+    {
+      "id": "without_resource_constraints",
+      "status": "expressible",
+      "rows": [
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "quick_trajectory",
+          "system": "without_resource_constraints",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "2a751636b113a3d82f095a70787293cd313b6030b7b50fc57192b420c1d2abda",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "advanced_trajectory",
+          "system": "without_resource_constraints",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "2a751636b113a3d82f095a70787293cd313b6030b7b50fc57192b420c1d2abda",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "quick_trajectory",
+          "system": "without_resource_constraints",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "db19747697ffcdb881190a2180a9d791d9b98e55671a8ef022c739fbbea817ed",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "advanced_trajectory",
+          "system": "without_resource_constraints",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "db19747697ffcdb881190a2180a9d791d9b98e55671a8ef022c739fbbea817ed",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "quick_trajectory",
+          "system": "without_resource_constraints",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "74969b14775706eece20b4f98b4c4b972d07260ce43611491846c275814560c8",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "advanced_trajectory",
+          "system": "without_resource_constraints",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "74969b14775706eece20b4f98b4c4b972d07260ce43611491846c275814560c8",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        }
+      ],
+      "regretDelta": "non_evaluable"
+    },
+    {
+      "id": "weak_bootstrap",
+      "status": "expressible",
+      "rows": [
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "quick_trajectory",
+          "system": "weak_bootstrap",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "2a751636b113a3d82f095a70787293cd313b6030b7b50fc57192b420c1d2abda",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-branch",
+          "datasetId": "synthetic_branch_time",
+          "studyGroup": "synthetic-contract-fixture-branch",
+          "profileId": "advanced_trajectory",
+          "system": "weak_bootstrap",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "2a751636b113a3d82f095a70787293cd313b6030b7b50fc57192b420c1d2abda",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "quick_trajectory",
+          "system": "weak_bootstrap",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "db19747697ffcdb881190a2180a9d791d9b98e55671a8ef022c739fbbea817ed",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-sparse",
+          "datasetId": "synthetic_large_sparse",
+          "studyGroup": "synthetic-contract-fixture-sparse",
+          "profileId": "advanced_trajectory",
+          "system": "weak_bootstrap",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "db19747697ffcdb881190a2180a9d791d9b98e55671a8ef022c739fbbea817ed",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "quick_trajectory",
+          "system": "weak_bootstrap",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "74969b14775706eece20b4f98b4c4b972d07260ce43611491846c275814560c8",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        },
+        {
+          "foldId": "logo-synthetic-contract-fixture-linear",
+          "datasetId": "synthetic_linear_small",
+          "studyGroup": "synthetic-contract-fixture-linear",
+          "profileId": "advanced_trajectory",
+          "system": "weak_bootstrap",
+          "status": "REFUSED",
+          "methodId": null,
+          "seed": 20260823,
+          "routerVersion": "router-core-v1",
+          "evidenceVersion": "router-evidence-synthetic-v1",
+          "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+          "evidenceDigest": "74969b14775706eece20b4f98b4c4b972d07260ce43611491846c275814560c8",
+          "metrics": {
+            "top1": "non_evaluable",
+            "top3": "non_evaluable",
+            "normalizedRegret": "non_evaluable",
+            "spearman": "non_evaluable",
+            "top3Retention": "non_evaluable",
+            "paretoCoverage": "non_evaluable",
+            "resourceFeasible": "non_evaluable"
+          }
+        }
+      ],
+      "regretDelta": "non_evaluable"
+    },
+    {
+      "id": "without_missingness_penalty",
+      "status": "unsupported",
+      "reason": "Landed RouterOptions cannot disable the missingness penalty; do not invent a ranker fork"
+    },
+    {
+      "id": "without_pareto",
+      "status": "unsupported",
+      "reason": "Landed RouterOptions cannot disable Pareto; do not invent a Pareto-off fork"
+    }
+  ],
+  "stability": {
+    "seeds": [
+      20260823,
+      20260824,
+      20260825,
+      20260826,
+      20260827
+    ],
+    "weightPerturbationFraction": 0.1,
+    "seedOutcomes": [
+      {
+        "seed": 20260823,
+        "status": "REFUSED",
+        "top3": [],
+        "roles": []
+      },
+      {
+        "seed": 20260824,
+        "status": "REFUSED",
+        "top3": [],
+        "roles": []
+      },
+      {
+        "seed": 20260825,
+        "status": "REFUSED",
+        "top3": [],
+        "roles": []
+      },
+      {
+        "seed": 20260826,
+        "status": "REFUSED",
+        "top3": [],
+        "roles": []
+      },
+      {
+        "seed": 20260827,
+        "status": "REFUSED",
+        "top3": [],
+        "roles": []
+      }
+    ],
+    "top3Jaccard": {
+      "pairwise": [
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260824,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260825,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260826,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260827,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260824,
+          "rightSeed": 20260825,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260824,
+          "rightSeed": 20260826,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260824,
+          "rightSeed": 20260827,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260825,
+          "rightSeed": 20260826,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260825,
+          "rightSeed": 20260827,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260826,
+          "rightSeed": 20260827,
+          "top3Jaccard": "non_evaluable",
+          "roleRetention": "non_evaluable"
+        }
+      ],
+      "mean": "non_evaluable"
+    },
+    "roleRetention": {
+      "pairwise": [
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260824,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260825,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260826,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260823,
+          "rightSeed": 20260827,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260824,
+          "rightSeed": 20260825,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260824,
+          "rightSeed": 20260826,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260824,
+          "rightSeed": 20260827,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260825,
+          "rightSeed": 20260826,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260825,
+          "rightSeed": 20260827,
+          "value": "non_evaluable"
+        },
+        {
+          "leftSeed": 20260826,
+          "rightSeed": 20260827,
+          "value": "non_evaluable"
+        }
+      ],
+      "mean": "non_evaluable"
+    },
+    "weightPerturbations": [
+      {
+        "group": "latent_geometry",
+        "fraction": 0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "latent_geometry",
+        "fraction": -0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "continuity",
+        "fraction": 0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "continuity",
+        "fraction": -0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "trajectory",
+        "fraction": 0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "trajectory",
+        "fraction": -0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "stability",
+        "fraction": 0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "stability",
+        "fraction": -0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "biology",
+        "fraction": 0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "biology",
+        "fraction": -0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "resources",
+        "fraction": 0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      },
+      {
+        "group": "resources",
+        "fraction": -0.1,
+        "top3Jaccard": "non_evaluable",
+        "roleRetention": "non_evaluable"
+      }
+    ]
+  }
+}

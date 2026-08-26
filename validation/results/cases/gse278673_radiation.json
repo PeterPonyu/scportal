@@ -1,0 +1,298 @@
+{
+  "accession": "GSE278673",
+  "id": "gse278673_radiation",
+  "role": "application_case",
+  "biology": "mouse LSK total-body radiation injury time course",
+  "claimCeiling": "workflow applicability; method-selection recommendation; published case evidence; hypothesis-generating biological concordance",
+  "weightsSource": "advanced_trajectory",
+  "seed": 20260823,
+  "compiled": false,
+  "geoObservationsAdded": false,
+  "outcome": {
+    "status": "OK",
+    "recommendations": [
+      {
+        "methodId": "neural_ode",
+        "roles": [
+          "best_fit",
+          "robust_alternative",
+          "resource_aware"
+        ],
+        "paretoLayer": 0,
+        "outrankingFlow": 0,
+        "conservativeUtility": 0.4999999999999999,
+        "confidence": "medium",
+        "topThreeRetention": 1,
+        "effectiveDatasets": 2.922651933701657,
+        "criticalCoverage": 1,
+        "positiveEvidence": [],
+        "positiveEvidenceDetails": [],
+        "evidenceLinks": [
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_branch_time",
+            "metricId": "continuity_preservation",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_branch_time",
+            "metricId": "intrinsic_geometry",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_branch_time",
+            "metricId": "marker_consistency",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_branch_time",
+            "metricId": "runtime_minutes",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_branch_time",
+            "metricId": "seed_stability",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_branch_time",
+            "metricId": "trajectory_directionality",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_large_sparse",
+            "metricId": "continuity_preservation",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_large_sparse",
+            "metricId": "intrinsic_geometry",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_large_sparse",
+            "metricId": "marker_consistency",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_large_sparse",
+            "metricId": "runtime_minutes",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_large_sparse",
+            "metricId": "seed_stability",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_large_sparse",
+            "metricId": "trajectory_directionality",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_linear_small",
+            "metricId": "continuity_preservation",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_linear_small",
+            "metricId": "intrinsic_geometry",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_linear_small",
+            "metricId": "marker_consistency",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_linear_small",
+            "metricId": "runtime_minutes",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_linear_small",
+            "metricId": "seed_stability",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          },
+          {
+            "paperId": "synthetic-contract-fixture",
+            "locator": "table:S1",
+            "datasetId": "synthetic_linear_small",
+            "metricId": "trajectory_directionality",
+            "datasetVersion": "1",
+            "methodVersion": "1.0.0",
+            "runConfigId": "fixture-default",
+            "extractedAt": "2026-08-23T00:00:00Z",
+            "synthetic": true
+          }
+        ],
+        "confidenceReasons": [
+          "effective datasets 2.923 meet threshold 2",
+          "critical coverage 100.0% meets threshold 60.0%",
+          "top-three retention 100.0% meets threshold 50.0%",
+          "practical top-two flow margin is 1.000000",
+          "unknown scale leaves method capacity feasibility unresolved"
+        ],
+        "limitations": [
+          "synthetic fixture evidence; not published biological evidence",
+          "empirical-Bayes shrinkage prior applied with alpha=1",
+          "unknown scale leaves capacity feasibility unresolved",
+          "effective dataset count is 2.923 of 3",
+          "resource tier 3 is above the minimum tier"
+        ],
+        "alternativeDispositions": [
+          {
+            "methodId": "geometry_vae",
+            "status": "excluded",
+            "reasons": [
+              "MISSING_OUTPUT",
+              "UNSUPPORTED_GOAL"
+            ]
+          },
+          {
+            "methodId": "graph_contrastive",
+            "status": "excluded",
+            "reasons": [
+              "MISSING_OUTPUT",
+              "UNSUPPORTED_GOAL"
+            ]
+          }
+        ],
+        "excludedAlternatives": [
+          {
+            "methodId": "geometry_vae",
+            "reasons": [
+              "MISSING_OUTPUT",
+              "UNSUPPORTED_GOAL"
+            ]
+          },
+          {
+            "methodId": "graph_contrastive",
+            "reasons": [
+              "MISSING_OUTPUT",
+              "UNSUPPORTED_GOAL"
+            ]
+          }
+        ]
+      }
+    ],
+    "seed": 20260823,
+    "evidenceVersion": "router-evidence-synthetic-v1",
+    "routerVersion": "router-core-v1",
+    "receipt": {
+      "profileFingerprint": "e8490549b86272c4423ce31fd37216a41f08d1eb5f6f511dc3af4cb0d1b685cf",
+      "release": {
+        "id": "router-evidence-synthetic-v1",
+        "synthetic": true,
+        "description": "Synthetic contract fixture only. It contains no published benchmark or biological evidence and must not support scientific claims.",
+        "configDigest": "50ecde7db783f5e3469d007c6fa7002140b8b632db4dba4d66ba7527f9f71262",
+        "evidenceDigest": "3c3c638e80d38b4e94fb272609d792a387f4f38374f8f7545decbc2dc41693d6"
+      }
+    }
+  },
+  "nonclaimScan": {
+    "ok": true,
+    "hits": []
+  }
+}

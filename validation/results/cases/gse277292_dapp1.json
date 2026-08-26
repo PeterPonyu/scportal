@@ -1,0 +1,26 @@
+{
+  "accession": "GSE277292",
+  "id": "gse277292_dapp1",
+  "role": "application_case",
+  "biology": "mouse LSK Dapp1 knockout versus wild type",
+  "claimCeiling": "workflow applicability; method-selection recommendation; published case evidence; hypothesis-generating biological concordance",
+  "weightsSource": "advanced_trajectory",
+  "seed": 20260823,
+  "compiled": false,
+  "geoObservationsAdded": false,
+  "outcome": {
+    "status": "REFUSED",
+    "code": "CONFLICTING_REQUIREMENTS",
+    "candidates": [],
+    "evidenceGaps": [
+      "no compatible method after hard constraints"
+    ],
+    "seed": 20260823,
+    "evidenceVersion": "router-evidence-synthetic-v1",
+    "routerVersion": "router-core-v1"
+  },
+  "nonclaimScan": {
+    "ok": true,
+    "hits": []
+  }
+}
