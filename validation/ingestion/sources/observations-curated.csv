@@ -1,0 +1,5 @@
+datasetId,methodId,metricId,rawValue,paperId,locator,datasetVersion,methodVersion,runConfigId,extractedAt
+gse277292_dapp1,LAIOR,nmi,0.546,LAIOR,Fig. 8 WTKO table,GSE277292,LAIOR,laior-fig8-reserved-geo,2026-08-26
+gse278673_radiation,LAIOR,ari,0.691,LAIOR,Fig. 8 IRALL table,GSE278673,LAIOR,laior-fig8-reserved-geo,2026-08-26
+gse278673_radiation,LAIOR,calinski_harabasz,5125,LAIOR,Fig. 8 IRALL table,GSE278673,LAIOR,laior-fig8-reserved-geo,2026-08-26
+gse278673_radiation,LAIOR,nmi,0.693,LAIOR,Fig. 8 IRALL table,GSE278673,LAIOR,laior-fig8-reserved-geo,2026-08-26

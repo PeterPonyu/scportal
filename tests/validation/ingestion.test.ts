@@ -34,3 +34,34 @@ describe('author metric map', () => {
     assert.match(bySource.iVAE_Pearson_vs_LiVAE_COR.reason, /opposite direction/i)
   })
 })
+
+describe('author-benchmark import', () => {
+  it('admits only the verified LAIOR per-dataset cells', async () => {
+    const { importObservations } = await import('../../validation/ingestion/import-observations.ts')
+    const rows = await importObservations(root)
+    assert.equal(rows.length, 4)
+    assert.deepEqual(rows.map((row) => [row.datasetId, row.methodId, row.metricId, row.rawValue]), [
+      ['gse277292_dapp1', 'LAIOR', 'nmi', 0.546],
+      ['gse278673_radiation', 'LAIOR', 'ari', 0.691],
+      ['gse278673_radiation', 'LAIOR', 'calinski_harabasz', 5125],
+      ['gse278673_radiation', 'LAIOR', 'nmi', 0.693],
+    ])
+    for (const row of rows) {
+      assert.equal(row.provenance.paperId, 'LAIOR')
+      assert.match(row.provenance.locator, /Fig\. 8/)
+    }
+  })
+
+  it('excludes CODE, C-panel paths, Saelens, and reserved empty accessions', async () => {
+    const exclusions = (await readFile(resolve(root, 'validation/ingestion/sources/exclusions.csv'), 'utf8'))
+    assert.match(exclusions, /CODE/)
+    assert.match(exclusions, /representation_panel.csv/)
+    assert.match(exclusions, /saelens-2019/)
+    assert.match(exclusions, /GSE280270/)
+    assert.match(exclusions, /GSE280145/)
+    const { importObservations } = await import('../../validation/ingestion/import-observations.ts')
+    const rows = await importObservations(root)
+    assert.equal(rows.some((row) => row.methodId === 'CODE'), false)
+    assert.equal(rows.some((row) => row.datasetId === 'gse280270_ucb_tpo'), false)
+  })
+})

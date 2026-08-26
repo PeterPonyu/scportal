@@ -1,0 +1,14 @@
+reason,identity
+code-pdf-missing,CODE
+c-panel,results/en_panel/representation_panel.csv
+c-panel,results/en_panel/dynamics_panel.csv
+c-panel,results/en_panel/decision_panel.csv
+local-rerun,results/formal_metrics.csv
+foreign-board,saelens-2019-dynbenchmark
+reserved-empty,GSE280270
+reserved-empty,GSE280145
+digitization,scFocus
+aggregate-mean,CLOP-DiT Table 3
+aggregate-mean,MCCVAE A.1-A.16
+aggregate-mean,GAHIB Tables 1-7 means
+delta-only,iVAE Tables 1-10
