@@ -170,6 +170,21 @@
       "sourceMetric": "CCVGAE_GPU_MB",
       "admit": false,
       "reason": "Table 7 GPU MB is nearly flat (95-99) and is not admitted in this slice."
+    },
+    {
+      "sourceMetric": "GAHIB_TABLE8_SCVI",
+      "admit": false,
+      "reason": "Table 8 scVI columns are contrast only. Admit GAHIB NMI/ARI/ASW, not scVI."
+    },
+    {
+      "sourceMetric": "GAHIB_TABLE_9_MARKER",
+      "admit": false,
+      "reason": "Table 9 is marker hypergeometric p/q. Do not admit as biology scores."
+    },
+    {
+      "sourceMetric": "GAHIB_TABLE_10_HIERARCHY",
+      "admit": false,
+      "reason": "Table 10 is Hom / rL / rho_s / MO / GO. Do not invent a GAHIB hierarchy metric."
     }
   ]
 }
