@@ -30,6 +30,21 @@ describe('author catalog bind', () => {
       )),
     })
     assert.equal(refused.status, 'REFUSED')
+    assert.deepEqual(refused.status === 'REFUSED' ? refused.evidenceGaps : [], [
+      'invalid Router input: observation has invalid fields or provenance',
+    ])
+    const { releaseEvidenceDigest } = await import('../../app/core/router/release-digest.ts')
+    const swappedDigest = releaseEvidenceDigest(
+      {
+        datasets: author.datasets,
+        methods: author.methods,
+        metrics: author.metrics,
+        observations: author.observations,
+      },
+      { id: production.release.id, synthetic: production.release.synthetic, description: production.release.description },
+      production.release.configDigest,
+    )
+    assert.notEqual(swappedDigest, production.release.evidenceDigest)
 
     const productionMethods = await readJson('data/router/methods.json')
     const productionRelease = await readJson('data/router/release.json')
