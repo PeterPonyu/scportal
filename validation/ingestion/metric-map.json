@@ -164,13 +164,11 @@
     {
       "sourceMetric": "CCVGAE_TOTAL_50EPOCH",
       "admit": false,
-<<<<<<< .merge_file_REnbho
       "reason": "Table 7 total is 50 times per-epoch seconds, not a second resource score. Do not admit as runtime_minutes."
     },
     {
       "sourceMetric": "CCVGAE_GPU_MB",
       "admit": false,
-<<<<<<< .merge_file_REnbho
       "reason": "Table 7 GPU MB is nearly flat (95-99) and is not admitted in this slice."
     }
   ]

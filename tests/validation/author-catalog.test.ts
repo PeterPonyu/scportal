@@ -20,7 +20,7 @@ describe('author catalog bind', () => {
     assert.equal(author.release.id, 'router-evidence-v1')
     assert.equal(author.release.synthetic, false)
     assert.notEqual(author.release.evidenceDigest, production.release.evidenceDigest)
-    assert.equal(author.observations.every((row) => ['LAIOR', 'scRL'].includes(row.provenance.paperId)), true)
+    assert.equal(author.observations.every((row) => ['CCVGAE', 'LAIOR', 'scRL'].includes(row.provenance.paperId)), true)
     assert.equal(author.observations.filter((row) => row.methodId === 'scRL').every((row) => row.metricId.startsWith('scrl_')), true)
     assert.equal(author.methods.length, 13)
     const { routeMethods } = await import('../../app/core/router/index.ts')

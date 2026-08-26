@@ -3,8 +3,8 @@
   "evidenceReleaseId": "router-evidence-v1",
   "uiCatalog": "router-evidence-synthetic-v1",
   "claimStatus": "software_resource",
-  "observationCount": 11,
-  "studyGroupCount": 5,
+  "observationCount": 21,
+  "studyGroupCount": 15,
   "evaluableHoldouts": 0,
   "methodIds": [
     "iVAE", "CCVGAE", "LiVAE", "GAHIB", "MCCVAE",
@@ -13,7 +13,7 @@
   ],
   "methods": [
     {"id":"iVAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Tables 1-10 and S1-S7 are deltas","unlock":"do-not-treat-delta-as-absolute"},
-    {"id":"CCVGAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Benchmarks are deltas; Table 6 is a 55-dataset mean; Table 7 runtimes are not transcribed","unlock":"transcribe-table-7-runtimes-into-evidence"},
+    {"id":"CCVGAE","status":"admitted","admittedObservationCount":10,"blockedReason":"Benchmarks are deltas; Table 6 is a 55-dataset mean","unlock":"do-not-explode-means"},
     {"id":"LiVAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Tables are deltas; accession list is not in the main text","unlock":"do-not-invent-accessions"},
     {"id":"GAHIB","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"Tables 1-7 are means; ARI 0.564 is a Leiden-proxy mean","unlock":"do-not-explode-means"},
     {"id":"MCCVAE","status":"main_text_exhausted","admittedObservationCount":0,"blockedReason":"A.1-A.16 are 50-dataset means; no published ARI/NMI","unlock":"do-not-explode-means"},

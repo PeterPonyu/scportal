@@ -28,21 +28,22 @@ describe('author remaining lattice', () => {
     const admitted = Object.fromEntries(lattice.methods.map((row: { id: string; admittedObservationCount: number }) => [row.id, row.admittedObservationCount]))
     assert.equal(admitted.LAIOR, 5)
     assert.equal(admitted.scRL, 6)
-    for (const id of protocolMethods.filter((method) => method !== 'LAIOR' && method !== 'scRL')) {
+    assert.equal(admitted.CCVGAE, 10)
+    for (const id of protocolMethods.filter((method) => method !== 'LAIOR' && method !== 'scRL' && method !== 'CCVGAE')) {
       assert.equal(admitted[id], 0, id)
     }
     const latticeSum = lattice.methods.reduce((sum: number, row: { admittedObservationCount: number }) => sum + row.admittedObservationCount, 0)
-    assert.equal(latticeSum, 11)
-    assert.equal(observations.length, 11)
+    assert.equal(latticeSum, 21)
+    assert.equal(observations.length, 21)
     assert.equal(observations.filter((row: { methodId: string }) => row.methodId === 'LAIOR').length, 5)
     assert.equal(observations.filter((row: { methodId: string }) => row.methodId === 'scRL').length, 6)
-    assert.equal(lattice.methods.filter((row: { status: string }) => row.status === 'admitted').map((row: { id: string }) => row.id).join(','), 'LAIOR,scRL')
+    assert.equal(lattice.methods.filter((row: { status: string }) => row.status === 'admitted').map((row: { id: string }) => row.id).join(','), 'CCVGAE,LAIOR,scRL')
     assert.equal(lattice.methods.find((row: { id: string }) => row.id === 'CODE').status, 'blocked_until')
     assert.equal(lattice.methods.find((row: { id: string }) => row.id === 'scFocus').status, 'blocked_until')
     assert.equal(lattice.methods.find((row: { id: string }) => row.id === 'iVAE').status, 'main_text_exhausted')
-    assert.equal(lattice.observationCount, 11)
+    assert.equal(lattice.observationCount, 21)
     assert.equal(lattice.observationCount, observations.length)
-    assert.equal(lattice.studyGroupCount, 5)
+    assert.equal(lattice.studyGroupCount, 15)
     assert.equal(lattice.evaluableHoldouts, 0)
   })
 

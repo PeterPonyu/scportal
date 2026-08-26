@@ -121,7 +121,7 @@
   },
   {
     "id": "gsm5124061",
-    "aliases": ["GSM5124061"],
+    "aliases": [],
     "studyGroup": "gsm5124061",
     "modality": "scatac",
     "scale": "lt_10k",
@@ -131,7 +131,7 @@
   },
   {
     "id": "gse198730",
-    "aliases": ["GSE198730"],
+    "aliases": [],
     "studyGroup": "gse198730",
     "modality": "scatac",
     "scale": "lt_10k",
@@ -141,7 +141,7 @@
   },
   {
     "id": "gsm6638254",
-    "aliases": ["GSM6638254"],
+    "aliases": [],
     "studyGroup": "gsm6638254",
     "modality": "scatac",
     "scale": "lt_10k",
@@ -151,7 +151,7 @@
   },
   {
     "id": "gsm7308367",
-    "aliases": ["GSM7308367"],
+    "aliases": [],
     "studyGroup": "gsm7308367",
     "modality": "scatac",
     "scale": "10k_50k",
@@ -161,7 +161,7 @@
   },
   {
     "id": "gse206767",
-    "aliases": ["GSE206767"],
+    "aliases": [],
     "studyGroup": "gse206767",
     "modality": "scatac",
     "scale": "10k_50k",
