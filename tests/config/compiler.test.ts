@@ -82,6 +82,45 @@ test('drives invocation and every result extraction from the validated declarati
   assert.match(snippet, /adata\.uns\['graph_metadata'\] = result\.run_metadata/)
 })
 
+function withWrapper(wrapper: unknown) {
+  return { ...template, template: { ...template.template, wrapper } }
+}
+
+test('emits the constructor-fit-getter shape the pinned packages actually expose', () => {
+  const snippet = createFixtureCompiler([method], [withWrapper({
+    style: 'constructor_fit_getter', fitMethod: 'fit', input: 'adata',
+    resultGetters: { latent: 'get_latent', graph: 'get_graph', metadata: 'get_metadata' },
+  })])(input({ parameters: { epochs: 20 } })).pythonSnippet
+
+  assert.match(snippet, /model = GraphContrastive\(\n {4}adata,\n {4}epochs=20,/)
+  assert.match(snippet, /\)\nmodel\.fit\(\)\n/)
+  assert.match(snippet, /adata\.obsm\['X_graph'\] = model\.get_latent\(\)/)
+  assert.match(snippet, /adata\.obsp\['connectivities'\] = model\.get_graph\(\)/)
+  assert.match(snippet, /adata\.uns\['graph_metadata'\] = model\.get_metadata\(\)/)
+  assert.doesNotMatch(snippet, /result/)
+})
+
+test('an omitted style keeps the legacy one-call shape rather than guessing the other one', () => {
+  const legacy = createFixtureCompiler([method], [template])(input()).pythonSnippet
+  const declared = createFixtureCompiler([method], [withWrapper({ ...template.template.wrapper, style: 'fit_transform' })])(input()).pythonSnippet
+
+  assert.equal(declared, legacy)
+  assert.match(legacy, /result = model\.fit_transform\(adata\)/)
+})
+
+test('a wrapper may not carry the extraction field of the shape it did not declare', () => {
+  const cases: Array<[string, unknown, RegExp]> = [
+    ['getters without the style', { fitMethod: 'fit', input: 'adata', resultGetters: { latent: 'get_latent', graph: 'get_graph', metadata: 'get_metadata' } }, /must declare exactly/],
+    ['attributes under the getter style', { style: 'constructor_fit_getter', fitMethod: 'fit', input: 'adata', resultAttributes: { latent: 'latent', graph: 'graph', metadata: 'metadata' } }, /must declare exactly/],
+    ['both extraction fields at once', { style: 'constructor_fit_getter', fitMethod: 'fit', input: 'adata', resultAttributes: { latent: 'latent', graph: 'graph', metadata: 'metadata' }, resultGetters: { latent: 'get_latent', graph: 'get_graph', metadata: 'get_metadata' } }, /must declare exactly/],
+    ['an unknown style', { style: 'fit_predict', fitMethod: 'fit', input: 'adata', resultAttributes: { latent: 'latent', graph: 'graph', metadata: 'metadata' } }, /style must be one of/],
+    ['getters that skip a declared output', { style: 'constructor_fit_getter', fitMethod: 'fit', input: 'adata', resultGetters: { latent: 'get_latent', metadata: 'get_metadata' } }, /canonical order/],
+  ]
+  for (const [label, wrapper, expected] of cases) {
+    assert.throws(() => createFixtureCompiler([method], [withWrapper(wrapper)]), expected, label)
+  }
+})
+
 test('public compiler fails closed against the exact canonical release because every canonical method is non-executable', () => {
   assert.throws(() => compileConfig(input()), /not executable/i)
 })

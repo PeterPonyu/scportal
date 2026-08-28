@@ -1,6 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "config-template.schema.json",
+  "$defs": {
+    "outputCallables": { "type": "object", "additionalProperties": false, "properties": { "latent": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "graph": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "pseudotime": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "branch": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "metadata": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" } } }
+  },
   "type": "object",
   "additionalProperties": false,
   "required": ["methodId", "version", "synthetic", "template"],
@@ -24,12 +27,17 @@
         "importName": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
         "constructor": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
         "wrapper": {
-          "type": "object", "additionalProperties": false, "required": ["fitMethod", "input", "resultAttributes"],
+          "type": "object", "additionalProperties": false, "required": ["fitMethod", "input"],
           "properties": {
+            "style": { "enum": ["fit_transform", "constructor_fit_getter"] },
             "fitMethod": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
             "input": { "const": "adata" },
-            "resultAttributes": { "type": "object", "additionalProperties": false, "properties": { "latent": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "graph": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "pseudotime": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "branch": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "metadata": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" } } }
-          }
+            "resultAttributes": { "$ref": "#/$defs/outputCallables" },
+            "resultGetters": { "$ref": "#/$defs/outputCallables" }
+          },
+          "allOf": [
+            { "if": { "properties": { "style": { "const": "constructor_fit_getter" } }, "required": ["style"] }, "then": { "required": ["resultGetters"], "properties": { "resultGetters": { "$ref": "#/$defs/outputCallables" }, "resultAttributes": false } }, "else": { "required": ["resultAttributes"], "properties": { "resultAttributes": { "$ref": "#/$defs/outputCallables" }, "resultGetters": false } } }
+          ]
         },
         "defaultParameters": { "type": "object", "propertyNames": { "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }, "additionalProperties": { "anyOf": [{ "type": "string" }, { "type": "number" }, { "type": "boolean" }] } },
         "allowedParameters": {

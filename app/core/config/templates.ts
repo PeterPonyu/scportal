@@ -1,4 +1,4 @@
-import type { MethodConfigTemplate, ParameterDefinition, ParameterValue } from './types.ts'
+import type { MethodConfigTemplate, OutputName, ParameterDefinition, ParameterValue, WrapperStyle } from './types.ts'
 import { absoluteHttpUrl, denseOwnDataArray } from '../router/validation.ts'
 
 type RecordValue = Record<string, unknown>
@@ -88,20 +88,37 @@ function distinct(values: readonly string[], label: string): void {
   if (new Set(values).size !== values.length) throw new Error(`${label} must not contain duplicates`)
 }
 
+const wrapperStyles = ['fit_transform', 'constructor_fit_getter'] as const
+const wrapperCallableField = { fit_transform: 'resultAttributes', constructor_fit_getter: 'resultGetters' } as const
+
+function parseOutputCallables(value: unknown, outputs: MethodConfigTemplate['outputs'], label: string): Partial<Record<OutputName, string>> {
+  const record = ownRecord(value, label)
+  if (Object.keys(record).length !== outputs.length || outputs.some((output, index) => Object.keys(record)[index] !== output)) throw new Error(`${label} must exactly match outputs in canonical order`)
+  const callables: Partial<Record<OutputName, string>> = Object.create(null)
+  for (const output of outputs) {
+    const callable = nonblank(record[output], `${label}.${output}`)
+    if (!pythonIdentifier.test(callable)) throw new Error(`${label}.${output} must be a Python identifier`)
+    callables[output] = callable
+  }
+  return frozen(callables)
+}
+
+// An omitted style keeps the legacy one-call shape, so a template that has never stated which
+// shape its package has does not silently start claiming the other one.
 function parseWrapper(value: unknown, outputs: MethodConfigTemplate['outputs']): MethodConfigTemplate['wrapper'] {
   const record = ownRecord(value, 'template.wrapper')
-  if (Object.keys(record).length !== 3 || !['fitMethod', 'input', 'resultAttributes'].every((key) => Object.hasOwn(record, key))) throw new Error('template.wrapper must declare fitMethod, input, and resultAttributes')
+  const declaresStyle = Object.hasOwn(record, 'style')
+  const style = declaresStyle ? record.style : 'fit_transform'
+  if (!wrapperStyles.includes(style as WrapperStyle)) throw new Error(`template.wrapper.style must be one of ${wrapperStyles.join(', ')}`)
+  const callableField = wrapperCallableField[style as WrapperStyle]
+  const fields = [...(declaresStyle ? ['style'] : []), 'fitMethod', 'input', callableField]
+  if (Object.keys(record).length !== fields.length || !fields.every((key) => Object.hasOwn(record, key))) throw new Error(`template.wrapper must declare exactly ${fields.join(', ')}`)
   const fitMethod = nonblank(record.fitMethod, 'template.wrapper.fitMethod')
   if (!pythonIdentifier.test(fitMethod) || record.input !== 'adata') throw new Error('template.wrapper invocation must use a Python method identifier and adata input')
-  const attributes = ownRecord(record.resultAttributes, 'template.wrapper.resultAttributes')
-  if (Object.keys(attributes).length !== outputs.length || outputs.some((output, index) => Object.keys(attributes)[index] !== output)) throw new Error('template.wrapper result attributes must exactly match outputs in canonical order')
-  const resultAttributes: MethodConfigTemplate['wrapper']['resultAttributes'] = Object.create(null)
-  for (const output of outputs) {
-    const attribute = nonblank(attributes[output], `template.wrapper.resultAttributes.${output}`)
-    if (!pythonIdentifier.test(attribute)) throw new Error(`template.wrapper.resultAttributes.${output} must be a Python identifier`)
-    resultAttributes[output] = attribute
-  }
-  return frozen({ fitMethod, input: 'adata', resultAttributes: frozen(resultAttributes) })
+  const callables = parseOutputCallables(record[callableField], outputs, `template.wrapper.${callableField}`)
+  return frozen(style === 'fit_transform'
+    ? { style, fitMethod, input: 'adata' as const, resultAttributes: callables }
+    : { style: 'constructor_fit_getter' as const, fitMethod, input: 'adata' as const, resultGetters: callables })
 }
 
 function parseAdapterProvenance(record: RecordValue, label: string): {

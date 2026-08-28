@@ -6,6 +6,15 @@ export type OutputName = 'latent' | 'graph' | 'pseudotime' | 'branch' | 'metadat
 export type AdapterName = 'scFocus' | 'scRL'
 export interface AdapterProvenance { packageName: string; packageVersion: string; installCommand: string; sourceUrl: string; importName: string; functionName: string }
 
+export type WrapperStyle = 'fit_transform' | 'constructor_fit_getter'
+// fit_transform: the constructor takes the parameters, the fit call takes adata and returns a
+// result object, and each output is an attribute of that result.
+// constructor_fit_getter: the constructor takes adata alongside the parameters, the fit call
+// takes nothing and is run for its side effects, and each output comes from a getter method.
+export type MethodConfigWrapper =
+  | { style: 'fit_transform'; fitMethod: string; input: 'adata'; resultAttributes: Partial<Record<OutputName, string>> }
+  | { style: 'constructor_fit_getter'; fitMethod: string; input: 'adata'; resultGetters: Partial<Record<OutputName, string>> }
+
 export interface MethodConfigTemplate {
   methodId: string
   version: string
@@ -14,7 +23,7 @@ export interface MethodConfigTemplate {
   importName: string
   constructor: string
   outputs: OutputName[]
-  wrapper: { fitMethod: string; input: 'adata'; resultAttributes: Partial<Record<OutputName, string>> }
+  wrapper: MethodConfigWrapper
   defaultParameters: Record<string, ParameterValue>
   allowedParameters: Record<string, ParameterDefinition>
   outputKeys: { latent: string; graph?: string; pseudotime?: string; branch?: string; metadata: string }

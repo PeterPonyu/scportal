@@ -17,12 +17,18 @@ function wrapper(outputs) {
   return { fitMethod: 'fit_transform', input: 'adata', resultAttributes }
 }
 
+function getterWrapper(outputs) {
+  const resultGetters = {}
+  for (const output of outputs) resultGetters[output] = `get_${output}`
+  return { style: 'constructor_fit_getter', fitMethod: 'fit', input: 'adata', resultGetters }
+}
+
 function adapter(name, extra) {
   return { packageName: name, packageVersion: '1.0.0', installCommand: `python -m pip install ${name}==1.0.0`, sourceUrl: `https://example.test/${name}`, importName: name, functionName: `run_${name}`, ...extra }
 }
 
-function template(entry, outputKeys, downstream) {
-  return { methodId: entry.id, version: entry.version, synthetic: true, template: { outputs: entry.outputs, packageName: entry.id, packageVersion: entry.version, importName: entry.id.replace(/-/g, '_'), constructor: 'FixtureModel', wrapper: wrapper(entry.outputs), defaultParameters: {}, allowedParameters: {}, outputKeys, ...(downstream === undefined ? {} : { downstream }) } }
+function template(entry, outputKeys, downstream, shape = wrapper) {
+  return { methodId: entry.id, version: entry.version, synthetic: true, template: { outputs: entry.outputs, packageName: entry.id, packageVersion: entry.version, importName: entry.id.replace(/-/g, '_'), constructor: 'FixtureModel', wrapper: shape(entry.outputs), defaultParameters: {}, allowedParameters: {}, outputKeys, ...(downstream === undefined ? {} : { downstream }) } }
 }
 
 const fixtures = [
@@ -30,6 +36,7 @@ const fixtures = [
   (() => { const entry = method('graph-fixture', ['latent', 'graph', 'metadata']); return [entry, template(entry, { latent: 'X_graph', graph: 'graph', metadata: 'metadata' })] })(),
   (() => { const entry = method('time-fixture', ['latent', 'pseudotime', 'metadata']); return [entry, template(entry, { latent: 'X_time', pseudotime: 'pt', metadata: 'metadata' }, { scRL: adapter('scrl', { decisionOutput: 'decision' }) })] })(),
   (() => { const entry = method('branch-fixture', ['latent', 'branch', 'metadata']); return [entry, template(entry, { latent: 'X_branch', branch: 'branch', metadata: 'metadata' }, { scFocus: adapter('scfocus', { contributionOutput: 'contribution' }) })] })(),
+  (() => { const entry = method('getter-fixture', ['latent', 'metadata']); return [entry, template(entry, { latent: 'X_getter', metadata: 'metadata' }, undefined, getterWrapper)] })(),
 ]
 
 function outcome(entry) {

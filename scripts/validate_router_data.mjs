@@ -113,8 +113,8 @@ function assertCanonicalOutputs(outputs, outputKeys) {
 
 function assertDeclarativeWrapper(outputs, wrapper) {
   if (wrapper === undefined) return
-  const attributes = wrapper.resultAttributes
-  if (Object.keys(attributes).length !== outputs.length || outputs.some((output, index) => Object.keys(attributes)[index] !== output)) {
+  const callables = wrapper.style === 'constructor_fit_getter' ? wrapper.resultGetters : wrapper.resultAttributes
+  if (Object.keys(callables).length !== outputs.length || outputs.some((output, index) => Object.keys(callables)[index] !== output)) {
     throw new Error('template wrapper result attributes must exactly match outputs in canonical order')
   }
 }
