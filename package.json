@@ -62,7 +62,7 @@
     "vue-tsc": "^3.3.11"
   },
   "engines": {
-    "node": "22.18.0"
+    "node": ">=22.22.2 <23"
   },
   "repository": {
     "type": "git",
