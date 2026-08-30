@@ -13,7 +13,7 @@
       :model-value="goals"
       @update:model-value="onGoals"
     />
-    <p class="text-sm text-dark-600 dark:text-dark-400" aria-live="polite">
+    <p class="text-sm text-dark-600 empty:hidden dark:text-dark-400" aria-live="polite">
       {{ liveMessage }}
     </p>
   </fieldset>
@@ -38,10 +38,12 @@ const goalOptions = [
   { value: 'lineage_contribution', label: 'Lineage contribution', help: 'How ancestors contribute to terminal populations.' },
 ]
 
+// The zero-goal case is announced by the wizard shell, so this region only
+// carries the cap guidance and avoids repeating the same sentence twice.
 const liveMessage = computed(() => {
-  if (props.goals.length >= 2) return 'Select at most two scientific goals.'
-  if (props.goals.length === 0) return 'Select at least one scientific goal.'
-  return 'One more goal is optional.'
+  if (props.goals.length >= 2) return 'Two goals selected. That is the cap.'
+  if (props.goals.length === 1) return 'One more goal is optional.'
+  return ''
 })
 
 function onGoals(value: string | string[] | null) {

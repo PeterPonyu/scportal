@@ -1,8 +1,8 @@
 <template>
-  <section class="py-16 bg-white dark:bg-dark-950">
+  <section class="py-12 sm:py-16 bg-white dark:bg-dark-950">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="mx-auto mb-10 max-w-3xl text-center">
-        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-primary-600 dark:text-primary-300">
+        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-primary-700 dark:text-primary-300">
           Choose your task
         </p>
         <h2 class="mb-4 text-3xl font-semibold text-dark-900 dark:text-white md:text-4xl">
@@ -21,10 +21,10 @@
           class="group rounded-2xl border border-dark-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-500/10 dark:border-dark-800 dark:bg-dark-900"
         >
           <div class="mb-4 flex items-center justify-between gap-3">
-            <span class="inline-flex rounded-full bg-dark-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-dark-500 dark:bg-dark-800 dark:text-dark-300">
+            <span class="inline-flex rounded-full bg-dark-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-dark-700 dark:bg-dark-800 dark:text-dark-300">
               {{ route.intent }}
             </span>
-            <span class="text-primary-600 transition-transform group-hover:translate-x-1 dark:text-primary-300">→</span>
+            <span class="text-primary-700 transition-transform group-hover:translate-x-1 dark:text-primary-300">→</span>
           </div>
           <h3 class="mb-2 text-lg font-semibold text-dark-900 dark:text-white">
             {{ route.title }}

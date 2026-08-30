@@ -1,5 +1,5 @@
 <template>
-  <section class="relative py-20 overflow-hidden">
+  <section class="relative py-14 sm:py-20 overflow-hidden">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid gap-10 lg:grid-cols-12 lg:items-center">
         <div class="lg:col-span-7">
@@ -26,7 +26,7 @@
           <div class="flex flex-wrap gap-4 mt-8">
             <NuxtLink
               to="/datasets"
-              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:-translate-y-0.5"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-700 text-white font-semibold transition-all hover:bg-primary-800 hover:-translate-y-0.5"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8" />
@@ -75,11 +75,11 @@
             >
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-xs uppercase tracking-widest text-primary-600 dark:text-primary-300">Dataset Browser</p>
+                  <p class="text-xs uppercase tracking-widest text-primary-700 dark:text-primary-300">Dataset Browser</p>
                   <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">iAODE and LAIOR datasets</h3>
                   <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">683 datasets across scATAC-seq and scRNA-seq.</p>
                 </div>
-                <span class="text-primary-600 dark:text-primary-300 text-2xl">→</span>
+                <span class="text-primary-700 dark:text-primary-300 text-2xl">→</span>
               </div>
             </NuxtLink>
 
@@ -89,11 +89,11 @@
             >
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-xs uppercase tracking-widest text-accent-600 dark:text-accent-300">Continuity Explorer</p>
+                  <p class="text-xs uppercase tracking-widest text-accent-700 dark:text-accent-300">Continuity Explorer</p>
                   <h3 class="text-xl font-semibold text-dark-900 dark:text-white mt-2">Open continuity views</h3>
                   <p class="text-sm text-dark-600 dark:text-dark-400 mt-2">Use the Continuity Explorer to compare PCA, UMAP, and t-SNE across simulated trajectories.</p>
                 </div>
-                <span class="text-accent-600 dark:text-accent-300 text-2xl">→</span>
+                <span class="text-accent-700 dark:text-accent-300 text-2xl">→</span>
               </div>
             </NuxtLink>
 

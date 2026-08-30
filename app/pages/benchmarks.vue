@@ -1,17 +1,19 @@
 <template>
   <div class="min-h-screen">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 py-16">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-2 text-emerald-100 text-sm mb-4">
+    <div class="relative overflow-hidden border-b border-dark-800 bg-dark-900 py-12 sm:py-16">
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/70 to-transparent" />
+      <div class="pointer-events-none absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-emerald-600/10 blur-3xl" />
+      <div class="container relative mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-2 text-dark-300 text-sm mb-4">
           <NuxtLink to="/" class="hover:text-white transition-colors">Home</NuxtLink>
-          <span>/</span>
+          <span class="text-dark-400">/</span>
           <span class="text-white">Benchmarks</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
           Evaluation Metrics
         </h1>
-        <p class="text-emerald-100 max-w-2xl text-lg">
+        <p class="text-dark-300 max-w-2xl text-lg">
           Review 24 benchmark metrics used to compare 23 single-cell analysis models across 66 datasets.
         </p>
       </div>
@@ -37,7 +39,7 @@
         class="group mb-8 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 block cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 hover:border-emerald-300 dark:hover:border-emerald-600"
       >
         <div class="flex items-start gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-700 dark:text-emerald-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10" />
             <path d="M12 16v-4" />
             <path d="M12 8h.01" />
@@ -49,7 +51,7 @@
               visit the LAIOR Dashboard. Note: this portal documents the evaluation metrics used;
               full benchmark results are available on the LAIOR Dashboard.
             </p>
-            <span class="inline-flex items-center gap-2 mt-3 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            <span class="inline-flex items-center gap-2 mt-3 text-sm font-medium text-emerald-700 dark:text-emerald-400">
               Open Full Dashboard
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -98,7 +100,7 @@
           >
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-semibold text-dark-900 dark:text-white">{{ category.name }}</h3>
-              <span class="text-sm text-dark-500">{{ category.count }} models</span>
+              <span class="text-sm text-dark-500 dark:text-dark-400">{{ category.count }} models</span>
             </div>
             <p class="text-sm text-dark-600 dark:text-dark-400 mb-4">{{ category.description }}</p>
             <div class="flex flex-wrap gap-2">
@@ -127,7 +129,7 @@
               href="https://peterponyu.github.io/liora-ui/"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
+              class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:text-emerald-700"
             >
               View LAIOR Dashboard
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -146,7 +148,7 @@
               href="https://peterponyu.github.io/iAODE/"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700"
+              class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 dark:text-primary-400 hover:text-primary-700"
             >
               View iAODE Browser
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -171,7 +173,7 @@
           href="https://peterponyu.github.io/liora-ui/"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-emerald-700 text-white font-medium transition-colors hover:bg-emerald-800"
         >
           LAIOR Dashboard
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -184,7 +186,7 @@
           href="https://peterponyu.github.io/iAODE/"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg shadow-primary-500/25"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-dark-300 text-dark-800 font-medium transition-colors hover:bg-dark-100 dark:border-dark-700 dark:text-dark-100 dark:hover:bg-dark-800"
         >
           iAODE Browser
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

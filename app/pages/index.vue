@@ -10,7 +10,7 @@
     <TaskRouteNavigator />
 
     <!-- Features Section -->
-    <section class="py-20 bg-dark-50/70 dark:bg-dark-900/50">
+    <section class="py-14 sm:py-20 bg-dark-50/70 dark:bg-dark-900/50">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-semibold text-dark-900 dark:text-white mb-4">
@@ -149,10 +149,10 @@
     </section>
 
     <!-- Data Sources Section -->
-    <section class="py-20">
+    <section class="py-14 sm:py-20">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-bold text-dark-900 dark:text-white mb-4">
+          <h2 class="text-3xl md:text-4xl font-semibold text-dark-900 dark:text-white mb-4">
             Data Modalities
           </h2>
           <p class="text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
@@ -164,7 +164,7 @@
           <!-- scATAC-seq -->
           <NuxtLink to="/datasets" class="relative p-8 rounded-2xl border border-dark-200 dark:border-dark-800 bg-gradient-to-br from-primary-50 to-white dark:from-primary-950/30 dark:to-dark-900 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 hover:border-primary-300 dark:hover:border-primary-700 block">
             <div class="flex items-center gap-4 mb-4">
-              <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-primary-500 text-white">
+              <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-primary-600 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M10.5 20.5 10 18a2 2 0 0 1 2-2h.5" />
                   <path d="M20.5 10.5 18 10a2 2 0 0 1-2 2v.5" />
@@ -175,7 +175,7 @@
               </div>
               <div>
                 <h3 class="text-xl font-bold text-dark-900 dark:text-white">scATAC-seq</h3>
-                <p class="text-sm text-dark-500">Chromatin Accessibility</p>
+                <p class="text-sm text-dark-500 dark:text-dark-400">Chromatin Accessibility</p>
               </div>
             </div>
             <ul class="space-y-2 text-sm text-dark-600 dark:text-dark-400">
@@ -209,7 +209,7 @@
           <!-- scRNA-seq -->
           <NuxtLink to="/datasets" class="relative p-8 rounded-2xl border border-dark-200 dark:border-dark-800 bg-gradient-to-br from-accent-50 to-white dark:from-accent-950/30 dark:to-dark-900 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10 hover:-translate-y-1 hover:border-accent-300 dark:hover:border-accent-700 block">
             <div class="flex items-center gap-4 mb-4">
-              <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-accent-500 text-white">
+              <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-accent-600 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
                   <line x1="12" x2="12" y1="2" y2="12" />
@@ -217,7 +217,7 @@
               </div>
               <div>
                 <h3 class="text-xl font-bold text-dark-900 dark:text-white">scRNA-seq</h3>
-                <p class="text-sm text-dark-500">Gene Expression</p>
+                <p class="text-sm text-dark-500 dark:text-dark-400">Gene Expression</p>
               </div>
             </div>
             <ul class="space-y-2 text-sm text-dark-600 dark:text-dark-400">
@@ -252,18 +252,20 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-20 bg-gradient-to-br from-primary-600 to-accent-600">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+    <section class="relative overflow-hidden border-t border-dark-800 bg-dark-900 py-14 sm:py-20">
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-500/70 to-transparent" />
+      <div class="pointer-events-none absolute left-1/2 top-1/2 h-96 w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-600/10 blur-3xl" />
+      <div class="container relative mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">
           Start Exploring
         </h2>
-        <p class="text-primary-100 max-w-2xl mx-auto mb-8">
+        <p class="text-dark-300 max-w-2xl mx-auto mb-8">
           Access single-cell datasets and evaluation metrics.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <NuxtLink
             to="/datasets"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-primary-700 font-medium hover:bg-primary-50 transition-colors"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-dark-900 font-medium hover:bg-dark-100 transition-colors"
           >
             Browse Datasets
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

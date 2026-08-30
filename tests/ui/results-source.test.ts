@@ -58,6 +58,15 @@ describe('AutoSelect results source contract', () => {
     assert.equal(composable.includes('document'), false)
   })
 
+  it('ignores delayed worker failures from a discarded worker instance', () => {
+    const composable = readSource('app/composables/useRouterWorker.ts')
+    assert.match(
+      composable,
+      /if \(worker !== instance\) return[\s\S]*?applyWorkerFailure\?\./,
+      'a stale worker error must not overwrite the replacement run',
+    )
+  })
+
   it('RecommendationCard shows roles, metrics, fractional ESS, and evidence details', () => {
     const card = readSource('app/components/autoselect/RecommendationCard.vue')
     assert.match(card, /roles/)

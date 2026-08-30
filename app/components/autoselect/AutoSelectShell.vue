@@ -68,8 +68,18 @@
       :candidate-method-ids="state.candidateMethodIds"
     />
 
-    <p v-if="validationMessage" aria-live="polite" class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100" role="status">
-      {{ validationMessage }}
+    <p
+      v-if="validationMessage"
+      aria-live="polite"
+      class="flex items-center gap-2 rounded-xl border border-dark-200 bg-dark-50 px-4 py-3 text-sm text-dark-700 dark:border-dark-700 dark:bg-dark-900 dark:text-dark-300"
+      role="status"
+    >
+      <svg class="h-4 w-4 shrink-0 text-dark-500 dark:text-dark-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4" />
+        <path d="M12 8h.01" />
+      </svg>
+      <span>{{ validationMessage }} <span class="text-dark-500 dark:text-dark-400">Continue unlocks once this step is answered.</span></span>
     </p>
 
     <div class="flex flex-wrap gap-3">
@@ -83,7 +93,7 @@
       </button>
       <button
         type="button"
-        class="min-h-11 rounded-xl bg-primary-600 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50"
+        class="min-h-11 rounded-xl bg-primary-700 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-50"
         :disabled="validationMessage !== null || routerState.status === 'loading'"
         @click="onContinue"
       >

@@ -29,10 +29,10 @@
     <!-- Stats -->
     <div v-if="stats.length" class="flex flex-wrap gap-4 mb-4">
       <div v-for="stat in stats" :key="stat.label" class="text-center">
-        <div class="text-2xl font-semibold text-primary-600 dark:text-primary-400 tracking-tight">
+        <div class="text-2xl font-semibold text-primary-700 dark:text-primary-400 tracking-tight">
           {{ stat.value }}
         </div>
-        <div class="text-[0.7rem] uppercase tracking-widest text-dark-500">
+        <div class="text-[0.7rem] uppercase tracking-widest text-dark-500 dark:text-dark-400">
           {{ stat.label }}
         </div>
       </div>
@@ -40,7 +40,7 @@
 
     <!-- Link indicator -->
     <span
-      class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 transition-colors"
+      class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 dark:text-primary-400 transition-colors"
     >
       {{ linkText }}
       <svg v-if="to" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

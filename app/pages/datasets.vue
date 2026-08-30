@@ -1,17 +1,19 @@
 <template>
   <div class="min-h-screen">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-primary-600 to-accent-600 py-16">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-2 text-primary-100 text-sm mb-4">
+    <div class="relative overflow-hidden border-b border-dark-800 bg-dark-900 py-12 sm:py-16">
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-500/70 to-transparent" />
+      <div class="pointer-events-none absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-primary-600/10 blur-3xl" />
+      <div class="container relative mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-2 text-dark-300 text-sm mb-4">
           <NuxtLink to="/" class="hover:text-white transition-colors">Home</NuxtLink>
-          <span>/</span>
+          <span class="text-dark-400">/</span>
           <span class="text-white">Datasets</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
           Dataset Collection
         </h1>
-        <p class="text-primary-100 max-w-2xl text-lg">
+        <p class="text-dark-300 max-w-2xl text-lg">
           Browse 683 standardized single-cell datasets from the iAODE and LAIOR benchmark repositories.
         </p>
       </div>
@@ -20,14 +22,14 @@
     <!-- Content -->
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <!-- Tabs -->
-      <div class="flex gap-4 mb-8">
+      <div class="flex flex-wrap gap-3 mb-8">
         <button
           v-for="tab in tabs"
           :key="tab.id"
           @click="activeTab = tab.id; showAll = false"
-          class="px-6 py-3 rounded-xl font-medium transition-all"
+          class="px-5 py-3 rounded-xl font-medium transition-all sm:px-6"
           :class="activeTab === tab.id
-            ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/25'
+            ? 'bg-primary-700 text-white shadow-lg shadow-primary-500/25'
             : 'bg-dark-100 dark:bg-dark-800 text-dark-600 dark:text-dark-300 hover:bg-dark-200 dark:hover:bg-dark-700'"
         >
           <span class="flex items-center gap-2">
@@ -42,7 +44,7 @@
       <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="p-4 rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-800">
           <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500 text-white text-sm font-bold">iA</div>
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-700 text-white text-sm font-bold">iA</div>
             <div>
               <h3 class="font-medium text-primary-900 dark:text-primary-100">iAODE</h3>
               <p class="text-sm text-primary-700 dark:text-primary-300">
@@ -53,7 +55,7 @@
         </div>
         <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
           <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white text-sm font-bold">LA</div>
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-700 text-white text-sm font-bold">LA</div>
             <div>
               <h3 class="font-medium text-emerald-900 dark:text-emerald-100">LAIOR</h3>
               <p class="text-sm text-emerald-700 dark:text-emerald-300">
@@ -67,7 +69,7 @@
       <!-- External Link Notice -->
       <div class="mb-8 p-4 rounded-xl bg-accent-50 dark:bg-accent-950/30 border border-accent-200 dark:border-accent-800">
         <div class="flex items-start gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-600 dark:text-accent-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-700 dark:text-accent-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10" />
             <path d="M12 16v-4" />
             <path d="M12 8h.01" />
@@ -82,7 +84,7 @@
                 :href="externalUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
               >
                 iAODE Browser
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -95,7 +97,7 @@
                 href="https://peterponyu.github.io/liora-ui/datasets/"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
+                class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
               >
                 LAIOR Browser
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -134,7 +136,7 @@
               </span>
               <span
                 class="ml-2 inline-flex px-2 py-1 text-xs font-medium rounded-md"
-                :class="dataset.source === 'iAODE' ? 'bg-primary-50 dark:bg-primary-950 text-primary-600 dark:text-primary-400' : 'bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400'"
+                :class="dataset.source === 'iAODE' ? 'bg-primary-50 dark:bg-primary-950 text-primary-700 dark:text-primary-400' : 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'"
               >
                 {{ dataset.source }}
               </span>
@@ -149,7 +151,7 @@
             {{ dataset.description }}
           </p>
 
-          <div class="flex flex-wrap gap-3 text-xs text-dark-500 mb-4">
+          <div class="flex flex-wrap gap-3 text-xs text-dark-500 dark:text-dark-400 mb-4">
             <span class="flex items-center gap-1">
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -174,7 +176,7 @@
           </div>
 
           <span
-            class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400"
+            class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 dark:text-primary-400"
           >
             View on {{ dataset.source }}
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -219,7 +221,7 @@
           :href="externalUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium hover:from-primary-700 hover:to-accent-700 transition-all shadow-lg shadow-primary-500/25"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary-700 text-white font-medium transition-colors hover:bg-primary-800"
         >
           iAODE {{ activeTab === 'atac' ? 'scATAC-seq' : 'scRNA-seq' }} Browser
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -232,7 +234,7 @@
           href="https://peterponyu.github.io/liora-ui/datasets/"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-dark-300 text-dark-800 font-medium transition-colors hover:bg-dark-100 dark:border-dark-700 dark:text-dark-100 dark:hover:bg-dark-800"
         >
           LAIOR Dataset Browser
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

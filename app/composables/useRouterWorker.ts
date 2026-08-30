@@ -22,16 +22,36 @@ export interface RouterWorkerState {
 let worker: Worker | null = null
 const ignoredRequestIds = new Set<string>()
 let applyResponse: ((response: RouterWorkerResponse) => void) | null = null
+let applyWorkerFailure: ((message: string) => void) | null = null
 let currentSession: RouterRunSession | null = null
 let pendingSubmittedProfile: TaskProfile | null = null
 
 function ensureWorker(): Worker {
   if (worker) return worker
-  worker = new Worker(new URL('../workers/router.worker.ts', import.meta.url), { type: 'module' })
-  worker.addEventListener('message', (event: MessageEvent<RouterWorkerResponse>) => {
+  const instance = new Worker(new URL('../workers/router.worker.ts', import.meta.url), { type: 'module' })
+  instance.addEventListener('message', (event: MessageEvent<RouterWorkerResponse>) => {
     applyResponse?.(event.data)
   })
-  return worker
+  // A worker that fails to load, or throws before replying, never sends a message.
+  // Without these the wizard stays in `loading` forever with nothing on screen to
+  // explain why. Dropping the reference lets the next run build a fresh worker
+  // instead of posting into a dead one, and the identity check keeps a late error
+  // from a discarded worker from clearing its replacement.
+  const fail = (message: string) => {
+    // A discarded worker may report an error after a replacement has started.
+    // Its event must not overwrite the replacement run's state.
+    if (worker !== instance) return
+    worker = null
+    applyWorkerFailure?.(message)
+  }
+  instance.addEventListener('error', (event) => {
+    fail(event.message || 'The Router worker failed to start.')
+  })
+  instance.addEventListener('messageerror', () => {
+    fail('The Router worker sent a response that could not be read.')
+  })
+  worker = instance
+  return instance
 }
 
 function idleState(): RouterWorkerState {
@@ -58,6 +78,16 @@ export function useRouterWorker() {
       message: null,
       submittedProfile: pendingSubmittedProfile,
     }
+  }
+
+  applyWorkerFailure = (message) => {
+    if (!activeRequestId.value) return
+    if (currentSession) {
+      ignoredRequestIds.add(currentSession.requestId)
+      currentSession = null
+    }
+    activeRequestId.value = null
+    state.value = { status: 'error', outcome: null, message, submittedProfile: null }
   }
 
   async function run(profile: TaskProfile) {

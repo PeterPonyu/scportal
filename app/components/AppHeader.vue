@@ -29,8 +29,8 @@
             v-for="item in navItems"
             :key="item.to"
             :to="item.to"
-            class="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-3"
-            active-class="text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50"
+            class="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-3"
+            active-class="text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50"
           >
             {{ item.label }}
           </NuxtLink>
@@ -42,7 +42,7 @@
             <button
               id="scportal-resources-button"
               type="button"
-              class="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-3"
+              class="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-3"
               :aria-expanded="resourcesOpen"
               aria-controls="scportal-resources-menu"
               @click="resourcesOpen = !resourcesOpen"
@@ -63,7 +63,7 @@
                 :href="item.href"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="block rounded-xl px-3 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
+                class="block rounded-xl px-3 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
                 role="menuitem"
                 @click="resourcesOpen = false"
               >
@@ -141,8 +141,8 @@
               v-for="item in navItems"
               :key="item.to"
               :to="item.to"
-              class="rounded-lg px-4 py-3 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
-              active-class="text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50"
+              class="rounded-lg px-4 py-3 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
+              active-class="text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50"
               @click="mobileMenuOpen = false"
             >
               {{ item.label }}
@@ -154,7 +154,7 @@
               :href="item.href"
               target="_blank"
               rel="noopener noreferrer"
-              class="rounded-lg px-4 py-3 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
+              class="rounded-lg px-4 py-3 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400"
               @click="mobileMenuOpen = false"
             >
               {{ item.label }}

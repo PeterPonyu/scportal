@@ -1,17 +1,19 @@
 <template>
   <div class="min-h-screen">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-accent-600 to-primary-600 py-16">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-2 text-accent-100 text-sm mb-4">
+    <div class="relative overflow-hidden border-b border-dark-800 bg-dark-900 py-12 sm:py-16">
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-500/70 to-transparent" />
+      <div class="pointer-events-none absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-accent-600/10 blur-3xl" />
+      <div class="container relative mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-2 text-dark-300 text-sm mb-4">
           <NuxtLink to="/" class="hover:text-white transition-colors">Home</NuxtLink>
-          <span>/</span>
+          <span class="text-dark-400">/</span>
           <span class="text-white">Continuity Explorer</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
           Continuity Explorer
         </h1>
-        <p class="text-accent-100 max-w-2xl text-lg">
+        <p class="text-dark-300 max-w-2xl text-lg">
           SCPortal provides access to trajectory analysis tools for exploring embedding methods and continuity metrics.
         </p>
       </div>
@@ -79,13 +81,13 @@
             </div>
             <div>
               <h3 class="font-semibold text-dark-900 dark:text-white">iAODE Explorer</h3>
-              <p class="text-sm text-dark-500">Interactive trajectory visualization</p>
+              <p class="text-sm text-dark-500 dark:text-dark-400">Interactive trajectory visualization</p>
             </div>
           </div>
           <p class="text-sm text-dark-600 dark:text-dark-400 mb-3">
             Pre-computed single-cell simulation data for exploring embeddings and continuity metrics.
           </p>
-          <span class="inline-flex items-center gap-2 text-sm font-medium text-accent-600 dark:text-accent-400">
+          <span class="inline-flex items-center gap-2 text-sm font-medium text-accent-700 dark:text-accent-400">
             Launch Explorer
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -110,13 +112,13 @@
             </div>
             <div>
               <h3 class="font-semibold text-dark-900 dark:text-white">LAIOR Dashboard</h3>
-              <p class="text-sm text-dark-500">Model evaluation metrics</p>
+              <p class="text-sm text-dark-500 dark:text-dark-400">Model evaluation metrics</p>
             </div>
           </div>
           <p class="text-sm text-dark-600 dark:text-dark-400 mb-3">
             Interactive dashboard with evaluation metrics for 23 models across 66 datasets.
           </p>
-          <span class="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+          <span class="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
             Open Dashboard
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />

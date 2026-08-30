@@ -1,6 +1,6 @@
 <template>
   <section
-    class="space-y-6 rounded-3xl border border-primary-200 bg-gradient-to-br from-primary-50 via-white to-accent-50 p-6 dark:border-primary-900 dark:from-primary-950/40 dark:via-dark-900 dark:to-accent-950/30"
+    class="space-y-6 rounded-2xl bg-white/70 p-6 dark:bg-dark-950/40"
     aria-labelledby="thesis-integration-heading"
   >
     <header class="max-w-3xl space-y-2">
@@ -17,7 +17,7 @@
       </p>
     </header>
 
-    <dl v-if="bridge" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Thesis integration counts">
+    <dl v-if="bridge" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-label="Thesis integration counts">
       <div class="rounded-2xl border border-primary-200/80 bg-white/80 p-4 dark:border-primary-800 dark:bg-dark-900/70">
         <dt class="text-xs uppercase tracking-wide text-dark-500 dark:text-dark-400">Publications</dt>
         <dd class="mt-1 font-mono text-2xl font-semibold text-dark-900 dark:text-white">{{ bridge.publicationCount }}</dd>
@@ -56,7 +56,7 @@
       </div>
     </dl>
 
-    <ol v-if="bridge" class="grid gap-3 md:grid-cols-2 lg:grid-cols-5" aria-label="Thesis method layers">
+    <ol v-if="bridge" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" aria-label="Thesis method layers">
       <li
         v-for="layer in bridge.layers"
         :key="layer.id"
@@ -68,7 +68,7 @@
       </li>
     </ol>
 
-    <div class="grid gap-3 rounded-2xl border border-amber-300 bg-amber-50/80 p-4 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100 sm:grid-cols-[1fr_auto] sm:items-center">
+    <div class="grid gap-3 rounded-2xl border border-dark-200 bg-white/80 p-4 text-sm leading-6 text-dark-700 dark:border-dark-800 dark:bg-dark-900/70 dark:text-dark-300 sm:grid-cols-[1fr_auto] sm:items-center">
       <p>
         The application layer is currently a traceable software resource. AutoSelect evaluates
         profiles against the synthetic browser release; four pinned method contracts (LiVAE, CODE, GNODEVAE, and LAIOR) are
@@ -87,7 +87,7 @@
 
     <p
       v-if="bridge"
-      class="rounded-2xl border border-primary-200/80 bg-white/70 px-4 py-3 font-mono text-xs text-dark-700 dark:border-primary-800 dark:bg-dark-900/60 dark:text-dark-300"
+      class="rounded-2xl border border-dark-200 bg-white/80 px-4 py-3 font-mono text-xs leading-5 text-dark-700 dark:border-dark-800 dark:bg-dark-900/70 dark:text-dark-300"
       aria-label="scRL adapter runtime receipt"
     >
       scRL receipt: {{ bridge.runtime.scrlAdapter.protocol }} · {{ bridge.runtime.scrlAdapter.status }} ·
@@ -100,7 +100,7 @@
       <a
         v-if="bridge"
         :href="bridge.links.thesis"
-        class="text-primary-700 underline decoration-primary-300 underline-offset-2 dark:text-primary-300"
+        class="text-primary-700 underline decoration-primary-400 underline-offset-4 transition-colors hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -109,7 +109,7 @@
       <a
         v-if="bridge"
         :href="bridge.links.portal"
-        class="text-primary-700 underline decoration-primary-300 underline-offset-2 dark:text-primary-300"
+        class="text-primary-700 underline decoration-primary-400 underline-offset-4 transition-colors hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
         target="_blank"
         rel="noopener noreferrer"
       >
