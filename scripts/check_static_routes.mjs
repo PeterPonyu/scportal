@@ -14,6 +14,13 @@ const checks = [
   ['/autoselect/', 'autoselect/index.html', 'https://peterponyu.github.io/scportal/autoselect/'],
 ]
 
+const assetChecks = [
+  ['router-data/thesis-bridge.json', ['"publicationCount": 13', '"chain":', '"runtime":']],
+  ['router-evidence/claim-status.json', ['"evidenceVersion":', '"status":']],
+  ['router-evidence/manifest.json', ['"evidenceVersion":', '"files":']],
+  ['router-evidence/report.md', ['router-validation-v1', 'software_resource']],
+]
+
 let failed = false
 for (const [route, file, canonical] of checks) {
   const path = resolve(root, '.output/public', file)
@@ -34,6 +41,22 @@ for (const [route, file, canonical] of checks) {
   if (!html.includes(`rel="canonical"`) || !html.includes(canonical)) {
     console.error(`FAIL ${route}: missing canonical ${canonical}`)
     failed = true
+  }
+}
+
+for (const [file, required] of assetChecks) {
+  const path = resolve(root, '.output/public', file)
+  if (!existsSync(path)) {
+    console.error(`FAIL asset ${file}: missing generated public asset`)
+    failed = true
+    continue
+  }
+  const contents = readFileSync(path, 'utf8')
+  for (const marker of required) {
+    if (!contents.includes(marker)) {
+      console.error(`FAIL asset ${file}: missing marker ${marker}`)
+      failed = true
+    }
   }
 }
 
