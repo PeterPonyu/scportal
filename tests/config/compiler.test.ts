@@ -100,6 +100,27 @@ test('emits the constructor-fit-getter shape the pinned packages actually expose
   assert.doesNotMatch(snippet, /result/)
 })
 
+test('allows a package getter plus router-owned metadata when the package exposes no metadata getter', () => {
+  const latentOnlyMethod = { ...method, outputs: ['latent', 'metadata'] as const }
+  const latentOnlyTemplate = { ...template, template: {
+    ...template.template,
+    outputs: ['latent', 'metadata'] as const,
+    outputKeys: { latent: 'X_graph', metadata: 'graph_metadata' },
+    wrapper: {
+    style: 'constructor_fit_getter', fitMethod: 'fit', input: 'adata',
+    fitParameters: ['epochs'], resultGetters: { latent: 'get_latent' }, metadataSource: 'router',
+    },
+  } }
+  const snippet = createFixtureCompiler([latentOnlyMethod], [latentOnlyTemplate])(input({ parameters: { epochs: 20 } })).pythonSnippet
+
+  assert.match(snippet, /model = GraphContrastive\(\n {4}adata,\n {4}label='O\\'Reilly',/)
+  assert.doesNotMatch(snippet, /model = GraphContrastive\([\s\S]*?epochs=20,[\s\S]*?\)\nmodel\.fit/)
+  assert.match(snippet, /\)\nmodel\.fit\(epochs=20\)\n/)
+  assert.match(snippet, /adata\.obsm\['X_graph'\] = model\.get_latent\(\)/)
+  assert.match(snippet, /adata\.uns\['graph_metadata'\] = \{'producer': 'model-router'/)
+  assert.doesNotMatch(snippet, /get_metadata/)
+})
+
 test('an omitted style keeps the legacy one-call shape rather than guessing the other one', () => {
   const legacy = createFixtureCompiler([method], [template])(input()).pythonSnippet
   const declared = createFixtureCompiler([method], [withWrapper({ ...template.template.wrapper, style: 'fit_transform' })])(input()).pythonSnippet

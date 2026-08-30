@@ -29,7 +29,7 @@
             v-for="item in navItems"
             :key="item.to"
             :to="item.to"
-            class="rounded-lg px-3 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-4"
+            class="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-3"
             active-class="text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/50"
           >
             {{ item.label }}
@@ -42,7 +42,7 @@
             <button
               id="scportal-resources-button"
               type="button"
-              class="rounded-lg px-3 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-4"
+              class="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-dark-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-primary-950/50 dark:hover:text-primary-400 xl:px-3"
               :aria-expanded="resourcesOpen"
               aria-controls="scportal-resources-menu"
               @click="resourcesOpen = !resourcesOpen"

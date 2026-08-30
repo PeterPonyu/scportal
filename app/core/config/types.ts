@@ -12,8 +12,8 @@ export type WrapperStyle = 'fit_transform' | 'constructor_fit_getter'
 // constructor_fit_getter: the constructor takes adata alongside the parameters, the fit call
 // takes nothing and is run for its side effects, and each output comes from a getter method.
 export type MethodConfigWrapper =
-  | { style: 'fit_transform'; fitMethod: string; input: 'adata'; resultAttributes: Partial<Record<OutputName, string>> }
-  | { style: 'constructor_fit_getter'; fitMethod: string; input: 'adata'; resultGetters: Partial<Record<OutputName, string>> }
+  | { style: 'fit_transform'; fitMethod: string; input: 'adata'; fitParameters?: readonly string[]; resultAttributes: Partial<Record<OutputName, string>>; metadataSource?: 'router' }
+  | { style: 'constructor_fit_getter'; fitMethod: string; input: 'adata'; fitParameters?: readonly string[]; resultGetters: Partial<Record<OutputName, string>>; metadataSource?: 'router' }
 
 export interface MethodConfigTemplate {
   methodId: string

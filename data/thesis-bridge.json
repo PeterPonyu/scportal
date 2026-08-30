@@ -1,0 +1,92 @@
+{
+  "version": "thesis-router-bridge-v1",
+  "thesisTitle": "细胞状态流形上的生成式推断",
+  "publicationCount": 13,
+  "layerCount": 5,
+  "methodIds": [
+    "iVAE",
+    "CCVGAE",
+    "LiVAE",
+    "GAHIB",
+    "MCCVAE",
+    "GNODEVAE",
+    "CODE",
+    "iAODE",
+    "LAIOR",
+    "scRL",
+    "scFocus",
+    "CLOP-DiT",
+    "scCCVGBen"
+  ],
+  "layers": [
+    {
+      "id": "representation",
+      "label": "Representation",
+      "question": "Where are cell states represented?",
+      "methods": ["iVAE", "CCVGAE"]
+    },
+    {
+      "id": "geometry",
+      "label": "Geometry",
+      "question": "Which structure does the latent space preserve?",
+      "methods": ["LiVAE", "GAHIB", "MCCVAE"]
+    },
+    {
+      "id": "dynamics",
+      "label": "Dynamics",
+      "question": "How can state change be followed over time?",
+      "methods": ["GNODEVAE", "CODE", "iAODE", "LAIOR"]
+    },
+    {
+      "id": "decision",
+      "label": "Decision",
+      "question": "How are branches and fate choices described?",
+      "methods": ["scRL", "scFocus"]
+    },
+    {
+      "id": "generation_evaluation",
+      "label": "Generation & evaluation",
+      "question": "How are candidate states generated and compared?",
+      "methods": ["CLOP-DiT", "scCCVGBen"]
+    }
+  ],
+  "chain": {
+    "source": "graduation-thesis chain gate",
+    "rung": "pinned_chain",
+    "identityResolved": 13,
+    "configTemplates": 13,
+    "pinnedDistributions": 8,
+    "sourceRepositories": 11,
+    "archivedVersions": 4,
+    "contractsCheckedAtPin": 5,
+    "contractsHolding": 4,
+    "contractsMatchingAtPin": 4
+  },
+  "runtime": {
+    "scrlAdapter": {
+      "protocol": "scrl-adapter-v1",
+      "pinnedVersion": "0.0.7",
+      "status": "PASS",
+      "fixtureSynthetic": true,
+      "fixtureObservations": 64,
+      "episodesRequested": 10,
+      "episodesCompleted": 10,
+      "stateValueShape": [64],
+      "compilerBinding": "pending"
+    }
+  },
+  "evidence": {
+    "authorRelease": "router-evidence-v1",
+    "uiCatalogSynthetic": true,
+    "uiEvidenceRelease": "router-evidence-synthetic-v1",
+    "admittedObservationCount": 30,
+    "studyGroupCount": 18,
+    "evaluableHoldouts": 0,
+    "claimStatus": "software_resource"
+  },
+  "boundary": "The bridge reports traceability and application readiness. AutoSelect ranking remains on the synthetic release and does not make biological or algorithmic-superiority claims.",
+  "links": {
+    "thesis": "https://github.com/PeterPonyu/graduation-thesis",
+    "portal": "https://github.com/PeterPonyu/scportal"
+  }
+}

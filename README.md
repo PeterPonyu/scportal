@@ -14,6 +14,13 @@ SCPortal provides a unified interface to access:
 
 - **iAODE Dataset Browser** ([https://peterponyu.github.io/iAODE/](https://peterponyu.github.io/iAODE/)) - Curated single-cell ATAC-seq and RNA-seq datasets in standardized 10X h5 format
 - **LAIOR Benchmarking Dashboard** ([https://peterponyu.github.io/liora-ui/](https://peterponyu.github.io/liora-ui/)) - Benchmarking results for single-cell VAE models
+- **AutoSelect** (static route `/scportal/autoselect/`; public propagation pending) - A fail-closed model-selection surface with a traceable bridge to the 13-publication thesis line
+
+The AutoSelect thesis bridge reports method identity, five scientific layers,
+configuration-template coverage, pin-contract checks, and evidence-release
+status. Its browser ranking remains on the synthetic release; the bridge is a
+software-resource/reproducibility layer and does not claim a new biological
+benchmark or universal leaderboard.
 
 ## External Resources
 
@@ -82,6 +89,13 @@ npm run generate
 npm run preview
 ```
 
+`npm run generate` first validates the router registry and builds the thesis
+bridge. The bridge requires the versioned, public-safe snapshots
+`data/thesis-bridge-runtime.json` and `data/thesis-bridge-chain.json`; this keeps
+an independent SCPortal checkout reproducible without a sibling thesis folder.
+When a thesis checkout is present, the build compares stable receipt summaries
+and fails closed on drift.
+
 ## Deployment
 
 This project uses GitHub Actions for automatic deployment to GitHub Pages. The workflow is triggered on push to the `main` branch.
@@ -92,20 +106,10 @@ Configuration: [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
 
 ```
 scportal/
-├── components/          # Vue components
-│   ├── AppHeader.vue
-│   ├── AppFooter.vue
-│   ├── HeroSection.vue
-│   └── FeatureCard.vue
-├── layouts/
-│   └── default.vue
-├── pages/
-│   ├── index.vue        # Home
-│   ├── datasets.vue     # Dataset browser
-│   ├── explorer.vue     # Continuity explorer
-│   ├── benchmarks.vue   # Benchmarking results
-│   ├── models.vue       # Model catalog
-│   └── about.vue        # Project information
+├── app/                 # Nuxt application and router/compiler modules
+├── data/                # Router registry and thesis bridge snapshots
+├── scripts/             # Asset, bridge, and rendered-page gates
+├── tests/               # Router, config, site, and UI contracts
 ├── public/
 │   └── favicon.svg
 ├── nuxt.config.ts
@@ -115,7 +119,7 @@ scportal/
 
 ## Technology
 
-- Nuxt 3
+- Nuxt 4
 - Vue 3
 - Tailwind CSS
 - TypeScript

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, it } from 'node:test'
-import type { MetricGroup, RouterOptions, TaskProfile } from '../../app/core/router/types.ts'
+import type { MetricGroup, RouterOptions } from '../../app/core/router/types.ts'
 import type { RouterCatalog } from '../../validation/src/load-catalog.ts'
 
 const EXPECTED_ABLATIONS = [

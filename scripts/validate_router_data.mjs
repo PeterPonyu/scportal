@@ -114,7 +114,14 @@ function assertCanonicalOutputs(outputs, outputKeys) {
 function assertDeclarativeWrapper(outputs, wrapper) {
   if (wrapper === undefined) return
   const callables = wrapper.style === 'constructor_fit_getter' ? wrapper.resultGetters : wrapper.resultAttributes
-  if (Object.keys(callables).length !== outputs.length || outputs.some((output, index) => Object.keys(callables)[index] !== output)) {
+  const metadataSource = wrapper.metadataSource ?? 'method'
+  if (metadataSource !== 'method' && metadataSource !== 'router') throw new Error('template wrapper metadataSource must be method or router')
+  if (metadataSource === 'router' && !outputs.includes('metadata')) throw new Error('router metadataSource requires metadata output')
+  if (wrapper.fitParameters !== undefined && (!Array.isArray(wrapper.fitParameters) || wrapper.fitParameters.some((parameter) => typeof parameter !== 'string' || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(parameter)) || new Set(wrapper.fitParameters).size !== wrapper.fitParameters.length)) {
+    throw new Error('template wrapper fitParameters must be unique Python identifiers')
+  }
+  const callableOutputs = metadataSource === 'router' ? outputs.filter((output) => output !== 'metadata') : outputs
+  if (Object.keys(callables).length !== callableOutputs.length || callableOutputs.some((output, index) => Object.keys(callables)[index] !== output)) {
     throw new Error('template wrapper result attributes must exactly match outputs in canonical order')
   }
 }
@@ -270,6 +277,9 @@ function assertTemplateRegistry(configTemplates, methods, synthetic) {
       if (typeof defaultValue === 'number' && definition.maximum !== undefined && defaultValue > definition.maximum) throw new Error(`template default above maximum for ${method.id}.${key}`)
       if (typeof defaultValue === 'number' && definition.integer && !Number.isInteger(defaultValue)) throw new Error(`template default must be integer for ${method.id}.${key}`)
       if (definition.enum && !definition.enum.includes(defaultValue)) throw new Error(`template default outside enum for ${method.id}.${key}`)
+    }
+    for (const key of configTemplate.template.wrapper.fitParameters ?? []) {
+      if (!Object.hasOwn(allowedParameters, key)) throw new Error(`template fit parameter is not allowed for ${method.id}.${key}`)
     }
     if (configTemplate.template.downstream?.scFocus?.branchKey !== undefined && configTemplate.template.downstream.scFocus.branchKey !== configTemplate.template.outputKeys.branch) throw new Error(`scFocus branch handoff mismatch for ${method.id}`)
     if (configTemplate.template.downstream?.scRL && (!configTemplate.template.outputKeys.pseudotime || configTemplate.template.downstream.scRL.pseudotimeKey !== configTemplate.template.outputKeys.pseudotime)) throw new Error(`scRL pseudotime handoff mismatch for ${method.id}`)

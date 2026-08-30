@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { filterCompatibleMethods } from '../app/core/router/constraints.ts'
-import type { RouterOptions, RouterOutcome, TaskProfile } from '../app/core/router/types.ts'
+import type { RouterOutcome, TaskProfile } from '../app/core/router/types.ts'
 import {
   ABLATIONS,
   METRIC_GROUPS,

@@ -30,8 +30,10 @@
           "type": "object", "additionalProperties": false, "required": ["fitMethod", "input"],
           "properties": {
             "style": { "enum": ["fit_transform", "constructor_fit_getter"] },
+            "metadataSource": { "enum": ["method", "router"] },
             "fitMethod": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
             "input": { "const": "adata" },
+            "fitParameters": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" } },
             "resultAttributes": { "$ref": "#/$defs/outputCallables" },
             "resultGetters": { "$ref": "#/$defs/outputCallables" }
           },

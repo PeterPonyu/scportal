@@ -1,0 +1,12 @@
+{
+  "version": "chain-gate-v3",
+  "rung": "pinned_chain",
+  "n_methods": 13,
+  "n_identity_resolved": 13,
+  "n_config_template": 13,
+  "n_template_version_pinned": 8,
+  "n_source_repository": 11,
+  "n_archived_version": 4,
+  "n_contract_checked_at_pin": 5,
+  "n_contract_holds": 4
+}

@@ -23,6 +23,7 @@
       <p class="mb-8 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100" role="status">
         Synthetic evidence preview. This release cannot support biological claims.
       </p>
+      <ThesisIntegrationPanel class="mb-10" />
       <AutoSelectShell @run="onRun" />
     </div>
   </div>
@@ -30,6 +31,7 @@
 
 <script setup lang="ts">
 import AutoSelectShell from '../../components/autoselect/AutoSelectShell.vue'
+import ThesisIntegrationPanel from '../../components/autoselect/ThesisIntegrationPanel.vue'
 import type { TaskProfile } from '../../core/router/types'
 
 useSeoMeta({

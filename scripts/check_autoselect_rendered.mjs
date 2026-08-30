@@ -49,6 +49,50 @@ if (!html.includes('Synthetic evidence preview')) {
   fail('missing Synthetic evidence preview')
 }
 
+if (!html.includes('Thirteen publications, one traceable application layer')) {
+  fail('missing thesis integration heading')
+}
+
+if (!html.includes('Resolved identities')) {
+  fail('missing thesis identity summary')
+}
+
+if (!html.includes('Admitted score cells')) {
+  fail('missing thesis evidence summary')
+}
+
+if (!html.includes('Config templates')) {
+  fail('missing thesis configuration summary')
+}
+
+if (!html.includes('Pinned distributions')) {
+  fail('missing thesis pin summary')
+}
+
+if (!html.includes('Pin contract matches')) {
+  fail('missing thesis contract summary')
+}
+
+if (!html.includes('Study groups')) {
+  fail('missing thesis study-group summary')
+}
+
+if (!html.includes('Evaluable holdouts')) {
+  fail('missing thesis holdout summary')
+}
+
+if (!html.includes('software_resource')) {
+  fail('missing fail-closed author claim status')
+}
+
+if (!html.includes('scRL receipt:') || !html.includes('scrl-adapter-v1')) {
+  fail('missing structured scRL adapter runtime receipt')
+}
+
+if (!html.includes('compiler binding:') || !html.includes('pending')) {
+  fail('missing explicit pending scRL compiler binding gate')
+}
+
 if (/type\s*=\s*["']file["']/.test(html)) {
   fail('found type="file"')
 }

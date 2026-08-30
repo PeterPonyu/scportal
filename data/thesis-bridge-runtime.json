@@ -1,0 +1,32 @@
+{
+  "version": "scrl-runtime-probe-v1",
+  "method": "scRL",
+  "pinned_version": "0.0.7",
+  "source_tree": "code/scRL",
+  "source_version": "0.0.7",
+  "adapter_protocol": "scrl-adapter-v1",
+  "fixture": {
+    "synthetic": true,
+    "n_obs": 64,
+    "n_vars": 5,
+    "latent_key": "X_latent",
+    "embedding_key": "X_embed",
+    "cluster_key": "cluster",
+    "pseudotime_key": "pt"
+  },
+  "device": "cpu",
+  "episodes_requested": 10,
+  "episodes_completed": 10,
+  "lineage": {
+    "early_cluster": "A",
+    "late_cluster": "C"
+  },
+  "state_value_shape": [64],
+  "state_value_dtype": "float32",
+  "state_value_finite": true,
+  "grid_state_value_shape": [94],
+  "episode_returns_shape": [10],
+  "episode_returns_finite": true,
+  "status": "PASS",
+  "claim_boundary": "selected pipeline adapter/runtime only; not a biological benchmark"
+}

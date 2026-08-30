@@ -168,7 +168,7 @@ Blocked biological-overclaim sentences are listed in `validation/nonclaims.json`
 | protocolVersion | router-validation-v1 |
 | routerVersion | router-core-v1 |
 | evidenceVersion | router-evidence-synthetic-v1 |
-| evaluatedAt | 2026-08-26T01:26:33.664Z |
+| evaluatedAt | 2026-08-30T08:39:45.928Z |
 
 Reasons:
 

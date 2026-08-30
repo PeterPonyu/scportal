@@ -103,6 +103,14 @@ function parseOutputCallables(value: unknown, outputs: MethodConfigTemplate['out
   return frozen(callables)
 }
 
+function parseFitParameters(value: unknown, label: string): readonly string[] {
+  const entries = denseOwnDataArray(value, label)
+  const parameters = entries.map((entry, index) => nonblank(entry, `${label}[${index}]`))
+  if (parameters.some((parameter) => !pythonIdentifier.test(parameter))) throw new Error(`${label} entries must be Python identifiers`)
+  if (new Set(parameters).size !== parameters.length) throw new Error(`${label} must not contain duplicates`)
+  return frozen(parameters)
+}
+
 // An omitted style keeps the legacy one-call shape, so a template that has never stated which
 // shape its package has does not silently start claiming the other one.
 function parseWrapper(value: unknown, outputs: MethodConfigTemplate['outputs']): MethodConfigTemplate['wrapper'] {
@@ -110,15 +118,22 @@ function parseWrapper(value: unknown, outputs: MethodConfigTemplate['outputs']):
   const declaresStyle = Object.hasOwn(record, 'style')
   const style = declaresStyle ? record.style : 'fit_transform'
   if (!wrapperStyles.includes(style as WrapperStyle)) throw new Error(`template.wrapper.style must be one of ${wrapperStyles.join(', ')}`)
+  const declaresMetadataSource = Object.hasOwn(record, 'metadataSource')
+  const metadataSource = declaresMetadataSource ? record.metadataSource : 'method'
+  if (metadataSource !== 'method' && metadataSource !== 'router') throw new Error('template.wrapper.metadataSource must be method or router')
+  if (metadataSource === 'router' && !outputs.includes('metadata')) throw new Error('template.wrapper.metadataSource router requires metadata output')
   const callableField = wrapperCallableField[style as WrapperStyle]
-  const fields = [...(declaresStyle ? ['style'] : []), 'fitMethod', 'input', callableField]
+  const declaresFitParameters = Object.hasOwn(record, 'fitParameters')
+  const fitParameters = declaresFitParameters ? parseFitParameters(record.fitParameters, 'template.wrapper.fitParameters') : undefined
+  const fields = [...(declaresStyle ? ['style'] : []), 'fitMethod', 'input', ...(declaresFitParameters ? ['fitParameters'] : []), callableField, ...(declaresMetadataSource ? ['metadataSource'] : [])]
   if (Object.keys(record).length !== fields.length || !fields.every((key) => Object.hasOwn(record, key))) throw new Error(`template.wrapper must declare exactly ${fields.join(', ')}`)
   const fitMethod = nonblank(record.fitMethod, 'template.wrapper.fitMethod')
   if (!pythonIdentifier.test(fitMethod) || record.input !== 'adata') throw new Error('template.wrapper invocation must use a Python method identifier and adata input')
-  const callables = parseOutputCallables(record[callableField], outputs, `template.wrapper.${callableField}`)
+  const callableOutputs = metadataSource === 'router' ? outputs.filter((output) => output !== 'metadata') : outputs
+  const callables = parseOutputCallables(record[callableField], callableOutputs, `template.wrapper.${callableField}`)
   return frozen(style === 'fit_transform'
-    ? { style, fitMethod, input: 'adata' as const, resultAttributes: callables }
-    : { style: 'constructor_fit_getter' as const, fitMethod, input: 'adata' as const, resultGetters: callables })
+    ? { style, fitMethod, input: 'adata' as const, ...(fitParameters === undefined ? {} : { fitParameters }), resultAttributes: callables, ...(metadataSource === 'router' ? { metadataSource: 'router' as const } : {}) }
+    : { style: 'constructor_fit_getter' as const, fitMethod, input: 'adata' as const, ...(fitParameters === undefined ? {} : { fitParameters }), resultGetters: callables, ...(metadataSource === 'router' ? { metadataSource: 'router' as const } : {}) })
 }
 
 function parseAdapterProvenance(record: RecordValue, label: string): {
@@ -173,6 +188,7 @@ export function validateMethodConfigTemplate(value: unknown): MethodConfigTempla
     defaultParameters[key] = validateParameterValue(defaults[key], allowedParameters[key], `template.defaultParameters.${key}`)
   }
   for (const key of Object.keys(allowedParameters)) if (!Object.hasOwn(defaultParameters, key)) throw new Error(`template.allowedParameters.${key} lacks an exact default`)
+  for (const key of wrapper.fitParameters ?? []) if (!Object.hasOwn(allowedParameters, key)) throw new Error(`template.wrapper.fitParameters.${key} is not an allowed parameter`)
   const outputKeys = parseOutputs(required(record, 'outputKeys', 'template'))
   if (outputs.length !== Object.keys(outputKeys).length || outputs.some((output, index) => output !== Object.keys(outputKeys)[index])) throw new Error('template.outputs must exactly match template.outputKeys in canonical order')
   distinct(Object.values(outputKeys), 'template.outputKeys values')
