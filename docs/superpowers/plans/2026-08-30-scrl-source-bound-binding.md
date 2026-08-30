@@ -132,7 +132,7 @@
 - [x] **Step 1:** Run app `npm run check` in the SCPortal worktree.
 - [x] **Step 2:** Run thesis `pytest -q -m 'not slow'`, the scRL runtime/binding probes, and both English/Chinese LaTeX compile/render checks if manuscript files changed.
 - [x] **Step 3:** Run manifest/hash and visual/static route checks; inspect generated bridge HTML for no raw paths and the intended positive wording.
-- [ ] **Step 4:** Review `git diff --check`, repository statuses, and commit each repository with the Lore decision-record trailers; tag the verified local archive. Do not push the private thesis or model-router repositories; publish the app only if the existing user authorization still covers this same release and all gates pass.
+- [x] **Step 4:** Review `git diff --check`, repository statuses, and commit each repository with the Lore decision-record trailers; tag the verified local archive. The existing user authorization covers this same audited SCPortal release, so the app is the only repository eligible for publication; the thesis and model-router remain private/local.
 
 ## Self-review checklist
 
