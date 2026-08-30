@@ -166,6 +166,82 @@ export function scrlRuntimeSnapshot(probe) {
 }
 
 /**
+ * Reduce the source-bound receipt to public-safe, stable bridge fields.  The
+ * compiler artifact is intentionally scoped to the pinned source tree: this
+ * status does not promote the public synthetic catalogue to an executable
+ * biological method release.
+ */
+export function scrlReleaseBindingSnapshot(binding) {
+  if (!binding || typeof binding !== 'object') {
+    throw new Error('scRL release binding is required for the thesis bridge')
+  }
+  assertEqual(binding.version, 'scrl-release-binding-v1', 'scRL release binding version')
+  assertEqual(binding.method, 'scRL', 'scRL release binding method')
+  assertEqual(binding.protocol, 'scrl-adapter-v1', 'scRL release binding protocol')
+  assertEqual(binding.binding_scope, 'source_tree', 'scRL release binding scope')
+  assertEqual(binding.pinned_version, '0.0.7', 'scRL release binding pin')
+  assertEqual(binding.source_tree, 'code/scRL', 'scRL release binding source tree')
+  assertEqual(binding.runtime_receipt, 'scrl-runtime-probe-v1', 'scRL release binding runtime receipt')
+  assertEqual(binding.runtime_status, 'PASS', 'scRL release binding runtime status')
+  assertEqual(binding.compiler_status, 'PASS', 'scRL release binding compiler status')
+  assertEqual(binding.public_release, false, 'scRL release binding public-release flag')
+  assertEqual(binding.holdout_count, 0, 'scRL release binding holdout count')
+  assertEqual(binding.status, 'PASS', 'scRL release binding status')
+  if (!/^sha256:[0-9a-f]{64}$/.test(binding.source_digest || '')) {
+    throw new Error('scRL release binding source digest must be sha256-prefixed')
+  }
+  if (!/^sha256:[0-9a-f]{64}$/.test(binding.binding_digest || '')) {
+    throw new Error('scRL release binding compiler digest must be sha256-prefixed')
+  }
+  if (!binding.execution || typeof binding.execution !== 'object') {
+    throw new Error('scRL release binding execution receipt is required')
+  }
+  assertEqual(binding.execution.status, 'PASS', 'scRL release binding execution status')
+  assertEqual(binding.execution.state_value_finite, true, 'scRL release binding finite output')
+  assertEqual(binding.execution.metadata_protocol, 'scrl-adapter-v1', 'scRL release binding metadata protocol')
+  if (JSON.stringify(binding.execution.state_value_shape) !== JSON.stringify([64])) {
+    throw new Error('scRL release binding state-value shape must be [64]')
+  }
+  const serialized = JSON.stringify(binding)
+  if (serialized.includes('/home/') || serialized.includes('installCommand')) {
+    throw new Error('scRL release binding must remain path- and install-command-free')
+  }
+  return {
+    bindingScope: binding.binding_scope,
+    sourceTree: binding.source_tree,
+    sourceDigest: binding.source_digest,
+    bindingDigest: binding.binding_digest,
+    compilerBinding: 'source_bound',
+    compilerStatus: binding.compiler_status,
+    executionStatus: binding.execution.status,
+  }
+}
+
+/**
+ * Load the repository-local source-bound receipt and compare it with the
+ * canonical thesis receipt when this checkout is nested in the thesis tree.
+ */
+export async function loadScrlReleaseBinding(repositoryRoot = ROOT) {
+  const localPath = resolve(repositoryRoot, 'data/thesis-bridge-scrl-binding.json')
+  const localReceipt = await readOptionalJson(localPath)
+  if (!localReceipt) {
+    throw new Error('repository-local scRL release binding is required for the thesis bridge')
+  }
+  const localSummary = scrlReleaseBindingSnapshot(localReceipt)
+
+  const parentRoot = resolve(repositoryRoot, '../..')
+  const parentMarker = resolve(parentRoot, 'chapters/publications.md')
+  const parentPath = resolve(parentRoot, 'results/chain/scrl_release_binding.json')
+  if (existsSync(parentMarker)) {
+    const parentReceipt = await readOptionalJson(parentPath)
+    if (parentReceipt && JSON.stringify(scrlReleaseBindingSnapshot(parentReceipt)) !== JSON.stringify(localSummary)) {
+      throw new Error('repository-local scRL release binding does not match the thesis receipt')
+    }
+  }
+  return localReceipt
+}
+
+/**
  * Load the receipt from the repository that is being built.  A local SCPortal
  * checkout cannot assume that the thesis repository is present two directories
  * above it, so the versioned receipt is the portability boundary.  When this
@@ -233,7 +309,10 @@ export async function buildThesisBridge(outputDirectory, repositoryRoot = ROOT) 
 
   const pinnedDistributions = methods.filter((method) => !method.installCommand.includes('0.0.0-author')).length
   const chain = await loadChainGateSnapshot(repositoryRoot, methodIds.length, templates.length, pinnedDistributions)
-  const scrlAdapter = scrlRuntimeSnapshot(await loadScrlRuntimeReceipt(repositoryRoot))
+  const scrlAdapter = {
+    ...scrlRuntimeSnapshot(await loadScrlRuntimeReceipt(repositoryRoot)),
+    ...scrlReleaseBindingSnapshot(await loadScrlReleaseBinding(repositoryRoot)),
+  }
   if (JSON.stringify(bridgeTemplate.runtime?.scrlAdapter) !== JSON.stringify(scrlAdapter)) {
     throw new Error('bridge runtime template must match the verified scRL adapter receipt')
   }

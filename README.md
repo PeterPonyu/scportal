@@ -14,7 +14,7 @@ SCPortal provides a unified interface to access:
 
 - **iAODE Dataset Browser** ([https://peterponyu.github.io/iAODE/](https://peterponyu.github.io/iAODE/)) - Curated single-cell ATAC-seq and RNA-seq datasets in standardized 10X h5 format
 - **LAIOR Benchmarking Dashboard** ([https://peterponyu.github.io/liora-ui/](https://peterponyu.github.io/liora-ui/)) - Benchmarking results for single-cell VAE models
-- **AutoSelect** (static route `/scportal/autoselect/`; public propagation pending) - A fail-closed model-selection surface with a traceable bridge to the 13-publication thesis line
+- **AutoSelect** (static route `/scportal/autoselect/`; GitHub Pages deployment is CI-managed) - A fail-closed model-selection surface with a traceable bridge to the 13-publication thesis line
 
 The AutoSelect thesis bridge reports method identity, five scientific layers,
 configuration-template coverage, pin-contract checks, and evidence-release
@@ -91,10 +91,14 @@ npm run preview
 
 `npm run generate` first validates the router registry and builds the thesis
 bridge. The bridge requires the versioned, public-safe snapshots
-`data/thesis-bridge-runtime.json` and `data/thesis-bridge-chain.json`; this keeps
+`data/thesis-bridge-runtime.json`, `data/thesis-bridge-chain.json`, and
+`data/thesis-bridge-scrl-binding.json`; this keeps
 an independent SCPortal checkout reproducible without a sibling thesis folder.
-When a thesis checkout is present, the build compares stable receipt summaries
-and fails closed on drift.
+When a thesis checkout is present, the build compares stable runtime and
+source-bound receipt summaries and fails closed on drift. The source-bound
+receipt records the exact `scrl-adapter-v1` call against the pinned `code/scRL`
+tree; it does not turn the public synthetic catalogue into an installable or
+biological-performance release.
 
 ## Deployment
 

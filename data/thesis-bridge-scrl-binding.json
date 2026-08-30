@@ -1,0 +1,52 @@
+{
+  "version": "scrl-release-binding-v1",
+  "method": "scRL",
+  "protocol": "scrl-adapter-v1",
+  "binding_scope": "source_tree",
+  "pinned_version": "0.0.7",
+  "source_tree": "code/scRL",
+  "source_digest": "sha256:8ee3204a9f32d5997d53687a3e1a66aa25e543aed773f06f5a962a9dd907a702",
+  "binding_digest": "sha256:472cd6e522900c33431f052730a6a7dd0ee54c41a0d874dbd543d2cf6dd77da5",
+  "runtime_receipt": "scrl-runtime-probe-v1",
+  "runtime_status": "PASS",
+  "compiler_status": "PASS",
+  "compiler": {
+    "source_module": "scripts.sci.chain.scrl_adapter",
+    "function_name": "run_scrl_adapter",
+    "protocol": "scrl-adapter-v1",
+    "input_keys": {
+      "latent": "X_latent",
+      "embedding": "X_embed",
+      "cluster": "cluster",
+      "pseudotime": "pt"
+    },
+    "output_keys": {
+      "decision": "scrl_state_value",
+      "metadata": "scrl_adapter_metadata"
+    },
+    "parameters": {
+      "device": "cpu",
+      "episodes": 10,
+      "grid_observers": 2,
+      "grid_size": 10,
+      "hidden_dim": 8,
+      "knn": 3,
+      "max_step": 5,
+      "n_jobs": 1,
+      "n_sample_cells": 3,
+      "seed": 4
+    },
+    "ast_valid": true
+  },
+  "public_release": false,
+  "holdout_count": 0,
+  "status": "PASS",
+  "claim_boundary": "source-tree compiler/runtime binding only; software-resource evidence with a synthetic fixture, not a public installable release or biological benchmark",
+  "execution": {
+    "status": "PASS",
+    "state_value_shape": [64],
+    "state_value_finite": true,
+    "metadata_protocol": "scrl-adapter-v1",
+    "episodes_completed": 10
+  }
+}

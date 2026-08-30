@@ -4,7 +4,14 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { describe, it } from 'node:test'
 
-import { buildThesisBridge, loadChainGateSnapshot, loadScrlRuntimeReceipt, scrlRuntimeSnapshot } from '../../scripts/build_thesis_bridge.mjs'
+import {
+  buildThesisBridge,
+  loadChainGateSnapshot,
+  loadScrlReleaseBinding,
+  loadScrlRuntimeReceipt,
+  scrlReleaseBindingSnapshot,
+  scrlRuntimeSnapshot,
+} from '../../scripts/build_thesis_bridge.mjs'
 
 describe('thesis integration bridge', () => {
   it('publishes a sanitized, digest-independent 13-publication summary', async () => {
@@ -32,7 +39,13 @@ describe('thesis integration bridge', () => {
         episodesRequested: 10,
         episodesCompleted: 10,
         stateValueShape: [64],
-        compilerBinding: 'pending',
+        compilerBinding: 'source_bound',
+        bindingScope: 'source_tree',
+        sourceTree: 'code/scRL',
+        sourceDigest: 'sha256:8ee3204a9f32d5997d53687a3e1a66aa25e543aed773f06f5a962a9dd907a702',
+        bindingDigest: 'sha256:472cd6e522900c33431f052730a6a7dd0ee54c41a0d874dbd543d2cf6dd77da5',
+        compilerStatus: 'PASS',
+        executionStatus: 'PASS',
       })
       assert.equal(bridge.evidence.admittedObservationCount, 30)
       assert.equal(bridge.evidence.studyGroupCount, 18)
@@ -59,12 +72,17 @@ describe('thesis integration bridge', () => {
     assert.match(source, /four pinned method contracts \(LiVAE, CODE, GNODEVAE, and LAIOR\) are\s+now shape-checked/i)
     assert.match(source, /dedicated scRL adapter now has a bounded synthetic CPU runtime receipt/i)
     assert.match(source, /scrl-adapter-v1/i)
-    assert.match(source, /public methods remain non-executable\s+until\s+its compiler\/release binding and holdout gates close/i)
+    assert.match(source, /source-tree compiler binding[\s\S]+That binding is now recorded/i)
   })
 
   it('fails closed when the structured scRL receipt is missing or incomplete', () => {
     assert.throws(() => scrlRuntimeSnapshot(null), /runtime receipt is required/i)
     assert.throws(() => scrlRuntimeSnapshot({ status: 'PASS' }), /runtime receipt version/i)
+  })
+
+  it('fails closed when the source-bound scRL binding is missing or incomplete', () => {
+    assert.throws(() => scrlReleaseBindingSnapshot(null), /release binding is required/i)
+    assert.throws(() => scrlReleaseBindingSnapshot({ status: 'PASS' }), /release binding version/i)
   })
 
   it('keeps a repository-local receipt so the bridge is rebuildable outside the thesis checkout', async () => {
@@ -97,6 +115,51 @@ describe('thesis integration bridge', () => {
     const repository = await mkdtemp(resolve(tmpdir(), 'scportal-thesis-receipt-missing-'))
     try {
       await assert.rejects(() => loadScrlRuntimeReceipt(repository), /repository-local scRL runtime receipt/i)
+    } finally {
+      await rm(repository, { recursive: true, force: true })
+    }
+  })
+
+  it('keeps a repository-local source-bound binding for independent rebuilds', async () => {
+    const repository = await mkdtemp(resolve(tmpdir(), 'scportal-thesis-binding-'))
+    try {
+      const binding = {
+        version: 'scrl-release-binding-v1',
+        method: 'scRL',
+        protocol: 'scrl-adapter-v1',
+        binding_scope: 'source_tree',
+        pinned_version: '0.0.7',
+        source_tree: 'code/scRL',
+        source_digest: 'sha256:' + '1'.repeat(64),
+        binding_digest: 'sha256:' + '2'.repeat(64),
+        runtime_receipt: 'scrl-runtime-probe-v1',
+        runtime_status: 'PASS',
+        compiler_status: 'PASS',
+        public_release: false,
+        holdout_count: 0,
+        status: 'PASS',
+        execution: {
+          status: 'PASS',
+          state_value_shape: [64],
+          state_value_finite: true,
+          metadata_protocol: 'scrl-adapter-v1',
+        },
+      }
+      const { mkdir, writeFile } = await import('node:fs/promises')
+      await mkdir(resolve(repository, 'data'), { recursive: true })
+      await writeFile(resolve(repository, 'data/thesis-bridge-scrl-binding.json'), `${JSON.stringify(binding)}\n`)
+
+      const loaded = await loadScrlReleaseBinding(repository)
+      assert.deepEqual(loaded, binding)
+      assert.deepEqual(scrlReleaseBindingSnapshot(loaded), {
+        bindingScope: 'source_tree',
+        sourceTree: 'code/scRL',
+        sourceDigest: 'sha256:' + '1'.repeat(64),
+        bindingDigest: 'sha256:' + '2'.repeat(64),
+        compilerBinding: 'source_bound',
+        compilerStatus: 'PASS',
+        executionStatus: 'PASS',
+      })
     } finally {
       await rm(repository, { recursive: true, force: true })
     }

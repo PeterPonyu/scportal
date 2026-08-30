@@ -89,8 +89,12 @@ if (!html.includes('scRL receipt:') || !html.includes('scrl-adapter-v1')) {
   fail('missing structured scRL adapter runtime receipt')
 }
 
-if (!html.includes('compiler binding:') || !html.includes('pending')) {
-  fail('missing explicit pending scRL compiler binding gate')
+if (!html.includes('compiler binding:') || !html.includes('source_bound')) {
+  fail('missing verified source-bound scRL compiler binding')
+}
+
+if (!html.includes('execution:') || !html.includes('PASS')) {
+  fail('missing source-bound scRL execution receipt')
 }
 
 if (/type\s*=\s*["']file["']/.test(html)) {

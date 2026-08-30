@@ -70,13 +70,13 @@
 
     <div class="grid gap-3 rounded-2xl border border-dark-200 bg-white/80 p-4 text-sm leading-6 text-dark-700 dark:border-dark-800 dark:bg-dark-900/70 dark:text-dark-300 sm:grid-cols-[1fr_auto] sm:items-center">
       <p>
-        The application layer is currently a traceable software resource. AutoSelect evaluates
-        profiles against the synthetic browser release; four pinned method contracts (LiVAE, CODE, GNODEVAE, and LAIOR) are
-        now shape-checked. The dedicated scRL adapter now has a bounded synthetic CPU runtime receipt,
-        identified by the <code class="font-mono text-[0.75rem]">scrl-adapter-v1</code> protocol,
-        while public methods remain non-executable until its compiler/release binding and holdout gates close.
-        The author-paper release remains an evidence and validation lane until a leakage-safe
-        holdout is evaluable.
+        The application layer is a traceable software resource. AutoSelect evaluates profiles
+        against the synthetic browser release; four pinned method contracts (LiVAE, CODE, GNODEVAE, and LAIOR) are now shape-checked,
+        and the dedicated scRL adapter now has a bounded synthetic CPU runtime receipt. Its
+        <code class="font-mono text-[0.75rem]">scrl-adapter-v1</code> protocol is backed by a source-tree compiler binding.
+        That binding is now recorded and executed against the pinned source, giving the thesis line
+        a reproducible application handoff. The public catalogue remains deliberately
+        non-executable while its software-resource and holdout gates are kept explicit.
       </p>
       <div v-if="bridge" class="font-mono text-xs sm:text-right">
         <p>chain: {{ bridge.chain.rung }}</p>
@@ -93,7 +93,9 @@
       scRL receipt: {{ bridge.runtime.scrlAdapter.protocol }} · {{ bridge.runtime.scrlAdapter.status }} ·
       {{ bridge.runtime.scrlAdapter.episodesCompleted }}/{{ bridge.runtime.scrlAdapter.episodesRequested }} episodes ·
       {{ bridge.runtime.scrlAdapter.fixtureObservations }}-cell synthetic CPU · compiler binding:
-      {{ bridge.runtime.scrlAdapter.compilerBinding }}
+      {{ bridge.runtime.scrlAdapter.compilerBinding }} · source:
+      {{ bridge.runtime.scrlAdapter.sourceTree }} · execution:
+      {{ bridge.runtime.scrlAdapter.executionStatus }}
     </p>
 
     <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm" aria-label="Thesis integration links">
@@ -152,6 +154,12 @@ interface ThesisBridge {
       episodesCompleted: number
       stateValueShape: number[]
       compilerBinding: string
+      bindingScope: string
+      sourceTree: string
+      sourceDigest: string
+      bindingDigest: string
+      compilerStatus: string
+      executionStatus: string
     }
   }
   evidence: {
