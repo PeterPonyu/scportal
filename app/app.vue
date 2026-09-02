@@ -10,6 +10,7 @@
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl.replace(/\/+$/, '')
+const release = String(runtimeConfig.public.release ?? 'local')
 
 const buildCanonicalUrl = (routePath: string) => {
   const normalizedPath = routePath === '/' ? '' : `${routePath.replace(/^\/+/, '').replace(/\/+$/, '')}/`
@@ -39,6 +40,7 @@ useHead(() => {
       { property: 'og:site_name', content: 'SCPortal' },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: canonical },
+      { name: 'scportal-release', content: release },
       { name: 'twitter:card', content: 'summary_large_image' }
     ]
   }

@@ -14,13 +14,31 @@
       "iaode_workspace": "iAODE Workspace",
       "mccvae": "MCCVAE",
       "scccvgben": "scCCVGBen",
+      "scccvgben_atlas": "scCCVGBen Atlas",
       "gahib_site": "GAHIB Companion Site"
     }
   },
+  "resources": [
+    {
+      "id": "model_router",
+      "name": "Model Router",
+      "kind": "local_execution_infrastructure",
+      "availability": "local_only",
+      "public_url": "https://github.com/PeterPonyu/model-router",
+      "runtime_endpoint": null,
+      "disclosure": "Local-only model routing infrastructure; no public browser API.",
+      "related_sites": [
+        "homepage",
+        "scportal"
+      ]
+    }
+  ],
   "sites": [
     {
       "id": "homepage",
       "name": "Homepage",
+      "surface_kind": "pages",
+      "surface_group": "identity",
       "canonical_url": "https://peterponyu.github.io/",
       "role": "identity_root",
       "availability": "public",
@@ -39,6 +57,7 @@
         "liora_benchmarks",
         "iaode_pages",
         "scccvgben",
+        "scccvgben_atlas",
         "gahib_site"
       ],
       "source_repo": "PeterPonyu/PeterPonyu.github.io",
@@ -47,6 +66,8 @@
     {
       "id": "scportal",
       "name": "SCPortal",
+      "surface_kind": "pages",
+      "surface_group": "identity",
       "canonical_url": "https://peterponyu.github.io/scportal/",
       "role": "discovery_hub",
       "availability": "public",
@@ -73,6 +94,7 @@
         "mrna_intersection",
         "iaode_pages",
         "scccvgben",
+        "scccvgben_atlas",
         "gahib_site"
       ],
       "source_repo": "PeterPonyu/scportal",
@@ -81,6 +103,8 @@
     {
       "id": "liora_benchmarks",
       "name": "LAIOR Benchmarks",
+      "surface_kind": "pages",
+      "surface_group": "liora",
       "canonical_url": "https://peterponyu.github.io/liora-ui/",
       "role": "microsite",
       "availability": "public",
@@ -111,6 +135,8 @@
     {
       "id": "mrna_intersection",
       "name": "mRNA Intersection",
+      "surface_kind": "pages",
+      "surface_group": "mrna_intersection",
       "canonical_url": "https://peterponyu.github.io/mrnapp-intersection/",
       "role": "utility",
       "availability": "public",
@@ -140,6 +166,8 @@
     {
       "id": "iaode_pages",
       "name": "iAODE Pages",
+      "surface_kind": "pages",
+      "surface_group": "iaode",
       "canonical_url": "https://peterponyu.github.io/iAODE/",
       "role": "public_surface",
       "availability": "public",
@@ -170,6 +198,8 @@
     {
       "id": "iaode_workspace",
       "name": "iAODE Workspace",
+      "surface_kind": "workspace",
+      "surface_group": "iaode",
       "canonical_url": null,
       "workspace_path": "frontend/",
       "role": "local_first_workspace",
@@ -199,6 +229,8 @@
     {
       "id": "mccvae",
       "name": "MCCVAE",
+      "surface_kind": "pages",
+      "surface_group": "mccvae",
       "canonical_url": "https://peterponyu.github.io/MCCVAE/",
       "role": "landing_only",
       "availability": "landing_only",
@@ -226,6 +258,8 @@
     {
       "id": "scccvgben",
       "name": "scCCVGBen",
+      "surface_kind": "pages",
+      "surface_group": "scccvgben",
       "canonical_url": "https://peterponyu.github.io/scccvgben-next/",
       "role": "benchmark_resource",
       "availability": "public",
@@ -248,14 +282,49 @@
       "related_sites": [
         "homepage",
         "scportal",
-        "liora_benchmarks"
+        "liora_benchmarks",
+        "scccvgben_atlas"
       ],
       "source_repo": "PeterPonyu/scCCVGBen",
       "deploy_repo": "PeterPonyu/scccvgben-next"
     },
     {
+      "id": "scccvgben_atlas",
+      "name": "scCCVGBen Atlas",
+      "surface_kind": "pages",
+      "surface_group": "scccvgben",
+      "canonical_url": "https://peterponyu.github.io/scCCVGBen/",
+      "role": "documentation_atlas",
+      "availability": "public",
+      "indexing": {
+        "mode": "index_follow"
+      },
+      "visibility": {
+        "homepage": "secondary",
+        "homepage_order": 5,
+        "scportal": "featured",
+        "sitemap": true
+      },
+      "presentation": {
+        "homepage": {
+          "kind": "Documentation Atlas",
+          "summary": "Reference atlas for scCCVGBen datasets, methods, metrics, and the companion application.",
+          "cta_label": "Open scCCVGBen Atlas"
+        }
+      },
+      "related_sites": [
+        "homepage",
+        "scportal",
+        "scccvgben"
+      ],
+      "source_repo": "PeterPonyu/scCCVGBen",
+      "deploy_repo": "PeterPonyu/scCCVGBen"
+    },
+    {
       "id": "gahib_site",
       "name": "GAHIB Companion Site",
+      "surface_kind": "pages",
+      "surface_group": "gahib",
       "canonical_url": "https://peterponyu.github.io/gahib-site/",
       "role": "microsite",
       "availability": "public",

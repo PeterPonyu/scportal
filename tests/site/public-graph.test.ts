@@ -28,6 +28,20 @@ describe('canonical public graph', () => {
     assert.equal(site.source_repo, 'PeterPonyu/scCCVGBen')
     assert.equal(site.deploy_repo, 'PeterPonyu/scccvgben-next')
   })
+
+  it('represents the atlas as a separate public surface in the same group', () => {
+    const companion = manifest.sites.find((entry) => entry.id === 'scccvgben')
+    const atlas = manifest.sites.find((entry) => entry.id === 'scccvgben_atlas')
+    assert.equal(companion.surface_group, 'scccvgben')
+    assert.equal(atlas.surface_group, 'scccvgben')
+    assert.ok(companion.related_sites.includes('scccvgben_atlas'))
+    assert.ok(atlas.related_sites.includes('scccvgben'))
+  })
+
+  it('keeps Model Router in the resource layer', () => {
+    assert.deepEqual(manifest.resources.map((resource) => resource.id), ['model_router'])
+    assert.equal(manifest.resources[0].runtime_endpoint, null)
+  })
 })
 
 describe('moved publicGraph helper', () => {

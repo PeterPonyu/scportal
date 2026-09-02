@@ -167,7 +167,7 @@
 </template>
 
 <script setup lang="ts">
-import { homepageLink, shellScportalSites } from '~/utils/publicGraph'
+import { getResourceLink, homepageLink, shellScportalSites } from '~/utils/publicGraph'
 
 const colorMode = useColorMode()
 const mobileMenuOpen = ref(false)
@@ -189,6 +189,7 @@ const externalNavItems = [
     href: site.canonical_url,
     label: site.name,
   })),
+  { href: getResourceLink('model_router').href, label: 'Model Router · Local infrastructure' },
 ]
 
 function toggleColorMode() {

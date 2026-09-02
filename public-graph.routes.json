@@ -1,14 +1,117 @@
 {
   "datasets": {
-    "related_site_ids": ["iaode_pages", "liora_benchmarks", "scccvgben", "gahib_site"]
+    "destinations": [
+      {
+        "site_id": "iaode_pages",
+        "summary": "Browse iAODE datasets, explorer pages, and project details.",
+        "cta_label": "Open iAODE Pages"
+      },
+      {
+        "site_id": "liora_benchmarks",
+        "summary": "Browse LAIOR benchmark datasets and evaluation results.",
+        "cta_label": "Open LAIOR Benchmarks"
+      },
+      {
+        "site_id": "scccvgben",
+        "summary": "See the scCCVGBen benchmark set, dataset coverage, and metadata.",
+        "cta_label": "Open scCCVGBen"
+      },
+      {
+        "site_id": "gahib_site",
+        "summary": "Read the GAHIB method overview and see supporting figures.",
+        "cta_label": "Open GAHIB Companion Site"
+      }
+    ]
   },
   "benchmarks": {
-    "related_site_ids": ["liora_benchmarks", "scccvgben", "gahib_site", "iaode_pages"]
+    "destinations": [
+      {
+        "site_id": "liora_benchmarks",
+        "summary": "Compare models, rankings, and benchmark results in LAIOR.",
+        "cta_label": "Open LAIOR Benchmarks"
+      },
+      {
+        "site_id": "scccvgben",
+        "summary": "Review scCCVGBen model comparisons, metric coverage, and benchmark figures.",
+        "cta_label": "Open scCCVGBen"
+      },
+      {
+        "site_id": "scccvgben_atlas",
+        "summary": "Read the scCCVGBen atlas definitions and reference material.",
+        "cta_label": "Open scCCVGBen Atlas"
+      },
+      {
+        "site_id": "gahib_site",
+        "summary": "Read how GAHIB works and compare it with other benchmark methods.",
+        "cta_label": "Open GAHIB Companion Site"
+      },
+      {
+        "site_id": "iaode_pages",
+        "summary": "Open the matching iAODE dataset and explorer pages for these metrics.",
+        "cta_label": "Open iAODE Pages"
+      }
+    ]
   },
   "models": {
-    "related_site_ids": ["liora_benchmarks", "scccvgben", "gahib_site", "iaode_pages"]
+    "destinations": [
+      {
+        "site_id": "liora_benchmarks",
+        "summary": "View model pages, benchmark results, and evaluation details.",
+        "cta_label": "Open LAIOR Benchmarks"
+      },
+      {
+        "site_id": "scccvgben",
+        "summary": "Compare scCCVGBen models, metric definitions, and online figures.",
+        "cta_label": "Open scCCVGBen"
+      },
+      {
+        "site_id": "scccvgben_atlas",
+        "summary": "Reference the atlas methods and metric definitions.",
+        "cta_label": "Open scCCVGBen Atlas"
+      },
+      {
+        "site_id": "gahib_site",
+        "summary": "Read the GAHIB method overview for model interpretation.",
+        "cta_label": "Open GAHIB Companion Site"
+      },
+      {
+        "site_id": "iaode_pages",
+        "summary": "Open iAODE datasets and project details related to this evaluation.",
+        "cta_label": "Open iAODE Pages"
+      }
+    ]
   },
   "explorer": {
-    "related_site_ids": ["iaode_pages", "liora_benchmarks"]
+    "destinations": [
+      {
+        "site_id": "iaode_pages",
+        "summary": "Open iAODE explorer pages, datasets, and overview content.",
+        "cta_label": "Open iAODE Pages"
+      },
+      {
+        "site_id": "liora_benchmarks",
+        "summary": "Check model and metric results after exploring continuity patterns.",
+        "cta_label": "Open LAIOR Benchmarks"
+      },
+      {
+        "site_id": "scccvgben_atlas",
+        "summary": "Consult the scCCVGBen atlas for benchmark definitions.",
+        "cta_label": "Open scCCVGBen Atlas"
+      }
+    ]
+  },
+  "autoselect": {
+    "destinations": [
+      {
+        "site_id": "scccvgben_atlas",
+        "summary": "Read the benchmark atlas that anchors the traceability layer.",
+        "cta_label": "Open scCCVGBen Atlas"
+      },
+      {
+        "site_id": "scccvgben",
+        "summary": "Open the companion benchmark application and resource cards.",
+        "cta_label": "Open scCCVGBen"
+      }
+    ]
   }
 }

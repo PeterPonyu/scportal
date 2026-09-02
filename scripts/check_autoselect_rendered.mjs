@@ -53,6 +53,18 @@ if (!html.includes('Thirteen publications, one traceable application layer')) {
   fail('missing thesis integration heading')
 }
 
+for (const marker of ['Thirteen published method identities', 'Synthetic candidates', 'Model Router', 'Local infrastructure']) {
+  if (!html.includes(marker)) {
+    fail(`missing scope/resource marker ${marker}`)
+  }
+}
+
+for (const methodId of ['iVAE', 'CCVGAE', 'LiVAE', 'GAHIB', 'MCCVAE', 'GNODEVAE', 'CODE', 'iAODE', 'LAIOR', 'scRL', 'scFocus', 'CLOP-DiT', 'scCCVGBen']) {
+  if (!html.includes(methodId)) {
+    fail(`missing thesis method identity ${methodId}`)
+  }
+}
+
 if (!html.includes('Resolved identities')) {
   fail('missing thesis identity summary')
 }
@@ -113,6 +125,12 @@ for (const host of analyticsHosts) {
 
 if (html.includes('/scportal/scportal/')) {
   fail('found duplicated /scportal/scportal/')
+}
+
+for (const forbidden of ['localhost', '127.0.0.1', 'file://', '/home/']) {
+  if (html.includes(forbidden)) {
+    fail(`found forbidden local boundary string ${forbidden}`)
+  }
 }
 
 if (failed) process.exit(1)

@@ -5,6 +5,7 @@ import { describe, it } from 'node:test'
 import { BASE_URL, PUBLIC_ROUTES, SITE_URL } from '../../config/site.ts'
 
 const config = readFileSync(new URL('../../nuxt.config.ts', import.meta.url), 'utf8')
+const app = readFileSync(new URL('../../app/app.vue', import.meta.url), 'utf8')
 
 describe('head and prerender contract', () => {
   it('keeps the Pages base path and site URL in nuxt.config.ts', () => {
@@ -19,5 +20,13 @@ describe('head and prerender contract', () => {
     assert.deepEqual([...PUBLIC_ROUTES], ['/', '/datasets', '/explorer', '/benchmarks', '/models', '/about', '/autoselect'])
     assert.match(config, /routes:\s*\[\s*\.\.\.PUBLIC_ROUTES\s*\]/)
     assert.equal(/['"]\/autoselect['"]/.test(config), false)
+  })
+
+  it('emits a deterministic deployment release marker', () => {
+    assert.match(config, /buildRelease/)
+    assert.match(config, /GITHUB_SHA/)
+    assert.match(config, /release:\s*buildRelease/)
+    assert.match(app, /name:\s*'scportal-release'/)
+    assert.match(app, /runtimeConfig\.public\.release/)
   })
 })

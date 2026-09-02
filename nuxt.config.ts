@@ -1,6 +1,10 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import { PUBLIC_ROUTES } from './config/site.ts'
 
+const buildRelease = (globalThis as typeof globalThis & {
+  process?: { env?: { GITHUB_SHA?: string } }
+}).process?.env?.GITHUB_SHA ?? 'local'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-30',
@@ -57,7 +61,8 @@ export default defineNuxtConfig({
     public: {
       iaodeBaseUrl: 'https://peterponyu.github.io/iAODE',
       lioraBaseUrl: 'https://peterponyu.github.io/liora-ui',
-      siteUrl: 'https://peterponyu.github.io/scportal/'
+      siteUrl: 'https://peterponyu.github.io/scportal/',
+      release: buildRelease
     }
   },
 

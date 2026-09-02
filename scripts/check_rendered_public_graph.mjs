@@ -9,6 +9,7 @@ const repoRoot = path.resolve(scriptDir, '..')
 const manifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'public-graph.manifest.json'), 'utf8'))
 const routeMap = JSON.parse(fs.readFileSync(path.join(repoRoot, 'public-graph.routes.json'), 'utf8'))
 const siteById = new Map(manifest.sites.map((site) => [site.id, site]))
+const expectedRelease = process.env.EXPECTED_RELEASE ?? null
 
 const getSite = (id) => {
   const site = siteById.get(id)
@@ -43,16 +44,24 @@ const checks = [
     routeId: 'explorer',
     file: '.output/public/explorer/index.html',
     canonical: 'https://peterponyu.github.io/scportal/explorer/'
+  },
+  {
+    routeId: 'autoselect',
+    file: '.output/public/autoselect/index.html',
+    canonical: 'https://peterponyu.github.io/scportal/autoselect/'
   }
 ]
 
 let failed = false
 const forbiddenUrls = manifest.sites
-  .filter((site) => site.availability !== 'public' && site.canonical_url !== null)
+  // Landing-only pages may be linked from an evidence/traceability card, but
+  // local-only surfaces must never leak into generated public HTML.
+  .filter((site) => site.availability === 'local_only' && site.canonical_url !== null)
   .map((site) => site.canonical_url)
 const localWorkspacePaths = manifest.sites
   .filter((site) => site.availability === 'local_only' && typeof site.workspace_path === 'string')
   .map((site) => site.workspace_path)
+const forbiddenPatterns = ['http://localhost', 'https://localhost', 'http://127.0.0.1', 'https://127.0.0.1', 'file://', '/home/']
 
 const rootDocuments = [
   {
@@ -96,14 +105,24 @@ for (const check of checks) {
     console.error(`FAIL ${check.file}: missing og:url ${check.canonical}`)
   }
 
+  if (expectedRelease && !html.includes(`name="scportal-release" content="${expectedRelease}"`)) {
+    failed = true
+    console.error(`FAIL ${check.file}: release marker does not match ${expectedRelease}`)
+  }
+
   if (check.routeId) {
     const routeConfig = routeMap[check.routeId]
-    if (!routeConfig || !Array.isArray(routeConfig.related_site_ids)) {
+    if (!routeConfig || !Array.isArray(routeConfig.destinations)) {
       failed = true
       console.error(`FAIL ${check.file}: missing route map entry for ${check.routeId}`)
     } else {
-      for (const siteId of routeConfig.related_site_ids) {
+      for (const destination of routeConfig.destinations) {
+        const siteId = destination.site_id
         const site = getSite(siteId)
+        if (site.availability !== 'public') {
+          failed = true
+          console.error(`FAIL ${check.file}: route destination ${siteId} is not public (${site.availability})`)
+        }
         if (!html.includes(site.name)) {
           failed = true
           console.error(`FAIL ${check.file}: missing destination name ${site.name}`)
@@ -132,6 +151,22 @@ for (const check of checks) {
     if (html.includes(workspacePath)) {
       failed = true
       console.error(`FAIL ${check.file}: leaked local-only workspace path ${workspacePath}`)
+    }
+  }
+
+  for (const pattern of forbiddenPatterns) {
+    if (html.includes(pattern)) {
+      failed = true
+      console.error(`FAIL ${check.file}: found forbidden boundary pattern ${pattern}`)
+    }
+  }
+
+  if (check.routeId === 'autoselect') {
+    for (const required of ['Thirteen publications', 'synthetic', 'Model Router', 'Local infrastructure']) {
+      if (!html.toLowerCase().includes(required.toLowerCase())) {
+        failed = true
+        console.error(`FAIL ${check.file}: missing AutoSelect scope/resource marker ${required}`)
+      }
     }
   }
 }

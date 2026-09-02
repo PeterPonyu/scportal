@@ -47,6 +47,12 @@
 
       <AutoSelectShell @run="onRun" />
 
+      <RelatedDestinations
+        title="Connected benchmark surfaces"
+        intro="The traceability layer links the benchmark companion and atlas without changing the synthetic ranking catalog."
+        :destinations="autoselectDestinations"
+      />
+
       <details class="group mt-12 rounded-3xl border border-dark-200 bg-dark-50/60 dark:border-dark-800 dark:bg-dark-900/40">
         <summary
           class="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 rounded-3xl px-6 py-5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
@@ -75,6 +81,8 @@
           </span>
         </summary>
         <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+          <ThesisMethodAtlas />
+          <div class="my-8 border-t border-dark-200 dark:border-dark-800" />
           <ThesisIntegrationPanel />
         </div>
       </details>
@@ -84,8 +92,13 @@
 
 <script setup lang="ts">
 import AutoSelectShell from '../../components/autoselect/AutoSelectShell.vue'
+import RelatedDestinations from '../../components/RelatedDestinations.vue'
+import ThesisMethodAtlas from '../../components/autoselect/ThesisMethodAtlas.vue'
 import ThesisIntegrationPanel from '../../components/autoselect/ThesisIntegrationPanel.vue'
 import type { TaskProfile } from '../../core/router/types'
+import { getRouteDestinations } from '../../utils/publicGraph'
+
+const autoselectDestinations = getRouteDestinations('autoselect')
 
 useSeoMeta({
   title: 'AutoSelect',

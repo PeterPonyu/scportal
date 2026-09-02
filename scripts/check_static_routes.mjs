@@ -60,5 +60,16 @@ for (const [file, required] of assetChecks) {
   }
 }
 
+const autoselectPath = resolve(root, '.output/public/autoselect/index.html')
+if (existsSync(autoselectPath)) {
+  const autoselect = readFileSync(autoselectPath, 'utf8').toLowerCase()
+  for (const marker of ['thirteen published method identities', 'synthetic candidates', 'model router', 'local infrastructure']) {
+    if (!autoselect.includes(marker)) {
+      console.error(`FAIL asset autoselect/index.html: missing marker ${marker}`)
+      failed = true
+    }
+  }
+}
+
 if (failed) process.exit(1)
 console.log('static route checks passed')

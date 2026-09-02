@@ -13,7 +13,9 @@
       <p class="text-sm leading-6 text-dark-700 dark:text-dark-300">
         AutoSelect is the reproducibility bridge across the thesis line: it makes method identity,
         evidence provenance, and downstream configuration visible without turning the published
-        results into a universal leaderboard.
+        results into a universal leaderboard. The thesis atlas contains 13 identities; the interactive
+        ranking remains a separate 3-candidate synthetic release, and the Model Router is local
+        infrastructure rather than a browser API.
       </p>
     </header>
 
@@ -41,6 +43,10 @@
       <div class="rounded-2xl border border-primary-200/80 bg-white/80 p-4 dark:border-primary-800 dark:bg-dark-900/70">
         <dt class="text-xs uppercase tracking-wide text-dark-500 dark:text-dark-400">Pin contract matches</dt>
         <dd class="mt-1 font-mono text-2xl font-semibold text-dark-900 dark:text-white">{{ bridge.chain.contractsMatchingAtPin }}/{{ bridge.chain.contractsCheckedAtPin }}</dd>
+      </div>
+      <div class="rounded-2xl border border-primary-200/80 bg-white/80 p-4 dark:border-primary-800 dark:bg-dark-900/70">
+        <dt class="text-xs uppercase tracking-wide text-dark-500 dark:text-dark-400">Synthetic candidates</dt>
+        <dd class="mt-1 font-mono text-2xl font-semibold text-dark-900 dark:text-white">3</dd>
       </div>
       <div class="rounded-2xl border border-primary-200/80 bg-white/80 p-4 dark:border-primary-800 dark:bg-dark-900/70">
         <dt class="text-xs uppercase tracking-wide text-dark-500 dark:text-dark-400">Admitted score cells</dt>
@@ -117,12 +123,27 @@
       >
         SCPortal source
       </a>
+      <a
+        href="#thesis-method-atlas-heading"
+        class="text-primary-700 underline decoration-primary-400 underline-offset-4 transition-colors hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
+      >
+        Open 13-method atlas
+      </a>
+      <a
+        :href="routerResource.href"
+        class="text-primary-700 underline decoration-primary-400 underline-offset-4 transition-colors hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Model Router · Local infrastructure
+      </a>
     </nav>
   </section>
 </template>
 
 <script setup lang="ts">
 import bridgeSnapshot from '../../../data/thesis-bridge.json'
+import { getResourceLink } from '~/utils/publicGraph'
 
 interface ThesisLayer {
   id: string
@@ -175,4 +196,5 @@ interface ThesisBridge {
 }
 
 const bridge = bridgeSnapshot as ThesisBridge
+const routerResource = getResourceLink('model_router')
 </script>

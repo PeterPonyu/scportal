@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { homepageLink, shellScportalSites } from '~/utils/publicGraph'
+import { getResourceLink, homepageLink, shellScportalSites } from '~/utils/publicGraph'
 
 const year = useState('footer-year', () => new Date().getFullYear())
 
@@ -120,6 +120,7 @@ const resources = [
   })),
   { label: 'iAODE GitHub', href: 'https://github.com/PeterPonyu/iAODE' },
   { label: 'LAIOR GitHub', href: 'https://github.com/PeterPonyu/Liora' },
+  { label: 'Model Router · Local infrastructure', href: getResourceLink('model_router').href },
   { label: 'Profile', href: 'https://github.com/PeterPonyu' }
 ]
 </script>
