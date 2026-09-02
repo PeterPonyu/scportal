@@ -36,10 +36,11 @@
     "check:router-boundaries": "node scripts/check_router_boundaries.mjs",
     "check:router": "npm run validate:router-data && npm run check:router-boundaries && npm run test:router-config && npm run test:config-python && npm run typecheck",
     "validate:public-graph": "node scripts/validate_public_graph.mjs",
+    "check:public-graph": "npm run validate:public-graph && node scripts/check_public_graph_edges.mjs",
     "validate": "npm run validate:router-data && npm run validate:public-graph",
     "diff": "git diff --check -- .",
     "check:rendered-public-graph": "node scripts/check_rendered_public_graph.mjs",
-    "check": "npm run lint && npm run check:router && npm run test:site && npm run test:ui && npm run validate:public-graph && npm run generate && npm run check:static-routes && npm run check:rendered-public-graph && node scripts/check_autoselect_rendered.mjs",
+    "check": "npm run lint && npm run check:router && npm run test:site && npm run test:ui && npm run check:public-graph && npm run generate && npm run check:static-routes && npm run check:rendered-public-graph && node scripts/check_autoselect_rendered.mjs",
     "test:site": "node --experimental-strip-types --test tests/site/*.test.ts",
     "check:static-routes": "node scripts/check_static_routes.mjs"
   },

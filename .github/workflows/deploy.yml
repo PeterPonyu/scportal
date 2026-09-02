@@ -35,6 +35,11 @@ jobs:
       - name: Verify portal
         run: npm run check
 
+      - name: Verify rendered release marker
+        env:
+          EXPECTED_RELEASE: ${{ github.sha }}
+        run: node scripts/check_rendered_public_graph.mjs
+
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-pages-artifact@v3
