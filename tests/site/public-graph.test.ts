@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
-import { scportalLink } from '../../app/utils/publicGraph.ts'
+import { scportalAutoselectUrl, scportalLink } from '../../app/utils/publicGraph.ts'
 
 const manifest = JSON.parse(readFileSync(new URL('../../public-graph.manifest.json', import.meta.url), 'utf8'))
 
@@ -48,5 +48,6 @@ describe('moved publicGraph helper', () => {
   it('still resolves the SCPortal hub', () => {
     assert.equal(scportalLink.id, 'scportal')
     assert.equal(scportalLink.canonical_url, 'https://peterponyu.github.io/scportal/')
+    assert.equal(scportalAutoselectUrl, 'https://peterponyu.github.io/scportal/autoselect/')
   })
 })

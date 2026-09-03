@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { getResourceLink, homepageLink, shellScportalSites } from '~/utils/publicGraph'
+import { getResourceLink, homepageLink, scportalAutoselectUrl, shellScportalSites } from '~/utils/publicGraph'
 
 const year = useState('footer-year', () => new Date().getFullYear())
 
@@ -114,6 +114,7 @@ const quickLinks = [
 
 const resources = [
   { label: homepageLink.name, href: homepageLink.canonical_url },
+  { label: 'AutoSelect', href: scportalAutoselectUrl },
   ...shellScportalSites.map((site) => ({
     label: site.name,
     href: site.canonical_url,

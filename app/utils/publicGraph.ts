@@ -140,7 +140,8 @@ const resolvePublicDestinationSite = (id: string): PublicDestinationSite => {
 }
 
 export const homepageLink = resolvePublicDestinationSite(HOMEPAGE_ID)
-export const scportalLink = resolveSite('scportal')
+export const scportalLink = resolvePublicDestinationSite('scportal')
+export const scportalAutoselectUrl = `${normalizeCanonicalUrl(scportalLink.canonical_url)}autoselect/`
 export const lioraBenchmarkLink = resolvePublicDestinationSite('liora_benchmarks')
 export const lioraBenchmarksLink = lioraBenchmarkLink
 export const scccvgbenLink = resolvePublicDestinationSite('scccvgben')

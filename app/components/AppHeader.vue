@@ -167,7 +167,7 @@
 </template>
 
 <script setup lang="ts">
-import { getResourceLink, homepageLink, shellScportalSites } from '~/utils/publicGraph'
+import { getResourceLink, homepageLink, scportalAutoselectUrl, shellScportalSites } from '~/utils/publicGraph'
 
 const colorMode = useColorMode()
 const mobileMenuOpen = ref(false)
@@ -185,6 +185,7 @@ const navItems = [
 
 const externalNavItems = [
   { href: homepageLink.canonical_url, label: homepageLink.name },
+  { href: scportalAutoselectUrl, label: 'AutoSelect' },
   ...shellScportalSites.map((site) => ({
     href: site.canonical_url,
     label: site.name,
